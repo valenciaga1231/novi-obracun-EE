@@ -36,22 +36,22 @@
                     <td>Omreznina energija blok {{ blok }}</td>
                     <td>{{ data.energija.toFixed(4) }}</td>
                     <td>kWh</td>
-                    <td>/</td>
+                    <td>{{ data.skupna_tarifa_energija.toFixed(5) }}</td>
                     <td>{{ data.cena_omreznine_energije.toFixed(4) }}</td>
                 </tr>
                 <tr v-for="(data, blok) in blok_data" :key="blok">
                     <td>Obračunska moč blok {{ blok }}</td>
                     <td>{{ prikljucna_moc[blok - 1].toFixed(1) }}</td>
                     <td>kW</td>
-                    <td>/</td>
+                    <td>{{ data.skupna_tarifa_moc.toFixed(5) }}</td>
                     <td>{{ data.cena_omreznine_moci.toFixed(4) }}</td>
                 </tr>
-                <tr v-for="(cena, blok) in blok_data" :key="blok">
+                <tr v-for="(data, blok) in blok_data" :key="blok">
                     <td>Presezna moč blok {{ blok }}</td>
-                    <td>0</td>
+                    <td>{{ data.presezna_moc.toFixed(4) }}</td>
                     <td>kW</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{ data.skupna_tarifa_presezna_moc.toFixed(5) }}</td>
+                    <td>{{ data.cena_presezne_moci.toFixed(4) }}</td>
                 </tr>
                 <tr class="bold-row">
                     <td>Skupaj omreznine:</td>

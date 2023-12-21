@@ -55,6 +55,10 @@ const json = `{
     }
 }`;
 
+export const getTarifeData = () => {
+    return JSON.parse(json);
+};
+
 /**
  * Parses the uploaded document and saves the data to the states.
  * @param file File to be parsed
@@ -125,6 +129,12 @@ export const parseEnergyBlocks = () => {
                 energija: 0,
                 cena_omreznine_energije: 0,
                 cena_omreznine_moci: 0,
+                presezna_moc: 0,
+                cena_presezne_moci: 0,
+                intervali_moc_presezena: 0,
+                skupna_tarifa_moc: 0,
+                skupna_tarifa_energija: 0,
+                skupna_tarifa_presezna_moc: 0,
             };
         }
         useBlokData().value[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
@@ -135,6 +145,15 @@ export const parseEnergyBlocks = () => {
 
     // Izracun cena_omreznine_moci
     izracunajOmrezninoMoci();
+    izracunajPreseznoMoc();
+    izracunajCenoPresezneMoci();
+
+    // Dolocimo prispevke
+    dolociPrispevke();
+
+    // Dolocimo energijo v VT in MT
+    dolociEnergijoVTinMT();
+    dolociTarifeZaBlok();
 
     // Izracun skupne energije
     for (const blok in useBlokData().value) useTotalEnergy().value += useBlokData().value[blok].energija;
@@ -197,9 +216,57 @@ const convertExcelDate = (serial: number): Date => {
  * @returns Vrne vse omreznine za vse bloke
  */
 export const sestejVsoOmreznino = () => {
+    const vsi_bloki = useBlokData().value;
     let celotna_omreznina = 0;
-    for (const blok in useBlokData().value) celotna_omreznina += useBlokData().value[blok].cena_omreznine_energije + useBlokData().value[blok].cena_omreznine_moci;
+    for (const blok in vsi_bloki) celotna_omreznina += vsi_bloki[blok].cena_omreznine_energije + vsi_bloki[blok].cena_omreznine_moci + vsi_bloki[blok].cena_presezne_moci;
     return celotna_omreznina;
+};
+
+export const izracunajPreseznoMoc = () => {
+    const excel_data = useExcelData();
+    if (!excel_data.value) throw new Error("Excel data not initialized.");
+
+    // 1. Pogledamo moc, ki je presezena za vsak interval. Torej for loop in sestevamo v spremenljivko
+    for (let i = 0; i < excel_data.value.length; i++) {
+        const b = excel_data.value[i].blok;
+
+        // Pogledamo ali moc presega obracunsko moc za blok v katerem je trenutni interval
+        const presezna_moc = excel_data.value[i].P - usePrikljucnaMoc().value[b - 1];
+
+        if (presezna_moc > 0) {
+            // Presezna moc je pozitivna, torej jo pristejemo vrednosti v bloku po formuli
+            useBlokData().value[b].presezna_moc += presezna_moc ^ 2;
+
+            // Stejemo koliko intervalov je moc presegla obracunsko vrednost
+            if (presezna_moc > 0.15) useBlokData().value[b].intervali_moc_presezena++;
+        }
+    }
+
+    // Za vsak blok se koreni vsoto kvadratov presezne moci, da dobimo koncko vrednost presezne moci za blok
+    for (const blok in useBlokData().value) {
+        useBlokData().value[blok].presezna_moc = Math.sqrt(useBlokData().value[blok].presezna_moc);
+    }
+};
+
+export const izracunajCenoPresezneMoci = () => {
+    const tarife_data = JSON.parse(json); // Get tarif data
+    const faktor_presezne_moci = 0.9; // TODO: Dodaj v nastavitve
+
+    // Izracunamo ceno presezne moci
+    for (const blok in useBlokData().value) {
+        useBlokData().value[blok].cena_presezne_moci = useBlokData().value[blok].presezna_moc * (tarife_data[blok].distribucija.tarifna_postavka_P + tarife_data[blok].prenos.tarifna_postavka_P) * faktor_presezne_moci;
+    }
+};
+
+export const dolociTarifeZaBlok = () => {
+    const tarife_data = JSON.parse(json); // Get tarif data
+    for (const blok in useBlokData().value) {
+        const id = parseInt(blok) - 1; // Convert string to number and to index
+        // doloci skupno_tarifo za moc za vsak blok
+        useBlokData().value[blok].skupna_tarifa_moc = tarife_data[blok].distribucija.tarifna_postavka_P + tarife_data[blok].prenos.tarifna_postavka_P;
+        useBlokData().value[blok].skupna_tarifa_energija = tarife_data[blok].distribucija.tarifna_postavka_W + tarife_data[blok].prenos.tarifna_postavka_W;
+        useBlokData().value[blok].skupna_tarifa_presezna_moc = useBlokData().value[blok].skupna_tarifa_moc * 0.9;
+    }
 };
 
 export const sestejVsePrispevke = () => {
