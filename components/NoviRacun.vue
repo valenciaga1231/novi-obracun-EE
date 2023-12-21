@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
         <table class="energy-table">
             <thead>
                 <tr>

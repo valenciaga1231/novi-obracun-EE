@@ -40,10 +40,26 @@
         </div>
         <div>
             <h3>Podatki o tarifi:</h3>
-            <select>
-                <option value="1">MT/VT</option>
-                <option value="2">ET</option>
+            <select v-model="settings.tip_starega_obracuna">
+                <option value="VT+MT">MT/VT</option>
+                <option value="ET">ET</option>
             </select>
+            <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                <div>
+                    <span>MT:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.MT" />
+                </div>
+                <div>
+                    <span>VT:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.VT" />
+                </div>
+            </div>
+            <div v-if="settings.tip_starega_obracuna === 'ET'">
+                <div>
+                    <span>Input 1:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.ET" />
+                </div>
+            </div>
         </div>
         <div>
             <h3>Podatki o trenutni priključni moči:</h3>
@@ -80,6 +96,7 @@ export default {
         const prikljucna_moc = usePrikljucnaMoc();
         const prispevki = usePrispevki();
         const is_being_edited = ref(false);
+        const settings = useSettings();
 
         const handleFileUpload = (e: Event) => {
             const files = (e.target as HTMLInputElement).files;
@@ -146,6 +163,7 @@ export default {
             handleDownClick,
             prikljucna_moc,
             prispevki,
+            settings,
         };
     },
 };

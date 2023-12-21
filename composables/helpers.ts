@@ -192,8 +192,8 @@ export const dolociEnergijoVTinMT = () => {
     });
 
     // Dolocimo se ceno
-    useTotalEnergyVT().value.price = useTotalEnergyVT().value.amount * 0.118;
-    useTotalEnergyMT().value.price = useTotalEnergyMT().value.amount * 0.082;
+    useTotalEnergyVT().value.price = useTotalEnergyVT().value.amount * useSettings().value.vrednosti_tarif.VT;
+    useTotalEnergyMT().value.price = useTotalEnergyMT().value.amount * useSettings().value.vrednosti_tarif.MT;
 };
 
 /**
