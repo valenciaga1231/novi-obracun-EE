@@ -15,19 +15,19 @@ const prispevki: Prispevki = {
         name: "Prispevek za delovanje operaterja trga",
         price_per_unit: 0.00013, // €/MWh
         is_active: true,
-        price: undefined,
+        price: 0,
     },
     energetsko_ucinkovitost: {
         name: "Prispevek za energetsko učinkovitost",
         price_per_unit: 0.0008, // €/MWh
         is_active: true,
-        price: undefined,
+        price: 0,
     },
     spte_ove: {
         name: "Prispevek za SPTE in OVE",
         price_per_unit: 0.73896, // €/kW
         is_active: true,
-        price: undefined,
+        price: 0,
     },
 };
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);

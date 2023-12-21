@@ -143,6 +143,10 @@ export const parseEnergyBlocks = () => {
         useBlokData().value[b].cena_omreznine_energije += excel_data.value[i].W * (tarife_data[b].distribucija.tarifna_postavka_W + tarife_data[b].prenos.tarifna_postavka_W);
     }
 
+    // Izracun skupne energije
+    useTotalEnergy().value = 0;
+    for (const blok in useBlokData().value) useTotalEnergy().value += useBlokData().value[blok].energija;
+
     // Izracun cena_omreznine_moci
     izracunajOmrezninoMoci();
     izracunajPreseznoMoc();
@@ -154,9 +158,6 @@ export const parseEnergyBlocks = () => {
     // Dolocimo energijo v VT in MT
     dolociEnergijoVTinMT();
     dolociTarifeZaBlok();
-
-    // Izracun skupne energije
-    for (const blok in useBlokData().value) useTotalEnergy().value += useBlokData().value[blok].energija;
 
     console.log("Blok data:"); //! Dev
     console.log(useBlokData().value); //! Dev
@@ -226,6 +227,12 @@ export const izracunajPreseznoMoc = () => {
     const excel_data = useExcelData();
     if (!excel_data.value) throw new Error("Excel data not initialized.");
 
+    // Reset presezna moc and intervali presezna moc
+    for (const blok in useBlokData().value) {
+        useBlokData().value[blok].presezna_moc = 0;
+        useBlokData().value[blok].intervali_moc_presezena = 0;
+    }
+
     // 1. Pogledamo moc, ki je presezena za vsak interval. Torej for loop in sestevamo v spremenljivko
     for (let i = 0; i < excel_data.value.length; i++) {
         const b = excel_data.value[i].blok;
@@ -238,7 +245,7 @@ export const izracunajPreseznoMoc = () => {
             useBlokData().value[b].presezna_moc += presezna_moc ^ 2;
 
             // Stejemo koliko intervalov je moc presegla obracunsko vrednost
-            if (presezna_moc > 0.15) useBlokData().value[b].intervali_moc_presezena++;
+            useBlokData().value[b].intervali_moc_presezena++;
         }
     }
 

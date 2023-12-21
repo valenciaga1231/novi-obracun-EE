@@ -30,7 +30,7 @@ export type Prispevki = {
         name: string;
         price_per_unit: number;
         is_active: boolean;
-        price: number | undefined;
+        price: number;
     };
 };
 
