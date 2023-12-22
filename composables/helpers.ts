@@ -191,9 +191,24 @@ export const dolociEnergijoVTinMT = () => {
         else useTotalEnergyMT().value.amount += row.W;
     });
 
-    // Dolocimo se ceno
-    useTotalEnergyVT().value.price = useTotalEnergyVT().value.amount * useSettings().value.vrednosti_tarif.VT;
-    useTotalEnergyMT().value.price = useTotalEnergyMT().value.amount * useSettings().value.vrednosti_tarif.MT;
+    // Dolocimo se ceno, glede na zaokrozeno vrednost, kot na poloznici.
+    const VT_zaokrozeno = Math.round(useTotalEnergyVT().value.amount);
+    const MT_zaokrozeno = Math.round(useTotalEnergyMT().value.amount);
+    useTotalEnergyVT().value.price = VT_zaokrozeno * useSettings().value.vrednosti_tarif.VT;
+    useTotalEnergyMT().value.price = MT_zaokrozeno * useSettings().value.vrednosti_tarif.MT;
+};
+
+const isTarifVT = (datum: Date) => {
+    let is_VT = false;
+    const hour = datum.getUTCHours();
+
+    // Check if hour MT or VT
+    is_VT = hour >= 6 && hour < 22;
+
+    // Check if weekend
+    if (datum.getDay() === 6 || datum.getDay() === 0) is_VT = false;
+
+    return is_VT;
 };
 
 /**
@@ -290,17 +305,4 @@ export const sestejVsePrispevke = () => {
 
 export const sumAllCosts = () => {
     return sestejVsoOmreznino() + sestejVsePrispevke() + useTotalEnergyVT().value.price + useTotalEnergyMT().value.price;
-};
-
-const isTarifVT = (datum: Date) => {
-    let is_VT = false;
-    let hour = datum.getUTCHours();
-
-    // Check if hour MT or VT
-    is_VT = hour >= 6 && hour < 22;
-
-    // Check if weekend
-    if (datum.getDay() === 6 || datum.getDay() === 0) is_VT = false;
-
-    return is_VT;
 };
