@@ -17,5 +17,8 @@
     "vue-router": "^4.2.5",
     "vue-tsc": "^1.8.25",
     "xlsx": "^0.18.5"
+  },
+  "dependencies": {
+    "moment-timezone": "^0.5.43"
   }
 }

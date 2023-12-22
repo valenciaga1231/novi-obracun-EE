@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { useExcelData, useTotalEnergyMT, useTotalEnergyVT } from "./stanja";
+import moment from "moment-timezone";
 
 // TODO: Move this to a separate file
 const json = `{
@@ -87,18 +88,23 @@ export const useUploadDocument = async (file: File) => {
                 const blok_index = header.indexOf("Blok");
                 const P_index = header.indexOf("P+ Prejeta delovna moč");
 
-                // TODO: Change date to Date
                 // Loop cez vse vrstice Excel podatkov. Za vsako vrstico:
                 if (!useExcelData().value) useExcelData().value = []; // Initialize the array if it's undefined
                 excel_data.map((row, id) => {
-                    const converted_date = convertExcelDate(row[timestamp_index]);
+                    const date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
+                    const tarife_date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
+                    /**
+                     * Odsteti moramo 15min, ker na MojElektro pac v timestamp 12:00:00 AM oz. 00:00:00,
+                     * se v prejsnjem dnevu, ker smo do takrat porabili toliko energije.
+                     */
+                    tarife_date.setMinutes(tarife_date.getMinutes() - 15);
 
                     useExcelData().value[id] = {
-                        timestamp: converted_date,
                         blok: row[blok_index],
                         W: row[W_index],
                         P: row[P_index],
-                        is_VT: isTarifVT(converted_date),
+                        is_VT: isTarifVT(tarife_date),
+                        date: date,
                     };
                 });
 
@@ -116,6 +122,46 @@ export const useUploadDocument = async (file: File) => {
 
     // Wait for the onload event to complete beforecontinuing
     await onloadPromise;
+};
+
+/**
+ * Se uporablja, da pretvorimo serial date v Date object, ki pravilno kaze
+ * cas v Sloveniji.
+ *
+ * @param serial Serial number of the date
+ * @param timezone Timezone
+ * @returns Return date in the specified timezone
+ */
+const convertSerialDate = (serial: number, timezone: string) => {
+    const origin_date = new Date(1899, 11, 30); // Excel's origin date: December 30, 1899
+    const milliseconds_per_day = 24 * 60 * 60 * 1000;
+
+    /**
+     * Poda pravilni datum po slovenskem casu, ker gleda cas od zacetka stetja Excela
+     ** Razlaga:
+     * The serial number itself doesn't specify the time zone.
+     * It's just a count of days and fractional days since a base date
+     *
+     * Zato je treba excelu odsteti 1 uro, ker se ne zaveda poletnega in zimskega casa
+     * in tako dobimo podatke, ki so vsi zamaknjeni za 1 uro naprej.
+     */
+    //! Done with pure JS: problem, ker ce tam, ko JS laufa ni Slovenija, bo cas narobe
+    const date = new Date(origin_date.getTime() + serial * milliseconds_per_day);
+    const current_offset = date.getTimezoneOffset(); // Gets the time zone difference in minutes
+    // If date is DST, subtract 1 hour
+    if (current_offset === -120) date.setHours(date.getHours() - 1);
+    console.log(date);
+
+    return date;
+
+    //! Done with moment.js:
+    // Create moment date object
+    const moment_date = moment(date).tz(timezone);
+
+    // If date is DST, subtract 1 hour
+    if (moment_date.isDST()) moment_date.subtract(1, "hour"); // Nastavi poletni cas
+
+    return moment_date.toDate();
 };
 
 export const parseEnergyBlocks = () => {
@@ -161,9 +207,6 @@ export const parseEnergyBlocks = () => {
     // Dolocimo energijo v VT in MT
     dolociEnergijoVTinMT();
     dolociTarifeZaBlok();
-
-    console.log("Blok data:"); //! Dev
-    console.log(useBlokData().value); //! Dev
 };
 
 export const izracunajOmrezninoMoci = () => {
@@ -187,9 +230,8 @@ export const dolociPrispevke = () => {
  * TODO: Dodaj dela proste dni!!!
  */
 export const dolociEnergijoVTinMT = () => {
-    // Dolocimo kolicino energije
+    // Dolocimo kolicino energije v MT in VT
     useExcelData().value.map((row) => {
-        // const is_VT = isTarifVT(row.timestamp);
         const is_VT = row.is_VT;
         if (is_VT) useTotalEnergyVT().value.amount += row.W;
         else useTotalEnergyMT().value.amount += row.W;
@@ -207,58 +249,40 @@ const convertDateFormat = (date_string: string): string => {
     return `${year}-${month}-${day}`;
 };
 
+/**
+ * Funkcija, ki preveri, ali je trenutni timestamp v VT ali MT tarifi.
+ * Uposteva:
+ * - cas v dnevu (6:00 - 22:00 VT, 22:00 - 6:00 MT)
+ * - vikende (00:00 - 24:00 MT)
+ * - dela proste dneve (00:00 - 24:00 MT)
+ *
+ * @param datum Datum, ki je 15 min zamaknjen nazaj glede na pravi cas.
+ * @returns
+ */
 const isTarifVT = (datum: Date) => {
     let is_VT = false;
-    const hour = datum.getUTCHours();
-    const prazniki = holidays;
 
     // Check if hour MT or VT
-    is_VT = hour >= 7 && hour < 23; // Med 7 in 23, ker operiramo z UTC casom
+    const hour = datum.getHours();
+    is_VT = hour >= 6 && hour < 22;
 
     // Check if weekend
     if (datum.getDay() === 6 || datum.getDay() === 0) is_VT = false;
 
-    console.log(datum); //! Dev
-
-    // Check if holiday
+    // Check if work free day, as on wokr free dat VT is not active
+    const prazniki = holidays;
     prazniki.map((praznik): void => {
-        // Zanima nas dejasnko samo, ce datum praznika sovpada z datumom trenutnega dneva.
         const praznik_datum = new Date(convertDateFormat(praznik.date));
-
-        if (isSameDay(praznik_datum, datum) && praznik.work_free_day === "da") is_VT = false;
+        if (praznik.work_free_day === "da" && isSameDay(praznik_datum, datum)) is_VT = false;
     });
-
-    console.log(new Date(convertDateFormat("2.05.2023")));
 
     return is_VT;
 };
 
-/**
- * Pogleda ali sta dva datuma isti dan v letu. Cas ga ne zanima
- * @param date1
- * @param date2
- * @returns
- */
 const isSameDay = (date1: Date, date2: Date) => {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
 };
 
-/**
- * Will convert excel serial date to JS Date.
- * @param serial
- * @returns JWill return corrent Date for local Slovenian time.
- */
-const convertExcelDate = (serial: number): Date => {
-    const excelEpoch = new Date(1899, 11, 31);
-    const excelEpochAsUnixTimestamp = excelEpoch.getTime();
-    const millisecondsPerDay = 24 * 60 * 60 * 1000;
-    const excelDateAsUnixTimestamp = (serial - 1) * millisecondsPerDay;
-    const jsDate = new Date(excelEpochAsUnixTimestamp + excelDateAsUnixTimestamp); // Create UTC date
-
-    jsDate.setHours(jsDate.getHours() - 1); //! Ce je poletni cas mora biti -1
-    jsDate.setMinutes(jsDate.getMinutes() - 15); // Pac zaradi taksnega upostevanja intervalov pri MojElektro
-    return jsDate;
-};
 /**
  * TODO: Dodati je treba se presezno moc.
  * @returns Vrne vse omreznine za vse bloke

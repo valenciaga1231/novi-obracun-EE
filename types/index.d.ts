@@ -3,11 +3,11 @@ export type PrikljucnaMoc = [number, number, number, number, number]; //? Bi se 
 
 // Ena vrstica, ki jo dobimo iz Excela
 export type ExcelRow = {
-    timestamp: Date;
     W: number;
     P: number;
     blok: number;
     is_VT: boolean;
+    date: Date;
 };
 
 // Podatki za vse bloke
