@@ -1,5 +1,5 @@
 // Pac 5 prikljucnih moci za vsak blok (1-5)
-export type PrikljucnaMoc = [number, number, number, number, number];
+export type PrikljucnaMoc = [number, number, number, number, number]; //? Bi se lahko dalo v BlokData?
 
 // Ena vrstica, ki jo dobimo iz Excela
 export type ExcelRow = {
@@ -15,6 +15,12 @@ export type BlokData = {
         energija: number;
         cena_omreznine_energije: number;
         cena_omreznine_moci: number;
+        presezna_moc: number;
+        cena_presezne_moci: number;
+        intervali_moc_presezena: number;
+        skupna_tarifa_moc: number;
+        skupna_tarifa_energija: number;
+        skupna_tarifa_presezna_moc: number;
     };
 };
 
@@ -24,11 +30,20 @@ export type Prispevki = {
         name: string;
         price_per_unit: number;
         is_active: boolean;
-        price: number | undefined;
+        price: number;
     };
 };
 
 export type Energija = {
     amount: number;
     price: number;
+};
+
+export type Settings = {
+    tip_starega_obracuna: "VT+MT" | "ET"; // VT+MT | ET
+    vrednosti_tarif: {
+        VT: number;
+        MT: number;
+        ET: number;
+    };
 };

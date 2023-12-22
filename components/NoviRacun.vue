@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
         <table class="energy-table">
             <thead>
                 <tr>
@@ -34,24 +35,24 @@
                 </tr>
                 <tr v-for="(data, blok) in blok_data" :key="blok">
                     <td>Omreznina energija blok {{ blok }}</td>
-                    <td>{{ data.energija.toFixed(4) }}</td>
+                    <td>{{ data.energija.toFixed(5) }}</td>
                     <td>kWh</td>
-                    <td>/</td>
-                    <td>{{ data.cena_omreznine_energije.toFixed(4) }}</td>
+                    <td>{{ data.skupna_tarifa_energija.toFixed(5) }}</td>
+                    <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
                 </tr>
                 <tr v-for="(data, blok) in blok_data" :key="blok">
                     <td>Obračunska moč blok {{ blok }}</td>
                     <td>{{ prikljucna_moc[blok - 1].toFixed(1) }}</td>
                     <td>kW</td>
-                    <td>/</td>
-                    <td>{{ data.cena_omreznine_moci.toFixed(4) }}</td>
+                    <td>{{ data.skupna_tarifa_moc.toFixed(5) }}</td>
+                    <td>{{ data.cena_omreznine_moci.toFixed(5) }}</td>
                 </tr>
-                <tr v-for="(cena, blok) in blok_data" :key="blok">
+                <tr v-for="(data, blok) in blok_data" :key="blok">
                     <td>Presezna moč blok {{ blok }}</td>
-                    <td>0</td>
+                    <td>{{ data.presezna_moc.toFixed(5) }}</td>
                     <td>kW</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td>{{ data.skupna_tarifa_presezna_moc.toFixed(5) }}</td>
+                    <td>{{ data.cena_presezne_moci.toFixed(5) }}</td>
                 </tr>
                 <tr class="bold-row">
                     <td>Skupaj omreznine:</td>
@@ -65,7 +66,7 @@
                     <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : total_energy.toFixed(0) }}</td>
                     <td>{{ id == "spte_ove" ? "kW" : "kWh" }}</td>
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
-                    <td>{{ prispevek.is_active ? prispevek?.price?.toFixed(4) : "0.00000" }}</td>
+                    <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
                 </tr>
                 <tr class="bold-row">
                     <td>Skupaj prispevki:</td>
@@ -130,16 +131,22 @@ export default {
 
 .energy-table th,
 .energy-table td {
-    padding: 8px;
+    padding: 8px; /* Adjust the padding value to make the rows tighter */
     text-align: center;
-    border: 1px solid #ddd;
+    border: 1px solid #e2e8f0;
 }
 
 .energy-table th {
-    background-color: #f2f2f2;
+    background-color: #f7fafc;
+    font-weight: bold;
 }
 
 .bold-row {
+    font-weight: bold;
+    background-color: #edf2f7;
+}
+
+.bold-row td {
     font-weight: bold;
 }
 </style>

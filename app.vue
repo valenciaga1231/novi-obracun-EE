@@ -4,7 +4,7 @@
         <div class="flex">
             <DataForm />
             <div v-if="is_table">
-                <DisplayTable />
+                <NoviRacun />
             </div>
         </div>
     </div>

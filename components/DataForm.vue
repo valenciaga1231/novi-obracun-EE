@@ -4,35 +4,35 @@
             <h3>Podatki o priključni moči:</h3>
             <div>
                 <span class="input-text">Blok 1:</span>
-                <input id="1" type="text" class="input-field" disabled v-model="prikljucna_moc[0]" />
+                <input id="1" type="text" class="input-field" v-model="prikljucna_moc[0]" />
                 <span class="input-text">kW</span>
                 <button @click="handleUpClick(1)">Up</button>
                 <button @click="handleDownClick(1)">Down</button>
             </div>
             <div>
                 <span class="input-text">Blok 2:</span>
-                <input id="2" type="text" class="input-field" disabled v-model="prikljucna_moc[1]" />
+                <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" />
                 <span class="input-text">kW</span>
                 <button @click="handleUpClick(2)">Up</button>
                 <button @click="handleDownClick(2)">Down</button>
             </div>
             <div>
                 <span class="input-text">Blok 3:</span>
-                <input id="3" type="text" class="input-field" disabled v-model="prikljucna_moc[2]" />
+                <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" />
                 <span class="input-text">kW</span>
                 <button @click="handleUpClick(3)">Up</button>
                 <button @click="handleDownClick(3)">Down</button>
             </div>
             <div>
                 <span class="input-text">Blok 4:</span>
-                <input id="4" type="text" class="input-field" disabled v-model="prikljucna_moc[3]" />
+                <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" />
                 <span class="input-text">kW</span>
                 <button @click="handleUpClick(4)">Up</button>
                 <button @click="handleDownClick(4)">Down</button>
             </div>
             <div>
                 <span class="input-text">Blok 5:</span>
-                <input id="5" type="text" class="input-field" disabled v-model="prikljucna_moc[4]" />
+                <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" />
                 <span class="input-text">kW</span>
                 <button @click="handleUpClick(5)">Up</button>
                 <button @click="handleDownClick(5)">Down</button>
@@ -40,10 +40,26 @@
         </div>
         <div>
             <h3>Podatki o tarifi:</h3>
-            <select>
-                <option value="1">MT/VT</option>
-                <option value="2">ET</option>
+            <select v-model="settings.tip_starega_obracuna">
+                <option value="VT+MT">MT/VT</option>
+                <option value="ET">ET</option>
             </select>
+            <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                <div>
+                    <span>MT:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.MT" />
+                </div>
+                <div>
+                    <span>VT:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.VT" />
+                </div>
+            </div>
+            <div v-if="settings.tip_starega_obracuna === 'ET'">
+                <div>
+                    <span>Input 1:</span>
+                    <input type="text" v-model="settings.vrednosti_tarif.ET" />
+                </div>
+            </div>
         </div>
         <div>
             <h3>Podatki o trenutni priključni moči:</h3>
@@ -80,6 +96,7 @@ export default {
         const prikljucna_moc = usePrikljucnaMoc();
         const prispevki = usePrispevki();
         const is_being_edited = ref(false);
+        const settings = useSettings();
 
         const handleFileUpload = (e: Event) => {
             const files = (e.target as HTMLInputElement).files;
@@ -98,12 +115,6 @@ export default {
 
             parseEnergyBlocks();
             useIsTable().value = true;
-
-            // Dolocimo prispevke
-            dolociPrispevke();
-
-            // Dolocimo energijo v VT in MT
-            dolociEnergijoVTinMT();
         };
 
         const handleUpClick = (id: number) => {
@@ -137,8 +148,11 @@ export default {
             // Posodobi prikljucne moci
             usePrikljucnaMoc().value = input_values;
 
-            // Ponovno izracunaj omreznino za moc
+            // Ponovno izracunaj omreznino za moc in presezno moc
             izracunajOmrezninoMoci();
+            izracunajPreseznoMoc();
+            izracunajCenoPresezneMoci();
+            dolociTarifeZaBlok();
         };
 
         return {
@@ -149,6 +163,7 @@ export default {
             handleDownClick,
             prikljucna_moc,
             prispevki,
+            settings,
         };
     },
 };
