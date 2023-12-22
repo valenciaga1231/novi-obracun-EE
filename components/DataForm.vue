@@ -37,6 +37,10 @@
                 <button @click="handleUpClick(5)">Up</button>
                 <button @click="handleDownClick(5)">Down</button>
             </div>
+            <div>
+                <button @click="handleAllClick(-0.1)">All down</button>
+                <button @click="handleAllClick(0.1)">All up</button>
+            </div>
         </div>
         <div>
             <h3>Podatki o tarifi:</h3>
@@ -131,6 +135,23 @@ export default {
             handleInputChange(id);
         };
 
+        const handleAllClick = (value: number) => {
+            const input_fields = document.getElementsByClassName("input-field"); // Get all inputs
+            const input_values = Array.from(input_fields).map((input_field) => parseFloat((input_field as HTMLInputElement).value)) as PrikljucnaMoc; // Get all inputs current values
+            const new_input_values = input_values.map((input_value) => (input_value + value).toFixed(1)); // Create new array of input values
+
+            for (let i = 0; i < input_fields.length; i++) {
+                (input_fields[i] as HTMLInputElement).value = new_input_values[i]; // Assign new values to inputs
+                usePrikljucnaMoc().value[i] = parseFloat(new_input_values[i]); // Posodobi prikljucne moci
+            }
+
+            // Ponovno izracunaj omreznino za moc in presezno moc
+            izracunajOmrezninoMoci();
+            izracunajPreseznoMoc();
+            izracunajCenoPresezneMoci();
+            dolociTarifeZaBlok();
+        };
+
         const handleInputChange = (id: number) => {
             const input_fields = document.getElementsByClassName("input-field");
             const input_values = Array.from(input_fields).map((input_field) => parseFloat((input_field as HTMLInputElement).value)) as PrikljucnaMoc;
@@ -161,6 +182,7 @@ export default {
             handleInputChange,
             handleUpClick,
             handleDownClick,
+            handleAllClick,
             prikljucna_moc,
             prispevki,
             settings,
