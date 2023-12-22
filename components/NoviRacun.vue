@@ -14,14 +14,14 @@
             <tbody>
                 <tr>
                     <td>El. energija VT</td>
-                    <td>{{ velika_tarifa.amount.toFixed(0) }}</td>
+                    <td>{{ velika_tarifa.amount.toFixed(2) }}</td>
                     <td>kWh</td>
                     <td>0,118000</td>
                     <td>{{ velika_tarifa.price.toFixed(5) }}</td>
                 </tr>
                 <tr>
                     <td>El. energija MT</td>
-                    <td>{{ mala_tarifa.amount.toFixed(0) }}</td>
+                    <td>{{ mala_tarifa.amount.toFixed(2) }}</td>
                     <td>kWh</td>
                     <td>0,082000</td>
                     <td>{{ mala_tarifa.price.toFixed(5) }}</td>

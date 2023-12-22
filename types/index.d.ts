@@ -7,6 +7,7 @@ export type ExcelRow = {
     W: number;
     P: number;
     blok: number;
+    is_VT: boolean;
 };
 
 // Podatki za vse bloke

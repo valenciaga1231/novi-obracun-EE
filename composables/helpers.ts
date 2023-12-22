@@ -91,11 +91,14 @@ export const useUploadDocument = async (file: File) => {
                 // Loop cez vse vrstice Excel podatkov. Za vsako vrstico:
                 if (!useExcelData().value) useExcelData().value = []; // Initialize the array if it's undefined
                 excel_data.map((row, id) => {
+                    const converted_date = convertExcelDate(row[timestamp_index]);
+
                     useExcelData().value[id] = {
-                        timestamp: convertExcelDate(row[timestamp_index]),
+                        timestamp: converted_date,
                         blok: row[blok_index],
                         W: row[W_index],
                         P: row[P_index],
+                        is_VT: isTarifVT(converted_date),
                     };
                 });
 
@@ -186,7 +189,8 @@ export const dolociPrispevke = () => {
 export const dolociEnergijoVTinMT = () => {
     // Dolocimo kolicino energije
     useExcelData().value.map((row) => {
-        const is_VT = isTarifVT(row.timestamp);
+        // const is_VT = isTarifVT(row.timestamp);
+        const is_VT = row.is_VT;
         if (is_VT) useTotalEnergyVT().value.amount += row.W;
         else useTotalEnergyMT().value.amount += row.W;
     });
@@ -198,33 +202,61 @@ export const dolociEnergijoVTinMT = () => {
     useTotalEnergyMT().value.price = MT_zaokrozeno * useSettings().value.vrednosti_tarif.MT;
 };
 
+const convertDateFormat = (date_string: string): string => {
+    const [day, month, year] = date_string.split(".");
+    return `${year}-${month}-${day}`;
+};
+
 const isTarifVT = (datum: Date) => {
     let is_VT = false;
     const hour = datum.getUTCHours();
+    const prazniki = holidays;
 
     // Check if hour MT or VT
-    is_VT = hour >= 6 && hour < 22;
+    is_VT = hour >= 7 && hour < 23; // Med 7 in 23, ker operiramo z UTC casom
 
     // Check if weekend
     if (datum.getDay() === 6 || datum.getDay() === 0) is_VT = false;
+
+    console.log(datum); //! Dev
+
+    // Check if holiday
+    prazniki.map((praznik): void => {
+        // Zanima nas dejasnko samo, ce datum praznika sovpada z datumom trenutnega dneva.
+        const praznik_datum = new Date(convertDateFormat(praznik.date));
+
+        if (isSameDay(praznik_datum, datum) && praznik.work_free_day === "da") is_VT = false;
+    });
+
+    console.log(new Date(convertDateFormat("2.05.2023")));
 
     return is_VT;
 };
 
 /**
+ * Pogleda ali sta dva datuma isti dan v letu. Cas ga ne zanima
+ * @param date1
+ * @param date2
+ * @returns
+ */
+const isSameDay = (date1: Date, date2: Date) => {
+    return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
+};
+
+/**
  * Will convert excel serial date to JS Date.
  * @param serial
- * @returns JS Date
+ * @returns JWill return corrent Date for local Slovenian time.
  */
 const convertExcelDate = (serial: number): Date => {
     const excelEpoch = new Date(1899, 11, 31);
     const excelEpochAsUnixTimestamp = excelEpoch.getTime();
     const millisecondsPerDay = 24 * 60 * 60 * 1000;
     const excelDateAsUnixTimestamp = (serial - 1) * millisecondsPerDay;
+    const jsDate = new Date(excelEpochAsUnixTimestamp + excelDateAsUnixTimestamp); // Create UTC date
 
-    let jsDate = new Date(excelEpochAsUnixTimestamp + excelDateAsUnixTimestamp);
-    jsDate.setHours(jsDate.getHours() + 1); // Zaradi razlike z UTC
-    jsDate.setMinutes(jsDate.getMinutes() - 15); // Pac zaradi taksnega upostevanja intervalov
+    jsDate.setHours(jsDate.getHours() - 1); //! Ce je poletni cas mora biti -1
+    jsDate.setMinutes(jsDate.getMinutes() - 15); // Pac zaradi taksnega upostevanja intervalov pri MojElektro
     return jsDate;
 };
 /**
@@ -257,7 +289,7 @@ export const izracunajPreseznoMoc = () => {
 
         if (presezna_moc > 0) {
             // Presezna moc je pozitivna, torej jo pristejemo vrednosti v bloku po formuli
-            useBlokData().value[b].presezna_moc += presezna_moc ^ 2;
+            useBlokData().value[b].presezna_moc += presezna_moc * presezna_moc;
 
             // Stejemo koliko intervalov je moc presegla obracunsko vrednost
             useBlokData().value[b].intervali_moc_presezena++;
