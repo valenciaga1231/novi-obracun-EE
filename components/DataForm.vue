@@ -86,7 +86,7 @@
             </div>
         </div>
         <h3>Uvozi 15min podatke iz MojElektro:</h3>
-        <input type="file" @click="handleFileUpload" />
+        <input type="file" @change="handleFileUpload($event)" accept="pdf/*" />
         <button type="submit" @click="processData">Izračunaj</button>
     </div>
 </template>
@@ -111,6 +111,8 @@ export default {
         };
 
         const processData = async () => {
+            useResetData(); // Reset data
+
             if (data_file.value) await useUploadDocument(data_file.value);
             else throw new Error("No file uploaded");
 

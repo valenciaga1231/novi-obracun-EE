@@ -92,7 +92,7 @@ const convertSerialDate = (serial: number, timezone: string) => {
     const current_offset = date.getTimezoneOffset(); // Gets the time zone difference in minutes
     // If date is DST, subtract 1 hour
     if (current_offset === -120) date.setHours(date.getHours() - 1);
-    console.log(date);
+    // console.log(date); //! Dev
 
     return date;
 

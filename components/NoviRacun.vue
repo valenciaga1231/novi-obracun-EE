@@ -77,10 +77,10 @@
                 </tr>
                 <tr>
                     <td>Trošarina:</td>
-                    <td>{{ (mala_tarifa.price + velika_tarifa.price).toFixed(5) }}</td>
+                    <td>{{ (mala_tarifa.amount + velika_tarifa.amount).toFixed(5) }}</td>
                     <td>kWh</td>
                     <td>0.001530</td>
-                    <td>{{ ((mala_tarifa.price + velika_tarifa.price) * 0.00153).toFixed(5) }}</td>
+                    <td>{{ ((mala_tarifa.amount + velika_tarifa.amount) * 0.00153).toFixed(5) }}</td>
                 </tr>
                 <tr>
                     <th>Skupaj</th>

@@ -34,3 +34,20 @@ const prispevki: Prispevki = {
     },
 };
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
+
+/**
+ * Functions resets all data. If you want to reset your data
+ * before handling new Excel input, add your data to this function.
+ */
+export const useResetData = () => {
+    // usePrikljucnaMoc().value = [4.2, 5.2, 5.2, 5.2, 5.2];
+    usePrikljucnaMocStara().value = 7;
+    useExcelData().value = [];
+    useBlokData().value = {} as BlokData;
+    useTotalEnergy().value = 0;
+    useTotalEnergyVT().value = { amount: 0, price: 0 };
+    useTotalEnergyMT().value = { amount: 0, price: 0 };
+    useIsTable().value = false;
+    useSettings().value = default_settings;
+    usePrispevki().value = prispevki;
+};
