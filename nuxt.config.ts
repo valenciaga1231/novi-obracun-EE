@@ -13,7 +13,7 @@ export default defineNuxtConfig({
             ripple: true,
         },
         components: {
-            include: ["Calendar", "Button", "TabMenu", "InputNumber", "Card"],
+            include: ["Calendar", "Button", "TabMenu", "InputNumber", "Card", "Dropdown"],
         },
         cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
     },

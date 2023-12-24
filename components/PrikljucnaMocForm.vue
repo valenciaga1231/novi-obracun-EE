@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="prikljucna-moc-component">
         <h2>Podatki o priključni moči:</h2>
         <div class="prikljucna-moc-container">
             <Card class="custom-card">
@@ -11,7 +11,7 @@
                             <button @click="handleUpClick(1)">+</button>
                             <button @click="handleDownClick(1)">-</button>
                         </div>
-                        <span class="input-text">kW</span>
+                        <span class="input-text"><b>kW</b></span>
                     </div>
                     <p>Delovni dan</p>
                     <p>- 7:00 do 14:00</p>
@@ -22,57 +22,69 @@
                 <template #title> Blok 2 </template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[1]" />
+                        <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(2)">+</button>
                             <button @click="handleDownClick(2)">-</button>
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
+                    <p>Delovni dan</p>
+                    <p>- 7:00 do 14:00</p>
+                    <p>- 16:00 do 20:00</p>
                 </template>
             </Card>
             <Card class="custom-card">
                 <template #title> Blok 3 </template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[2]" />
+                        <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(3)">+</button>
                             <button @click="handleDownClick(3)">-</button>
                         </div>
-                        <span class="input-text">kW</span>
+                        <span class="input-text"><b>kW</b></span>
                     </div>
+                    <p>Delovni dan</p>
+                    <p>- 7:00 do 14:00</p>
+                    <p>- 16:00 do 20:00</p>
                 </template>
             </Card>
             <Card class="custom-card">
                 <template #title> Blok 4 </template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[3]" />
+                        <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(4)">+</button>
                             <button @click="handleDownClick(4)">-</button>
                         </div>
-                        <span class="input-text">kW</span>
+                        <span class="input-text"><b>kW</b></span>
                     </div>
+                    <p>Delovni dan</p>
+                    <p>- 7:00 do 14:00</p>
+                    <p>- 16:00 do 20:00</p>
                 </template>
             </Card>
             <Card class="custom-card">
                 <template #title> Blok 5 </template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[4]" />
+                        <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(5)">+</button>
                             <button @click="handleDownClick(5)">-</button>
                         </div>
-                        <span class="input-text">kW</span>
+                        <span class="input-text"><b>kW</b></span>
                     </div>
+                    <p>Delovni dan</p>
+                    <p>- 7:00 do 14:00</p>
+                    <p>- 16:00 do 20:00</p>
                 </template>
             </Card>
         </div>
         <div class="all-buttons">
-            <div>Spremeni vse</div>
+            <div>Spremeni vse bloke:</div>
             <div><Button label="Vse +0.1" @click="handleAllClick(0.1)" rounded /> <Button label="Vse -0.1" @click="handleAllClick(-0.1)" severity="secondary" rounded /></div>
         </div>
     </div>
@@ -81,32 +93,11 @@
 import type { PrikljucnaMoc } from "~/types";
 export default {
     setup() {
-        const data_file = ref<File | null>(null);
         const prikljucna_moc = usePrikljucnaMoc();
         const prispevki = usePrispevki();
         const settings = useSettings();
         const timeout = ref<NodeJS.Timeout | null>(null);
-
-        const handleFileUpload = (e: Event) => {
-            const files = (e.target as HTMLInputElement).files;
-            if (files && files.length > 0) {
-                console.log("File uploaded"); //! Dev
-                data_file.value = files[0];
-            }
-        };
-
-        const processData = async () => {
-            useResetData(); // Reset data
-
-            if (data_file.value) await useUploadDocument(data_file.value);
-            else throw new Error("No file uploaded");
-
-            console.log(useExcelData().value);
-            console.log("Processing data"); //! Dev
-
-            parseEnergyBlocks();
-            useIsTable().value = true;
-        };
+        const blok_data = useBlokData();
 
         const handleUpClick = (id: number) => {
             const input_field = document.getElementById(id.toString()) as HTMLInputElement;
@@ -198,8 +189,6 @@ export default {
         };
 
         return {
-            handleFileUpload,
-            processData,
             handleInputChange,
             handleUpClick,
             handleDownClick,
@@ -207,6 +196,7 @@ export default {
             prikljucna_moc,
             prispevki,
             settings,
+            blok_data,
         };
     },
 };
@@ -219,6 +209,7 @@ export default {
     justify-content: space-between;
 
     margin: 0 30px;
+    flex-wrap: wrap;
 }
 
 h2 {

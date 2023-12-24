@@ -41,7 +41,7 @@ export type Energija = {
 };
 
 export type Settings = {
-    tip_starega_obracuna: "VT+MT" | "ET"; // VT+MT | ET
+    tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
     vrednosti_tarif: {
         VT: number;
         MT: number;

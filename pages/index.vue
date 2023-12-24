@@ -20,19 +20,19 @@ export default {
         const is_table = useIsTable();
         const items = ref([
             {
-                label: "Dashboard",
+                label: "Vhodni podatki",
                 icon: "pi pi-home",
             },
             {
-                label: "Transactions",
+                label: "Račun",
                 icon: "pi pi-chart-line",
             },
             {
-                label: "Products",
+                label: "Analiza",
                 icon: "pi pi-list",
             },
             {
-                label: "Messages",
+                label: "Dodatno",
                 icon: "pi pi-inbox",
             },
         ]);
