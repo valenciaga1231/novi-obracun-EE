@@ -1,47 +1,6 @@
 <template>
     <div>
-        <div class="input-container">
-            <h3>Podatki o priključni moči:</h3>
-            <div>
-                <span class="input-text">Blok 1:</span>
-                <input id="1" type="text" class="input-field" v-model="prikljucna_moc[0]" />
-                <span class="input-text">kW</span>
-                <button @click="handleUpClick(1)">Up</button>
-                <button @click="handleDownClick(1)">Down</button>
-            </div>
-            <div>
-                <span class="input-text">Blok 2:</span>
-                <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" />
-                <span class="input-text">kW</span>
-                <button @click="handleUpClick(2)">Up</button>
-                <button @click="handleDownClick(2)">Down</button>
-            </div>
-            <div>
-                <span class="input-text">Blok 3:</span>
-                <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" />
-                <span class="input-text">kW</span>
-                <button @click="handleUpClick(3)">Up</button>
-                <button @click="handleDownClick(3)">Down</button>
-            </div>
-            <div>
-                <span class="input-text">Blok 4:</span>
-                <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" />
-                <span class="input-text">kW</span>
-                <button @click="handleUpClick(4)">Up</button>
-                <button @click="handleDownClick(4)">Down</button>
-            </div>
-            <div>
-                <span class="input-text">Blok 5:</span>
-                <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" />
-                <span class="input-text">kW</span>
-                <button @click="handleUpClick(5)">Up</button>
-                <button @click="handleDownClick(5)">Down</button>
-            </div>
-            <div>
-                <button @click="handleAllClick(-0.1)">All down</button>
-                <button @click="handleAllClick(0.1)">All up</button>
-            </div>
-        </div>
+        <PrikljucnaMocForm />
         <div>
             <h3>Podatki o tarifi:</h3>
             <select v-model="settings.tip_starega_obracuna">
@@ -92,8 +51,6 @@
 </template>
 
 <script lang="ts">
-import type { PrikljucnaMoc } from "~/types";
-
 export default {
     setup() {
         const data_file = ref<File | null>(null);
@@ -123,68 +80,9 @@ export default {
             useIsTable().value = true;
         };
 
-        const handleUpClick = (id: number) => {
-            const input_field = document.getElementById(id.toString()) as HTMLInputElement;
-            const input_value = parseFloat(input_field.value);
-            input_field.value = (input_value + 0.1).toFixed(1).toString();
-            handleInputChange(id);
-        };
-
-        const handleDownClick = (id: number) => {
-            const input_field = document.getElementById(id.toString()) as HTMLInputElement;
-            const input_value = parseFloat(input_field.value);
-            input_field.value = (input_value - 0.1).toFixed(1).toString();
-            handleInputChange(id);
-        };
-
-        const handleAllClick = (value: number) => {
-            const input_fields = document.getElementsByClassName("input-field"); // Get all inputs
-            const input_values = Array.from(input_fields).map((input_field) => parseFloat((input_field as HTMLInputElement).value)) as PrikljucnaMoc; // Get all inputs current values
-            const new_input_values = input_values.map((input_value) => (input_value + value).toFixed(1)); // Create new array of input values
-
-            for (let i = 0; i < input_fields.length; i++) {
-                (input_fields[i] as HTMLInputElement).value = new_input_values[i]; // Assign new values to inputs
-                usePrikljucnaMoc().value[i] = parseFloat(new_input_values[i]); // Posodobi prikljucne moci
-            }
-
-            // Ponovno izracunaj omreznino za moc in presezno moc
-            izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
-        };
-
-        const handleInputChange = (id: number) => {
-            const input_fields = document.getElementsByClassName("input-field");
-            const input_values = Array.from(input_fields).map((input_field) => parseFloat((input_field as HTMLInputElement).value)) as PrikljucnaMoc;
-
-            // only check the input_id in input_values array, and if it is greater than the one behind it in array, set it to the value behind it
-            if (input_values[id - 1] > input_values[id]) {
-                (input_fields[id - 1] as HTMLInputElement).value = input_values[id].toString();
-                input_values[id - 1] = input_values[id];
-            }
-            if (input_values[id - 1] < input_values[id - 2]) {
-                (input_fields[id - 1] as HTMLInputElement).value = input_values[id - 2].toString();
-                input_values[id - 1] = input_values[id - 2];
-            }
-
-            // Posodobi prikljucne moci
-            usePrikljucnaMoc().value = input_values;
-
-            // Ponovno izracunaj omreznino za moc in presezno moc
-            izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
-        };
-
         return {
             handleFileUpload,
             processData,
-            handleInputChange,
-            handleUpClick,
-            handleDownClick,
-            handleAllClick,
             prikljucna_moc,
             prispevki,
             settings,
@@ -193,21 +91,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.input-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-field {
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
-    max-width: 25px;
-    margin: 10px;
-    outline: none;
-}
-</style>
+<style scoped></style>
