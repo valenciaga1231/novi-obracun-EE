@@ -1,6 +1,6 @@
 <template>
     <div class="tarifa-component">
-        <h2>Podatki o tarifi:</h2>
+        <!-- <h2>Podatki o tarifi:</h2> -->
         <div class="tarifa-content">
             <div class="p-float-label">
                 <Dropdown v-model="selectedCity" inputId="dd-city" :options="cities" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
@@ -9,11 +9,11 @@
             <div v-if="settings.tip_starega_obracuna !== null">
                 <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <span class="p-float-label" style="margin-bottom: 30px">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" style="width: 150px" />
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" />
                         <label for="number-input">VT</label>
                     </span>
-                    <span class="p-float-label" style="width: 200px">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="4" locale="de-DE" suffix="             EUR/kWh" style="width: 100px" />
+                    <span class="p-float-label">
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" />
                         <label for="number-input">MT</label>
                     </span>
                 </div>

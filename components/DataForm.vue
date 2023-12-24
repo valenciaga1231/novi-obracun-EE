@@ -3,8 +3,12 @@
         <section class="data-input-section">
             <PrikljucnaMocForm />
             <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between">
-                <TarifaForm />
-                <PrispevkiForm />
+                <Fieldset legend="Tarifa" :toggleable="true">
+                    <TarifaForm />
+                </Fieldset>
+                <Fieldset legend="Prispevki" :toggleable="true">
+                    <PrispevkiForm />
+                </Fieldset>
             </div>
             <h3>Uvozi 15min podatke iz MojElektro:</h3>
             <input type="file" @change="handleFileUpload($event)" accept="pdf/*" />
