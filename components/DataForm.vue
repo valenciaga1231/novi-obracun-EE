@@ -56,8 +56,7 @@ export default {
 .data-input-section {
     display: flex;
     flex-direction: column;
-    align-items: space-between;
-
+    margin: auto;
     max-width: 1250px;
 }
 </style>
