@@ -21,27 +21,46 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="energija-VT">
-                    <td>El. energija VT</td>
-                    <td>{{ velika_tarifa.toFixed(2) }}</td>
-                    <td>kWh</td>
-                    <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(5) }}</td>
-                    <td>{{ (velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
-                </tr>
-                <tr>
-                    <td>El. energija MT</td>
-                    <td>{{ mala_tarifa.toFixed(2) }}</td>
-                    <td>kWh</td>
-                    <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(5) }}</td>
-                    <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
-                </tr>
-                <tr class="bold-row">
-                    <td>Skupaj el. energija</td>
-                    <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
-                </tr>
+                <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                    <tr class="energija-VT">
+                        <td>Električna energija VT</td>
+                        <td>{{ velika_tarifa.toFixed(4) }}</td>
+                        <td>kWh</td>
+                        <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(5) }}</td>
+                        <td>{{ (velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Električna energija MT</td>
+                        <td>{{ mala_tarifa.toFixed(4) }}</td>
+                        <td>kWh</td>
+                        <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(5) }}</td>
+                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                    </tr>
+                    <tr class="bold-row">
+                        <td>Skupaj el. energija</td>
+                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                    </tr>
+                </template>
+                <template v-if="settings.tip_starega_obracuna === 'ET'">
+                    <tr class="energija-ET">
+                        <td>Električna energija ET</td>
+                        <td>{{ useTotalEnergy().value.toFixed(4) }}</td>
+                        <td>kWh</td>
+                        <td>{{ useSettings().value.vrednosti_tarif.ET.toFixed(5) }}</td>
+                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
+                    </tr>
+                    <tr class="bold-row">
+                        <td>Skupaj el. energija</td>
+                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
+                        <td>...</td>
+                        <td>...</td>
+                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
+                    </tr>
+                </template>
+
                 <template v-for="(data, blok) in blok_data" :key="blok">
                     <tr v-if="data.is_active">
                         <td>Omreznina energija blok {{ blok }}</td>

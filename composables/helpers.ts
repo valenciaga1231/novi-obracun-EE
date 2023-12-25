@@ -312,5 +312,16 @@ export const sestejVsePrispevke = () => {
  * Vrne ceno vseh stroskov na racunu, brez DDV.
  */
 export const sumAllCosts = () => {
-    return sestejVsoOmreznino() + sestejVsePrispevke() + useTotalEnergyVT().value * useSettings().value.vrednosti_tarif.VT + useTotalEnergyMT().value * useSettings().value.vrednosti_tarif.MT;
+    const omreznina = sestejVsoOmreznino();
+    const prispevki = sestejVsePrispevke();
+    let energija = 0;
+    if (useSettings().value.tip_starega_obracuna === "VT+MT") {
+        energija = useTotalEnergyVT().value * useSettings().value.vrednosti_tarif.VT + useTotalEnergyMT().value * useSettings().value.vrednosti_tarif.MT;
+    } else if (useSettings().value.tip_starega_obracuna === "ET") {
+        energija = useTotalEnergy().value * useSettings().value.vrednosti_tarif.ET;
+    } else {
+        throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
+    }
+
+    return omreznina + energija + prispevki;
 };
