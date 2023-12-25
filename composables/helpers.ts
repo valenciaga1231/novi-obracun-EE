@@ -117,25 +117,16 @@ export const parseEnergyBlocks = () => {
     for (let i = 0; i < excel_data.value.length; i++) {
         const b = excel_data.value[i].blok;
 
-        // Create the blok if it doesn't exist
-        if (!useBlokData().value[b]) {
-            useBlokData().value[b] = {
-                energija: 0,
-                cena_omreznine_energije: 0,
-                cena_omreznine_moci: 0,
-                presezna_moc: 0,
-                cena_presezne_moci: 0,
-                intervali_moc_presezena: 0,
-                skupna_tarifa_moc: 0,
-                skupna_tarifa_energija: 0,
-                skupna_tarifa_presezna_moc: 0,
-            };
-        }
         useBlokData().value[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
 
         // Omreznina za energijo (to se ne rabi izvajati v loopu, bi lahko dali ven)
         useBlokData().value[b].cena_omreznine_energije += excel_data.value[i].W * (getTarifeData()[b].distribucija.tarifna_postavka_W + getTarifeData()[b].prenos.tarifna_postavka_W);
     }
+
+    // get all bloks that exist in the excel data
+    const aktivni_bloki = new Set(); // Aktivni bloki v prilozeni datoteki
+    excel_data.value.map((row) => aktivni_bloki.add(row.blok));
+    for (const blok in useBlokData().value) useBlokData().value[blok].is_active = aktivni_bloki.has(parseInt(blok));
 
     // Izracun skupne energije
     useTotalEnergy().value = 0;
@@ -175,15 +166,9 @@ export const dolociEnergijoVTinMT = () => {
     // Dolocimo kolicino energije v MT in VT
     useExcelData().value.map((row) => {
         const is_VT = row.is_VT;
-        if (is_VT) useTotalEnergyVT().value.amount += row.W;
-        else useTotalEnergyMT().value.amount += row.W;
+        if (is_VT) useTotalEnergyVT().value += row.W;
+        else useTotalEnergyMT().value += row.W;
     });
-
-    // Dolocimo se ceno, glede na zaokrozeno vrednost, kot na poloznici.
-    const VT_zaokrozeno = Math.round(useTotalEnergyVT().value.amount);
-    const MT_zaokrozeno = Math.round(useTotalEnergyMT().value.amount);
-    useTotalEnergyVT().value.price = VT_zaokrozeno * useSettings().value.vrednosti_tarif.VT;
-    useTotalEnergyMT().value.price = MT_zaokrozeno * useSettings().value.vrednosti_tarif.MT;
 };
 
 /**
@@ -242,7 +227,10 @@ const isSameDay = (date1: Date, date2: Date) => {
 export const sestejVsoOmreznino = () => {
     const vsi_bloki = useBlokData().value;
     let celotna_omreznina = 0;
-    for (const blok in vsi_bloki) celotna_omreznina += vsi_bloki[blok].cena_omreznine_energije + vsi_bloki[blok].cena_omreznine_moci + vsi_bloki[blok].cena_presezne_moci;
+    for (const blok in vsi_bloki) {
+        if (!vsi_bloki[blok].is_active) continue;
+        celotna_omreznina += vsi_bloki[blok].cena_omreznine_energije + vsi_bloki[blok].cena_omreznine_moci + vsi_bloki[blok].cena_presezne_moci;
+    }
     return celotna_omreznina;
 };
 
@@ -298,9 +286,8 @@ export const izracunajCenoPresezneMoci = () => {
  */
 export const dolociTarifeZaBlok = () => {
     for (const blok in useBlokData().value) {
-        const id = parseInt(blok) - 1; // Convert string to number and to index
         // doloci skupno_tarifo za moc za vsak blok
-        useBlokData().value[blok].skupna_tarifa_moc = getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P;
+        // useBlokData().value[blok].skupna_tarifa_moc = getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P;
         useBlokData().value[blok].skupna_tarifa_energija = getTarifeData()[blok].distribucija.tarifna_postavka_W + getTarifeData()[blok].prenos.tarifna_postavka_W;
         useBlokData().value[blok].skupna_tarifa_presezna_moc = useBlokData().value[blok].skupna_tarifa_moc * 0.9;
     }
@@ -325,5 +312,5 @@ export const sestejVsePrispevke = () => {
  * Vrne ceno vseh stroskov na racunu, brez DDV.
  */
 export const sumAllCosts = () => {
-    return sestejVsoOmreznino() + sestejVsePrispevke() + useTotalEnergyVT().value.price + useTotalEnergyMT().value.price;
+    return sestejVsoOmreznino() + sestejVsePrispevke() + useTotalEnergyVT().value * useSettings().value.vrednosti_tarif.VT + useTotalEnergyMT().value * useSettings().value.vrednosti_tarif.MT;
 };

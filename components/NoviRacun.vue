@@ -1,7 +1,15 @@
 <template>
-    <div>
-        <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
-        <p v-if="settings.date.start && settings.date.end" style="text-align: center">{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
+    <div class="novi-racun-component">
+        <div style="display: flex; justify-content: space-evenly">
+            <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
+            <div>
+                <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
+                <p style="text-align: center">
+                    <b>Cena: </b> <span class="price">{{ sumAllCosts().toFixed(2) }} </span>
+                    € (brez DDV)
+                </p>
+            </div>
+        </div>
         <table class="energy-table">
             <thead>
                 <tr>
@@ -13,48 +21,54 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr class="energija-VT">
                     <td>El. energija VT</td>
-                    <td>{{ velika_tarifa.amount.toFixed(2) }}</td>
+                    <td>{{ velika_tarifa.toFixed(2) }}</td>
                     <td>kWh</td>
                     <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(5) }}</td>
-                    <td>{{ velika_tarifa.price.toFixed(5) }}</td>
+                    <td>{{ (velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                 </tr>
                 <tr>
                     <td>El. energija MT</td>
-                    <td>{{ mala_tarifa.amount.toFixed(2) }}</td>
+                    <td>{{ mala_tarifa.toFixed(2) }}</td>
                     <td>kWh</td>
                     <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(5) }}</td>
-                    <td>{{ mala_tarifa.price.toFixed(5) }}</td>
+                    <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                 </tr>
                 <tr class="bold-row">
                     <td>Skupaj el. energija</td>
-                    <td>{{ (mala_tarifa.amount + velika_tarifa.amount).toFixed(0) }}</td>
+                    <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
                     <td>...</td>
                     <td>...</td>
-                    <td>{{ (mala_tarifa.price + velika_tarifa.price).toFixed(5) }}</td>
+                    <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                 </tr>
-                <tr v-for="(data, blok) in blok_data" :key="blok">
-                    <td>Omreznina energija blok {{ blok }}</td>
-                    <td>{{ data.energija.toFixed(5) }}</td>
-                    <td>kWh</td>
-                    <td>{{ data.skupna_tarifa_energija.toFixed(5) }}</td>
-                    <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
-                </tr>
-                <tr v-for="(data, blok) in blok_data" :key="blok">
-                    <td>Obračunska moč blok {{ blok }}</td>
-                    <td>{{ prikljucna_moc[blok - 1].toFixed(1) }}</td>
-                    <td>kW</td>
-                    <td>{{ data.skupna_tarifa_moc.toFixed(5) }}</td>
-                    <td>{{ data.cena_omreznine_moci.toFixed(5) }}</td>
-                </tr>
-                <tr v-for="(data, blok) in blok_data" :key="blok">
-                    <td>Presezna moč blok {{ blok }}</td>
-                    <td>{{ data.presezna_moc.toFixed(5) }}</td>
-                    <td>kW</td>
-                    <td>{{ data.skupna_tarifa_presezna_moc.toFixed(5) }}</td>
-                    <td>{{ data.cena_presezne_moci.toFixed(5) }}</td>
-                </tr>
+                <template v-for="(data, blok) in blok_data" :key="blok">
+                    <tr v-if="data.is_active">
+                        <td>Omreznina energija blok {{ blok }}</td>
+                        <td>{{ prikljucna_moc[blok - 1] }}</td>
+                        <td>kWh</td>
+                        <td>{{ data.skupna_tarifa_energija.toFixed(5) }}</td>
+                        <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
+                    </tr>
+                </template>
+                <template v-for="(data, blok) in blok_data" :key="blok">
+                    <tr v-if="data.is_active">
+                        <td>Obračunska moč blok {{ blok }}</td>
+                        <td>{{ prikljucna_moc[blok - 1] }}</td>
+                        <td>kW</td>
+                        <td>{{ data.skupna_tarifa_moc.toFixed(5) }}</td>
+                        <td>{{ data.cena_omreznine_moci.toFixed(5) }}</td>
+                    </tr>
+                </template>
+                <template v-for="(data, blok) in blok_data" :key="blok">
+                    <tr v-if="data.is_active">
+                        <td>Presezna moč blok {{ blok }}</td>
+                        <td>{{ data.presezna_moc.toFixed(5) }}</td>
+                        <td>kW</td>
+                        <td>{{ data.skupna_tarifa_presezna_moc.toFixed(5) }}</td>
+                        <td>{{ data.cena_presezne_moci.toFixed(5) }}</td>
+                    </tr>
+                </template>
                 <tr class="bold-row">
                     <td>Skupaj omreznine:</td>
                     <td>...</td>
@@ -78,10 +92,10 @@
                 </tr>
                 <tr>
                     <td>Trošarina:</td>
-                    <td>{{ (mala_tarifa.amount + velika_tarifa.amount).toFixed(5) }}</td>
+                    <td>{{ (mala_tarifa + velika_tarifa).toFixed(5) }}</td>
                     <td>kWh</td>
                     <td>0.001530</td>
-                    <td>{{ ((mala_tarifa.amount + velika_tarifa.amount) * 0.00153).toFixed(5) }}</td>
+                    <td>{{ ((mala_tarifa + velika_tarifa) * 0.00153).toFixed(5) }}</td>
                 </tr>
                 <tr>
                     <th>Skupaj</th>
@@ -108,6 +122,22 @@ export default {
         const settings = useSettings();
         onMounted(() => {});
 
+        // if settings.vrednosti_tarif.VT is updated blink the row
+        watch(
+            () => settings.value.vrednosti_tarif.VT,
+            (val) => {
+                const elVT = document.querySelector(".energija-VT") as HTMLElement;
+                elVT.classList.add("blink-green");
+                setTimeout(() => elVT.classList.remove("blink-green"), 1500);
+
+                const elPrice = document.querySelector(".price") as HTMLElement;
+                elPrice.classList.add("blink-green");
+                setTimeout(() => elPrice.classList.remove("blink-green"), 1500);
+
+                if (useIsTable().value) sumAllCosts();
+            }
+        );
+
         return {
             blok_data,
             prikljucna_moc,
@@ -126,6 +156,10 @@ export default {
 </script>
 
 <style scoped>
+.novi-racun-component {
+    background-color: white;
+}
+
 .energy-table {
     width: 100%;
     border-collapse: collapse;
@@ -151,5 +185,21 @@ export default {
 
 .bold-row td {
     font-weight: bold;
+}
+
+.blink-green {
+    animation: blink-green-animation 1.5s infinite;
+}
+
+@keyframes blink-green-animation {
+    0% {
+        background-color: #ffbc85;
+    }
+    /* 50% {
+        background-color: transparent;
+    } */
+    100% {
+        background-color: transparent;
+    }
 }
 </style>

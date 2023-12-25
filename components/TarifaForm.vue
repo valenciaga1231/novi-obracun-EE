@@ -3,7 +3,7 @@
         <!-- <h2>Podatki o tarifi:</h2> -->
         <div class="tarifa-content">
             <div class="p-float-label">
-                <Dropdown v-model="selectedCity" inputId="dd-city" :options="cities" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
+                <Dropdown v-model="selected_tarif" inputId="dd-city" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
                 <label for="dd-city">Izberi tarifo</label>
             </div>
             <div v-if="settings.tip_starega_obracuna !== null">
@@ -32,23 +32,36 @@
 export default {
     setup() {
         const settings = useSettings();
-        const selectedCity = ref();
-        const cities = ref([
+        const selected_tarif = ref();
+        const tarifs = ref([
             { name: "VT+MT", code: "VT+MT" },
             { name: "ET", code: "ET" },
         ]);
 
-        watch(selectedCity, (val) => {
-            console.log(val);
-
+        watch(selected_tarif, (val) => {
             settings.value.tip_starega_obracuna = val.code;
-            console.log(settings.value);
         });
+
+        // check both tarif inputs on change with watcher
+        watch(
+            () => settings.value.vrednosti_tarif.VT,
+            (val) => {
+                if (useIsTable().value) sumAllCosts();
+            }
+        );
+
+        watch(
+            () => settings.value.vrednosti_tarif.MT,
+            (val) => {
+                if (useIsTable().value) sumAllCosts();
+            },
+            { deep: true }
+        );
 
         return {
             settings,
-            cities,
-            selectedCity,
+            tarifs,
+            selected_tarif,
         };
     },
 };

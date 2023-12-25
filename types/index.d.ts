@@ -22,6 +22,7 @@ export type BlokData = {
         skupna_tarifa_moc: number;
         skupna_tarifa_energija: number;
         skupna_tarifa_presezna_moc: number;
+        is_active: boolean;
     };
 };
 
@@ -33,11 +34,6 @@ export type Prispevki = {
         is_active: boolean;
         price: number;
     };
-};
-
-export type Energija = {
-    amount: number;
-    price: number;
 };
 
 export type Settings = {

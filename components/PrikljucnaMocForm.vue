@@ -14,7 +14,7 @@
                         <span class="input-text"><b>kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ ((tarife_data[1].distribucija.tarifna_postavka_P + tarife_data[1].prenos.tarifna_postavka_P) * prikljucna_moc[0]).toFixed(2) }}</b> €
+                        Cena: <b>{{ useBlokData().value[1].cena_omreznine_moci.toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -30,7 +30,7 @@
                         <span class="input-text"><b>kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ ((tarife_data[2].distribucija.tarifna_postavka_P + tarife_data[2].prenos.tarifna_postavka_P) * prikljucna_moc[1]).toFixed(2) }}</b> €
+                        Cena: <b>{{ useBlokData().value[2].cena_omreznine_moci.toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -46,7 +46,7 @@
                         <span class="input-text"><b>kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ ((tarife_data[3].distribucija.tarifna_postavka_P + tarife_data[3].prenos.tarifna_postavka_P) * prikljucna_moc[2]).toFixed(2) }}</b> €
+                        Cena: <b>{{ useBlokData().value[3].cena_omreznine_moci.toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -62,7 +62,7 @@
                         <span class="input-text"><b>kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ ((tarife_data[4].distribucija.tarifna_postavka_P + tarife_data[4].prenos.tarifna_postavka_P) * prikljucna_moc[3]).toFixed(2) }}</b> €
+                        Cena: <b>{{ useBlokData().value[4].cena_omreznine_moci.toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -78,7 +78,7 @@
                         <span class="input-text"><b>kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ ((tarife_data[5].distribucija.tarifna_postavka_P + tarife_data[5].prenos.tarifna_postavka_P) * prikljucna_moc[4]).toFixed(2) }}</b> €
+                        Cena: <b>{{ useBlokData().value[5].cena_omreznine_moci.toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>

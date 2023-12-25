@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <div class="flex">
+        <div class="index-content">
             <section class="data-input-section">
                 <PrikljucnaMocForm />
                 <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap">
@@ -14,8 +14,8 @@
                 </div>
                 <UploadData />
             </section>
-            <section class="new-bill-section">
-                <div v-if="is_table">
+            <section v-if="is_table" class="new-bill-section">
+                <div>
                     <NoviRacun />
                 </div>
             </section>
@@ -60,19 +60,27 @@ export default {
 </script>
 
 <style scoped>
+.index-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
 .data-input-section {
+    flex: 60%;
+
     display: flex;
     flex-direction: column;
     margin: auto;
     max-width: 1250px;
-
     margin-bottom: 50px;
 }
 
 .new-bill-section {
+    flex: 40%;
+    vertical-align: top;
+
     display: flex;
     flex-direction: column;
-    margin: auto;
     max-width: 1250px;
     background-color: #ccc;
     text-align: center;
