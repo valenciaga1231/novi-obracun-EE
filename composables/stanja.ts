@@ -8,6 +8,7 @@ export const useTotalEnergy = () => useState<number>("total_energy", () => 0);
 export const useTotalEnergyVT = () => useState<Energija>("total_energy_VT", () => ({ amount: 0, price: 0 }));
 export const useTotalEnergyMT = () => useState<Energija>("total_energy_MT", () => ({ amount: 0, price: 0 }));
 export const useIsTable = () => useState<boolean>("is_table", () => false);
+export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
 
 const default_settings: Settings = { tip_starega_obracuna: null, vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 } };
 export const useSettings = () => useState<Settings>("settings", () => default_settings);

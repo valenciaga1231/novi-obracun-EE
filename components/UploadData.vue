@@ -42,6 +42,10 @@ export default {
 
             parseEnergyBlocks();
             useIsTable().value = true;
+
+            // Change header tab TODO: Could be moved somwhere else
+            useHeaderTab().value = 1;
+            useRouter().push({ name: "racun" });
         };
 
         const clearFile = () => (data_file.value = null);
