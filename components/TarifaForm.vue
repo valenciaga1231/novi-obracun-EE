@@ -55,9 +55,12 @@ export default {
 </script>
 
 <style scoped>
-.tarifa-component {
-    margin-bottom: 30px;
-    width: 600px;
+.tarifa-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    gap: 35px;
 }
 
 h2 {
@@ -71,8 +74,5 @@ h2 {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-}
-
-span {
 }
 </style>

@@ -20,7 +20,7 @@ export default {
         const is_table = useIsTable();
         const items = ref([
             {
-                label: "Vhodni podatki",
+                label: "Podatki",
                 icon: "pi pi-home",
             },
             {
@@ -30,10 +30,6 @@ export default {
             {
                 label: "Analiza",
                 icon: "pi pi-list",
-            },
-            {
-                label: "Dodatno",
-                icon: "pi pi-inbox",
             },
         ]);
 
@@ -61,5 +57,6 @@ export default {
     padding: 0 1rem;
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
+    flex-wrap: wrap;
 }
 </style>

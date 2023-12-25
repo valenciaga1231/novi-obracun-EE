@@ -3,7 +3,7 @@
         <h2>Podatki o priključni moči:</h2>
         <div class="prikljucna-moc-container">
             <Card class="custom-card">
-                <template #title> Blok 1 </template>
+                <template #title class="custom-title"><span>Blok 1</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
                         <input id="1" type="text" class="input-field" v-model="prikljucna_moc[0]" />
@@ -19,7 +19,7 @@
                 </template>
             </Card>
             <Card class="custom-card">
-                <template #title> Blok 2 </template>
+                <template #title class="custom-title"><span>Blok 2</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
                         <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" />
@@ -35,7 +35,7 @@
                 </template>
             </Card>
             <Card class="custom-card">
-                <template #title> Blok 3 </template>
+                <template #title class="custom-title"><span>Blok 3</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
                         <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" />
@@ -51,7 +51,7 @@
                 </template>
             </Card>
             <Card class="custom-card">
-                <template #title> Blok 4 </template>
+                <template #title class="custom-title"><span>Blok 4</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
                         <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" />
@@ -67,7 +67,7 @@
                 </template>
             </Card>
             <Card class="custom-card">
-                <template #title> Blok 5 </template>
+                <template #title class="custom-title"><span>Blok 5</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
                         <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" />
@@ -144,7 +144,7 @@ export default {
                         input_field.classList.remove("gray-border");
                     }
                     timeout.value = null;
-                }, 1500);
+                }, 800);
             } else {
                 clearTimeout(timeout.value);
                 timeout.value = setTimeout(() => {
@@ -154,7 +154,7 @@ export default {
                         input_field.classList.remove("gray-border");
                     }
                     timeout.value = null;
-                }, 1500);
+                }, 800);
             }
 
             // Ponovno izracunaj omreznino za moc in presezno moc
@@ -266,5 +266,33 @@ h2 {
 
 .gray-border {
     box-shadow: 0 0 0 3px #475569;
+}
+
+@media (max-width: 600px) {
+    .input-field {
+        width: 50px;
+        font-size: 12px;
+    }
+
+    .custom-card {
+        width: 150px;
+    }
+    .custom-title {
+        font-size: 12px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+    p {
+        font-size: 12px;
+    }
+    b {
+        font-size: 12px;
+    }
+
+    span {
+        font-size: 15px;
+    }
 }
 </style>

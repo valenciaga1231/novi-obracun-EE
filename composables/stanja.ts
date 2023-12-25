@@ -47,5 +47,4 @@ export const useResetData = () => {
     useTotalEnergyVT().value = { amount: 0, price: 0 };
     useTotalEnergyMT().value = { amount: 0, price: 0 };
     useIsTable().value = false;
-    usePrispevki().value = prispevki;
 };
