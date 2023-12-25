@@ -1,0 +1,8 @@
+.git
+.nuxt
+node_modules
+tmp
+.env
+# dont include dev files and pages
+public/images/*.psd
+pages/dev/poly.vue

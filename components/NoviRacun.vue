@@ -4,7 +4,7 @@
             <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
             <div>
                 <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
-                <p style="text-align: center">
+                <p class="price-window">
                     <b>Cena: </b> <span class="price">{{ sumAllCosts().toFixed(2) }} </span>
                     € (brez DDV)
                 </p>
@@ -170,6 +170,7 @@ export default {
 <style scoped>
 .novi-racun-component {
     background-color: white;
+    font-size: 11px;
 }
 
 .energy-table {
@@ -197,6 +198,15 @@ export default {
 
 .bold-row td {
     font-weight: bold;
+}
+
+.price-window {
+    font-weight: bold;
+    border: 2px solid black;
+    padding: 10px 20px;
+    border-radius: 5px;
+
+    background-color: #edf2f7;
 }
 
 .blink-green {
