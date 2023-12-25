@@ -1,6 +1,6 @@
 import type { BlokData, ExcelRow, PrikljucnaMoc, Prispevki, Energija, Settings } from "~/types";
 
-export const usePrikljucnaMoc = () => useState<PrikljucnaMoc>("prikljucna_moc", () => [4.2, 5.2, 5.2, 5.2, 5.2]);
+export const usePrikljucnaMoc = () => useState<PrikljucnaMoc>("prikljucna_moc", () => [4.2, 5.4, 5.4, 5.4, 5.4]);
 export const usePrikljucnaMocStara = () => useState<number>("prikljucna_moc_stara", () => 7);
 export const useExcelData = () => useState<ExcelRow[]>("excel_data", () => [] as ExcelRow[]);
 export const useBlokData = () => useState<BlokData>("blok_data", () => ({} as BlokData));
@@ -9,8 +9,16 @@ export const useTotalEnergyVT = () => useState<Energija>("total_energy_VT", () =
 export const useTotalEnergyMT = () => useState<Energija>("total_energy_MT", () => ({ amount: 0, price: 0 }));
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
+export const useUserData = () => useState<boolean>("user_data", () => false); // Currently just checking if user is active
 
-const default_settings: Settings = { tip_starega_obracuna: null, vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 } };
+const default_settings: Settings = {
+    tip_starega_obracuna: null,
+    vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },
+    date: {
+        start: null,
+        end: null,
+    },
+};
 export const useSettings = () => useState<Settings>("settings", () => default_settings);
 
 // Define default prispevki state

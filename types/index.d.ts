@@ -47,4 +47,8 @@ export type Settings = {
         MT: number;
         ET: number;
     };
+    date: {
+        start: Date | null;
+        end: Date | null;
+    };
 };

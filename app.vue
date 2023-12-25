@@ -15,6 +15,12 @@ export default {
             const script = document.createElement("script");
             script.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
             document.head.appendChild(script);
+
+            useUserData().value = true; // Sets to true so middleware works properly
+
+            // Get prikljucna moc from localStorage
+            const data = localStorage.getItem("prikljucna_moc");
+            if (data) usePrikljucnaMoc().value = JSON.parse(data);
         });
 
         return {

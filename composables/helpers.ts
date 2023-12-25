@@ -50,6 +50,10 @@ export const useUploadDocument = async (file: File) => {
                     };
                 });
 
+                // Get first and last date from excel data
+                useSettings().value.date.start = useExcelData().value[0].date;
+                useSettings().value.date.end = useExcelData().value[useExcelData().value.length - 2].date;
+
                 // Resolve the promise to indicate that the onload event has completed
                 resolve();
             } catch (error) {
