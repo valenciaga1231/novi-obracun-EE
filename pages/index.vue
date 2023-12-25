@@ -5,14 +5,14 @@
             <section class="data-input-section">
                 <PrikljucnaMocForm />
                 <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap">
-                    <Fieldset legend="Tarifa" :toggleable="true">
+                    <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
                         <TarifaForm />
                     </Fieldset>
-                    <Fieldset legend="Prispevki" :toggleable="true">
+                    <UploadData style="flex: 33%" />
+                    <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
                         <PrispevkiForm />
                     </Fieldset>
                 </div>
-                <UploadData />
             </section>
             <section v-if="is_table" class="new-bill-section">
                 <div>
@@ -64,19 +64,22 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+
+    flex-wrap: wrap;
 }
 .data-input-section {
-    flex: 60%;
+    flex: 55%;
 
     display: flex;
     flex-direction: column;
     margin: auto;
-    max-width: 1250px;
+    max-width: 1000px;
     margin-bottom: 50px;
+    margin-top: 0px;
 }
 
 .new-bill-section {
-    flex: 40%;
+    flex: 45%;
     vertical-align: top;
 
     display: flex;

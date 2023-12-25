@@ -12,6 +12,10 @@
             <br />
             <Checkbox v-model="prispevki.spte_ove.is_active" :binary="true" />
             <label for="checkbox3"> Za SPTE in OVE</label>
+            <br />
+            <br />
+            <Checkbox v-model="prispevki.trosarina.is_active" :binary="true" />
+            <label for="checkbox4"> Trošarino</label>
         </div>
     </div>
 </template>
@@ -27,3 +31,9 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+h3 {
+    margin-top: 0;
+}
+</style>

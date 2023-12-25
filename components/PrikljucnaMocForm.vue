@@ -1,6 +1,6 @@
 <template>
     <div class="prikljucna-moc-component">
-        <h2>Podatki o priključni moči:</h2>
+        <h2>Podatki o dogovorjeni moči:</h2>
         <div class="prikljucna-moc-container">
             <Card class="custom-card">
                 <template #title class="custom-title"><span>Blok 1</span></template>
@@ -11,7 +11,7 @@
                             <button @click="handleUpClick(1)">+</button>
                             <button @click="handleDownClick(1)">-</button>
                         </div>
-                        <span class="input-text"><b>kW</b></span>
+                        <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
                         Cena: <b>{{ useBlokData().value[1].cena_omreznine_moci.toFixed(2) }}</b> €
@@ -27,7 +27,7 @@
                             <button @click="handleUpClick(2)">+</button>
                             <button @click="handleDownClick(2)">-</button>
                         </div>
-                        <span class="input-text"><b>kW</b></span>
+                        <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
                         Cena: <b>{{ useBlokData().value[2].cena_omreznine_moci.toFixed(2) }}</b> €
@@ -43,7 +43,7 @@
                             <button @click="handleUpClick(3)">+</button>
                             <button @click="handleDownClick(3)">-</button>
                         </div>
-                        <span class="input-text"><b>kW</b></span>
+                        <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
                         Cena: <b>{{ useBlokData().value[3].cena_omreznine_moci.toFixed(2) }}</b> €
@@ -59,7 +59,7 @@
                             <button @click="handleUpClick(4)">+</button>
                             <button @click="handleDownClick(4)">-</button>
                         </div>
-                        <span class="input-text"><b>kW</b></span>
+                        <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
                         Cena: <b>{{ useBlokData().value[4].cena_omreznine_moci.toFixed(2) }}</b> €
@@ -75,7 +75,7 @@
                             <button @click="handleUpClick(5)">+</button>
                             <button @click="handleDownClick(5)">-</button>
                         </div>
-                        <span class="input-text"><b>kW</b></span>
+                        <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
                         Cena: <b>{{ useBlokData().value[5].cena_omreznine_moci.toFixed(2) }}</b> €
@@ -227,7 +227,7 @@ h2 {
 .custom-card {
     max-height: 260px;
     margin-bottom: 10px;
-    width: 225px;
+    max-width: 225px;
 }
 .dogovorjena-moc-row {
     display: flex;
@@ -240,7 +240,7 @@ h2 {
 }
 
 .input-text {
-    margin-right: 5px;
+    margin-left: 10px;
     font-style: bold;
 }
 

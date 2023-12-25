@@ -1,7 +1,10 @@
 <template>
     <div class="novi-racun-component">
         <div style="display: flex; justify-content: space-evenly">
-            <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 10px 20px">
+                <h3 style="font-size: 24px; font-weight: bold">Novi račun</h3>
+                <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem" style="font-size: 16px; width: 200px" />
+            </div>
             <div>
                 <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
@@ -82,7 +85,7 @@
                     </tr>
                 </template>
                 <template v-for="(data, blok) in blok_data" :key="blok">
-                    <tr v-if="data.is_active">
+                    <tr v-if="data.is_active && (selected_settings.some((setting) => setting.code === 'PM') || data.cena_presezne_moci > 0)">
                         <td>Presežna moč blok {{ blok }}</td>
                         <td>{{ data.presezna_moc.toFixed(5) }}</td>
                         <td>kW</td>
@@ -132,7 +135,16 @@ export default {
         const mala_tarifa = useTotalEnergyMT();
         const velika_tarifa = useTotalEnergyVT();
         const settings = useSettings();
+        type SelectedSettings = { name: string; code: string };
+        const selected_settings = ref([] as SelectedSettings[]);
+        const racun_settings = ref([{ name: "Prikazi vse presezne moči", code: "PM" }]);
+
         onMounted(() => {});
+
+        // watch se;ectedCities
+        watch(selected_settings, (val) => {
+            console.log(val);
+        });
 
         // if settings.vrednosti_tarif.VT is updated blink the row
         watch(
@@ -159,6 +171,8 @@ export default {
             mala_tarifa,
             velika_tarifa,
             settings,
+            selected_settings,
+            racun_settings,
             sestejVsoOmreznino,
             sestejVsePrispevke,
             sumAllCosts,
@@ -170,13 +184,18 @@ export default {
 <style scoped>
 .novi-racun-component {
     background-color: white;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .energy-table {
     width: 100%;
     border-collapse: collapse;
     margin: auto;
+}
+
+h3 {
+    margin: 0;
+    text-align: center;
 }
 
 .energy-table th,
@@ -223,15 +242,5 @@ export default {
     100% {
         background-color: transparent;
     }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
 }
 </style>

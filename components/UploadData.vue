@@ -1,10 +1,19 @@
 <template>
     <div class="upload-data-component">
         <h2>Uvozi mesečne 15-min podatke iz MojElektro</h2>
-        <div style="text-align: center; margin-bottom: 15px; font-size: 12px">
-            <FileUpload mode="basic" accept=".xlsx, .xls, .csv" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" style="max-width: 900px; font-size: 14px" />
+        <div class="buttons">
+            <div style="text-align: center; font-size: 12px">
+                <FileUpload mode="basic" accept=".xlsx, .xls, .csv" :auto="true" chooseLabel="Browse" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" class="customized-upload" style="font-size: 11px" />
+            </div>
+            <Button @click="processData" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
         </div>
-        <Button @click="processData" severity="info" style="max-width: 120px; text-align: center; margin: auto" :disabled="is_button_disabled">Izračunaj</Button>
+        <div v-if="data_file" style="text-align: center">
+            <p>Datoteka:</p>
+            <div class="file-data">
+                <ExcelIcon :width="30" :height="30" />
+                {{ data_file.name }}
+            </div>
+        </div>
     </div>
 </template>
 
@@ -17,15 +26,20 @@ export default {
         const prikljucna_moc = usePrikljucnaMoc();
         const settings = useSettings();
         const is_button_disabled = ref(true);
+        const uploaded_files = ref<File[]>([]); // New data property
 
         const handleFileUpload = (event: FileUploadSelectEvent) => {
             const files = event.files;
-            console.log(files);
 
             if (files && files.length > 0) {
                 console.log("File uploaded"); //! Dev
                 data_file.value = files[0];
+                // first clear uploade
+                uploaded_files.value.push(files[0]); // Store uploaded file in the uploaded_files array
             }
+            console.log("DATAFILE: ");
+
+            console.log(data_file.value);
         };
 
         // Enable button if file and tarifs are set
@@ -44,11 +58,12 @@ export default {
             useIsTable().value = true;
 
             // Change header tab TODO: Could be moved somwhere else
-            useHeaderTab().value = 1;
-            useRouter().push({ name: "racun" });
+            // useHeaderTab().value = 1;
+            // useRouter().push({ name: "racun" });
         };
 
-        const clearFile = () => (data_file.value = null);
+        // const clearFile = () => (data_file.value = null);
+        const clearFile = () => {};
         return {
             handleFileUpload,
             processData,
@@ -57,6 +72,7 @@ export default {
             settings,
             data_file,
             is_button_disabled,
+            uploaded_files, // Add uploaded_files to the return object
         };
     },
 };
@@ -72,5 +88,24 @@ export default {
 h2 {
     margin-bottom: 10px;
     text-align: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    gap: 30px;
+
+    flex-wrap: wrap;
+}
+
+.file-data {
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 4px 8px;
+    width: 250px;
+    word-wrap: break-word; /* Allows long words to break and wrap */
+    white-space: normal; /* Ensures whitespace is handled normally */
 }
 </style>

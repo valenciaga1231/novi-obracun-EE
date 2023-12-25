@@ -3,14 +3,14 @@
         <!-- <h2>Podatki o tarifi:</h2> -->
         <div class="tarifa-content">
             <div class="p-float-label">
-                <Dropdown v-model="selected_tarif" inputId="dd-city" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
+                <Dropdown v-model="selected_tarif" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
                 <label for="dd-city">Izberi tarifo</label>
             </div>
             <div v-if="settings.tip_starega_obracuna !== null">
                 <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <span class="p-float-label" style="margin-bottom: 30px">
                         <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" />
-                        <label for="number-input">VT</label>
+                        <label for="number-input" style="scale: 0.9; margin-left: 12px">VT</label>
                     </span>
                     <span class="p-float-label">
                         <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" />
@@ -19,7 +19,7 @@
                 </div>
                 <div v-if="settings.tip_starega_obracuna === 'ET'">
                     <span class="p-float-label">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" />
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="4" locale="de-DE" suffix="                      EUR/kWh" style="scale: 0.8" />
                         <label for="number-input">ET</label>
                     </span>
                 </div>
@@ -32,13 +32,14 @@
 export default {
     setup() {
         const settings = useSettings();
-        const selected_tarif = ref();
+        const selected_tarif = ref({ name: "VT+MT", code: "VT+MT" });
         const tarifs = ref([
             { name: "VT+MT", code: "VT+MT" },
             { name: "ET", code: "ET" },
         ]);
 
         watch(selected_tarif, (val) => {
+            //@ts-ignore
             settings.value.tip_starega_obracuna = val.code;
         });
 
@@ -68,14 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.tarifa-content {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    gap: 35px;
-}
-
 h2 {
     margin-bottom: 10px;
     text-align: center;
@@ -84,8 +77,10 @@ h2 {
 
 .tarifa-content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 35px;
 }
 </style>
