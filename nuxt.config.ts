@@ -5,6 +5,9 @@ export default defineNuxtConfig({
         typeCheck: true,
         strict: true,
     },
+    build: {
+        transpile: ["xlsx"],
+    },
     css: ["primevue/resources/themes/lara-light-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
     modules: ["nuxt-primevue"],
     //@ts-ignore

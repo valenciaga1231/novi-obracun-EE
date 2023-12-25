@@ -21,6 +21,7 @@
   "dependencies": {
     "moment-timezone": "^0.5.43",
     "primeicons": "^6.0.1",
-    "primevue": "^3.45.0"
+    "primevue": "^3.45.0",
+    "xlsx": "^0.18.5"
   }
 }

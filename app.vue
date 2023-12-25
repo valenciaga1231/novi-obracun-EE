@@ -11,11 +11,6 @@ export default {
         const is_table = useIsTable();
 
         onMounted(() => {
-            //include script in header
-            const script = document.createElement("script");
-            script.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
-            document.head.appendChild(script);
-
             useUserData().value = true; // Sets to true so middleware works properly
 
             // Get prikljucna moc from localStorage
