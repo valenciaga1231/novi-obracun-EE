@@ -13,9 +13,9 @@
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
-                    <p>Delovni dan</p>
-                    <p>- 7:00 do 14:00</p>
-                    <p>- 16:00 do 20:00</p>
+                    <p style="text-align: center">
+                        Cena: <b>{{ ((tarife_data[1].distribucija.tarifna_postavka_P + tarife_data[1].prenos.tarifna_postavka_P) * prikljucna_moc[0]).toFixed(2) }}</b> €
+                    </p>
                 </template>
             </Card>
             <Card class="custom-card">
@@ -29,9 +29,9 @@
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
-                    <p>Delovni dan</p>
-                    <p>- 7:00 do 14:00</p>
-                    <p>- 16:00 do 20:00</p>
+                    <p style="text-align: center">
+                        Cena: <b>{{ ((tarife_data[2].distribucija.tarifna_postavka_P + tarife_data[2].prenos.tarifna_postavka_P) * prikljucna_moc[1]).toFixed(2) }}</b> €
+                    </p>
                 </template>
             </Card>
             <Card class="custom-card">
@@ -45,9 +45,9 @@
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
-                    <p>Delovni dan</p>
-                    <p>- 7:00 do 14:00</p>
-                    <p>- 16:00 do 20:00</p>
+                    <p style="text-align: center">
+                        Cena: <b>{{ ((tarife_data[3].distribucija.tarifna_postavka_P + tarife_data[3].prenos.tarifna_postavka_P) * prikljucna_moc[2]).toFixed(2) }}</b> €
+                    </p>
                 </template>
             </Card>
             <Card class="custom-card">
@@ -61,9 +61,9 @@
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
-                    <p>Delovni dan</p>
-                    <p>- 7:00 do 14:00</p>
-                    <p>- 16:00 do 20:00</p>
+                    <p style="text-align: center">
+                        Cena: <b>{{ ((tarife_data[4].distribucija.tarifna_postavka_P + tarife_data[4].prenos.tarifna_postavka_P) * prikljucna_moc[3]).toFixed(2) }}</b> €
+                    </p>
                 </template>
             </Card>
             <Card class="custom-card">
@@ -77,9 +77,9 @@
                         </div>
                         <span class="input-text"><b>kW</b></span>
                     </div>
-                    <p>Delovni dan</p>
-                    <p>- 7:00 do 14:00</p>
-                    <p>- 16:00 do 20:00</p>
+                    <p style="text-align: center">
+                        Cena: <b>{{ ((tarife_data[5].distribucija.tarifna_postavka_P + tarife_data[5].prenos.tarifna_postavka_P) * prikljucna_moc[4]).toFixed(2) }}</b> €
+                    </p>
                 </template>
             </Card>
         </div>
@@ -98,6 +98,7 @@ export default {
         const settings = useSettings();
         const timeout = ref<NodeJS.Timeout | null>(null);
         const blok_data = useBlokData();
+        const tarife_data = getTarifeData();
 
         const handleUpClick = (id: number) => {
             const input_field = document.getElementById(id.toString()) as HTMLInputElement;
@@ -157,6 +158,9 @@ export default {
                 }, 800);
             }
 
+            // Set prikljucna moc to local storage
+            localStorage.setItem("prikljucna_moc", JSON.stringify(new_input_values));
+
             // Ponovno izracunaj omreznino za moc in presezno moc
             izracunajOmrezninoMoci();
             izracunajPreseznoMoc();
@@ -181,6 +185,9 @@ export default {
             // Posodobi prikljucne moci
             usePrikljucnaMoc().value = input_values;
 
+            // Set prikljucna moc to local storage
+            localStorage.setItem("prikljucna_moc", JSON.stringify(input_values));
+
             // Ponovno izracunaj omreznino za moc in presezno moc
             izracunajOmrezninoMoci();
             izracunajPreseznoMoc();
@@ -197,6 +204,7 @@ export default {
             prispevki,
             settings,
             blok_data,
+            tarife_data,
         };
     },
 };

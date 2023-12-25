@@ -1,6 +1,7 @@
 <template>
     <div>
         <h3 style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold">Novi račun</h3>
+        <p v-if="settings.date.start && settings.date.end" style="text-align: center">{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
         <table class="energy-table">
             <thead>
                 <tr>
@@ -104,6 +105,7 @@ export default {
         const prispevki = usePrispevki();
         const mala_tarifa = useTotalEnergyMT();
         const velika_tarifa = useTotalEnergyVT();
+        const settings = useSettings();
         onMounted(() => {});
 
         return {
@@ -114,6 +116,7 @@ export default {
             prikljucna_moc_stara,
             mala_tarifa,
             velika_tarifa,
+            settings,
             sestejVsoOmreznino,
             sestejVsePrispevke,
             sumAllCosts,
