@@ -22,6 +22,12 @@
             </thead>
             <tbody>
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                    <tr class="bold-row">
+                        <td>Skupaj el. energija</td>
+                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
+                        <td colspan="2"></td>
+                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                    </tr>
                     <tr class="energija-VT">
                         <td>Električna energija VT</td>
                         <td>{{ velika_tarifa.toFixed(4) }}</td>
@@ -36,15 +42,14 @@
                         <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(5) }}</td>
                         <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                     </tr>
+                </template>
+                <template v-if="settings.tip_starega_obracuna === 'ET'">
                     <tr class="bold-row">
                         <td>Skupaj el. energija</td>
                         <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td colspan="2"></td>
+                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
-                </template>
-                <template v-if="settings.tip_starega_obracuna === 'ET'">
                     <tr class="energija-ET">
                         <td>Električna energija ET</td>
                         <td>{{ useTotalEnergy().value.toFixed(4) }}</td>
@@ -52,19 +57,16 @@
                         <td>{{ useSettings().value.vrednosti_tarif.ET.toFixed(5) }}</td>
                         <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
-                    <tr class="bold-row">
-                        <td>Skupaj el. energija</td>
-                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
-                        <td>...</td>
-                        <td>...</td>
-                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
-                    </tr>
                 </template>
-
+                <tr class="bold-row">
+                    <td>Skupaj omrežnine:</td>
+                    <td colspan="3"></td>
+                    <td>{{ sestejVsoOmreznino().toFixed(5) }}</td>
+                </tr>
                 <template v-for="(data, blok) in blok_data" :key="blok">
                     <tr v-if="data.is_active">
-                        <td>Omreznina energija blok {{ blok }}</td>
-                        <td>{{ prikljucna_moc[blok - 1] }}</td>
+                        <td>Energija blok {{ blok }}</td>
+                        <td>{{ data.energija.toFixed(2) }}</td>
                         <td>kWh</td>
                         <td>{{ data.skupna_tarifa_energija.toFixed(5) }}</td>
                         <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
@@ -72,7 +74,7 @@
                 </template>
                 <template v-for="(data, blok) in blok_data" :key="blok">
                     <tr v-if="data.is_active">
-                        <td>Obračunska moč blok {{ blok }}</td>
+                        <td>Dogovorjena moč blok {{ blok }}</td>
                         <td>{{ prikljucna_moc[blok - 1] }}</td>
                         <td>kW</td>
                         <td>{{ data.skupna_tarifa_moc.toFixed(5) }}</td>
@@ -81,7 +83,7 @@
                 </template>
                 <template v-for="(data, blok) in blok_data" :key="blok">
                     <tr v-if="data.is_active">
-                        <td>Presezna moč blok {{ blok }}</td>
+                        <td>Presežna moč blok {{ blok }}</td>
                         <td>{{ data.presezna_moc.toFixed(5) }}</td>
                         <td>kW</td>
                         <td>{{ data.skupna_tarifa_presezna_moc.toFixed(5) }}</td>
@@ -89,11 +91,9 @@
                     </tr>
                 </template>
                 <tr class="bold-row">
-                    <td>Skupaj omreznine:</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>{{ sestejVsoOmreznino().toFixed(5) }}</td>
+                    <td>Prispevki in druge dajatve skupaj:</td>
+                    <td colspan="3"></td>
+                    <td>{{ sestejVsePrispevke().toFixed(5) }}</td>
                 </tr>
                 <tr v-for="(prispevek, id) in prispevki" :key="id">
                     <td>{{ prispevek.name }}</td>
@@ -102,20 +102,13 @@
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
                 </tr>
-                <tr class="bold-row">
-                    <td>Skupaj prispevki:</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>{{ sestejVsePrispevke().toFixed(5) }}</td>
-                </tr>
-                <tr>
+                <!-- <tr>
                     <td>Trošarina:</td>
                     <td>{{ (mala_tarifa + velika_tarifa).toFixed(5) }}</td>
                     <td>kWh</td>
-                    <td>0.001530</td>
+                    <td>{{ prispe }}</td>
                     <td>{{ ((mala_tarifa + velika_tarifa) * 0.00153).toFixed(5) }}</td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th>Skupaj</th>
                     <th>...</th>
@@ -220,5 +213,15 @@ export default {
     100% {
         background-color: transparent;
     }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

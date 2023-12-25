@@ -10,6 +10,8 @@ export const useTotalEnergyMT = () => useState<number>("total_energy_MT", () => 
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
 export const useUserData = () => useState<boolean>("user_data", () => false); // Currently just checking if user is active
+export const useSettings = () => useState<Settings>("settings", () => default_settings);
+export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
 
 const default_blok_data = () => {
     let data = {} as BlokData;
@@ -39,7 +41,6 @@ const default_settings: Settings = {
         end: null,
     },
 };
-export const useSettings = () => useState<Settings>("settings", () => default_settings);
 
 // Define default prispevki state
 const prispevki: Prispevki = {
@@ -61,8 +62,13 @@ const prispevki: Prispevki = {
         is_active: true,
         price: 0,
     },
+    trosarina: {
+        name: "Trošarina",
+        price_per_unit: 0.00153, // €/kW
+        is_active: true,
+        price: 0,
+    },
 };
-export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
 
 /**
  * Functions resets all data. If you want to reset your data

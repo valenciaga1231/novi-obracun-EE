@@ -157,6 +157,7 @@ export const dolociPrispevke = () => {
     usePrispevki().value.operater_trga.price = useTotalEnergy().value * usePrispevki().value.operater_trga.price_per_unit;
     usePrispevki().value.energetsko_ucinkovitost.price = useTotalEnergy().value * usePrispevki().value.energetsko_ucinkovitost.price_per_unit;
     usePrispevki().value.spte_ove.price = usePrikljucnaMocStara().value * usePrispevki().value.spte_ove.price_per_unit;
+    usePrispevki().value.trosarina.price = useTotalEnergy().value * usePrispevki().value.trosarina.price_per_unit;
 };
 
 /**

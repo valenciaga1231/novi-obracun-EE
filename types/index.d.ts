@@ -26,7 +26,7 @@ export type BlokData = {
     };
 };
 
-type PrispevkiKeys = "operater_trga" | "energetsko_ucinkovitost" | "spte_ove";
+type PrispevkiKeys = "operater_trga" | "energetsko_ucinkovitost" | "spte_ove" | "trosarina";
 export type Prispevki = {
     [key in PrispevkiKeys]: {
         name: string;
