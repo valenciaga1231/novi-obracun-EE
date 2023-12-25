@@ -1,16 +1,10 @@
 <template>
     <div>
-        <h1>{{ title }}</h1>
-        <div class="flex">
-            <DataForm />
-            <div v-if="is_table">
-                <NoviRacun />
-            </div>
-        </div>
+        <NuxtPage />
     </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
     setup() {
         const title = "Primerjalnik";
@@ -31,27 +25,16 @@ export default {
 };
 </script>
 
-<style scoped>
-.energy-table {
-    width: 50%;
-    border-collapse: collapse;
-    margin: auto;
+<style>
+html {
+    box-sizing: border-box;
+    --shadow-dark: 0 2rem 6rem (0, 0, 0, 0.3);
 }
 
-.energy-table th,
-.energy-table td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-.energy-table th {
-    background-color: #f2f2f2;
-}
-
-.flex {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+body {
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    margin: 0 0;
+    padding: 0;
 }
 </style>
