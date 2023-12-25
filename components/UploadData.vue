@@ -2,7 +2,7 @@
     <div class="upload-data-component">
         <h2>Uvozi mesečne 15-min podatke iz MojElektro</h2>
         <div style="text-align: center; margin-bottom: 15px; font-size: 12px">
-            <FileUpload mode="basic" accept=".xlsx, .xls, .csv" :maxFileSize="1000000" @select="handleFileUpload($event)" style="max-width: 900px; font-size: 14px" />
+            <FileUpload mode="basic" accept=".xlsx, .xls, .csv" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" style="max-width: 900px; font-size: 14px" />
         </div>
         <Button @click="processData" severity="info" style="max-width: 120px; text-align: center; margin: auto" :disabled="is_button_disabled">Izračunaj</Button>
     </div>
@@ -28,8 +28,8 @@ export default {
             }
         };
 
-        // Enable button if file and tarifs are et
-        watch([data_file, settings], (val) => (data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true)));
+        // Enable button if file and tarifs are set
+        watch([data_file, settings], (value) => (data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true)), { deep: true });
 
         const processData = async () => {
             useResetData(); // Reset data
@@ -44,9 +44,11 @@ export default {
             useIsTable().value = true;
         };
 
+        const clearFile = () => (data_file.value = null);
         return {
             handleFileUpload,
             processData,
+            clearFile,
             prikljucna_moc,
             settings,
             data_file,
