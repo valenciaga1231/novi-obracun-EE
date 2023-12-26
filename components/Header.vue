@@ -26,8 +26,8 @@ export default {
                 },
             },
             {
-                label: "Racunalo",
-                icon: "pi pi-home",
+                label: "Računalo",
+                icon: "pi pi-calculator",
                 command: () => {
                     useRouter().push({ name: "racunalo" });
                 },
@@ -43,7 +43,9 @@ export default {
             {
                 label: "Analiza",
                 icon: "pi pi-list",
-                command: () => {},
+                command: () => {
+                    useRouter().push({ name: "analiza" });
+                },
             },
         ]);
         const active = useHeaderTab();
