@@ -1,6 +1,6 @@
 <template>
     <div class="header-content">
-        <h1>Novi izracun EE</h1>
+        <h1>Primerjalnik cen EE 2024</h1>
         <TabMenu v-model:activeIndex="active" :model="items" />
     </div>
 </template>

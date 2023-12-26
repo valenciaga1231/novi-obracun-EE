@@ -43,6 +43,18 @@ export default {
             },
         ]);
 
+        useHead({
+            title: "Primerjalnk cen Električne energije 2024",
+            meta: [
+                {
+                    name: "description",
+                    content: "Primerjalnik cen električne energije za leto 2024 in novi tarifni sistem",
+                },
+            ],
+            htmlAttrs: { lang: "si" },
+            link: [{ rel: "canonical", href: "https://novi-obracun-e76cc111cabe.herokuapp.com/" }],
+        });
+
         onMounted(() => {
             //include script in header
             const script = document.createElement("script");
