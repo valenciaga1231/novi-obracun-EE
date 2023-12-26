@@ -2,10 +2,18 @@
     <div>
         <Header />
         <section class="racun-section">
-            <NoviRacun style="max-width: 1000px" />
+            <NoviRacun v-if="useIsTable().value" style="max-width: 1000px" />
         </section>
     </div>
 </template>
+
+<script lang="ts">
+export default {
+    setup() {
+        return {};
+    },
+};
+</script>
 
 <style scoped>
 .racun-section {

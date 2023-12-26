@@ -1,4 +1,9 @@
 export default defineNuxtRouteMiddleware((to, from) => {
+    // Dont go to racun if these was no calculation made
+    if (to.path === "/racun" && !useIsTable().value) {
+        return navigateTo("/");
+    }
+
     // Set header tab
     if (to.path === "/racunalo") {
         useHeaderTab().value = 1;

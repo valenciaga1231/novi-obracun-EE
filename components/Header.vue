@@ -34,6 +34,7 @@ export default {
             {
                 label: "Račun",
                 icon: "pi pi-money-bill",
+                disabled: true,
                 command: () => {
                     console.log("Racun");
                     useRouter().push({ name: "racun" });
@@ -58,7 +59,16 @@ export default {
                 if (to.fullPath === "/") is_index_path.value = true;
                 else is_index_path.value = false;
             });
+
+            // Enable or disable Racun section in menu bar
+            items.value[2].disabled = !useIsTable().value;
         });
+
+        // Watch  to enable or disable Racun section in menu bar
+        watch(
+            () => useIsTable().value,
+            (val) => (items.value[2].disabled = !val)
+        );
 
         const changeTheme = () => localStorage.setItem("is_light_theme", JSON.stringify(is_light_theme.value));
 
@@ -77,7 +87,7 @@ export default {
 .header-content {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
     padding: 0 0 0px 1rem;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: wrap;

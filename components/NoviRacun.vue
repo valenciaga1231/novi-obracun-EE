@@ -132,12 +132,6 @@ export default {
         const selected_settings = ref([] as SelectedSettings[]);
         const racun_settings = ref([{ name: "Prikaži vse presežne moči", code: "PM" }]);
 
-        onMounted(() => {});
-
-        watch(selected_settings, (val) => {
-            console.log(val);
-        });
-
         // if settings.vrednosti_tarif.VT is updated blink the row
         watch(
             () => settings.value.vrednosti_tarif.VT,

@@ -35,7 +35,7 @@ export default {
             const vrednosti_tarif = localStorage.getItem("vrednosti_tarif");
             if (vrednosti_tarif) useSettings().value.vrednosti_tarif = JSON.parse(vrednosti_tarif);
             const tip_starega_obracuna = localStorage.getItem("tip_starega_obracuna");
-            if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET";
+            if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET" | null;
             const is_light_theme = localStorage.getItem("is_light_theme");
             if (is_light_theme) useIsLightTheme().value = JSON.parse(is_light_theme);
             else {
