@@ -47,13 +47,6 @@ export default {
             ogDescription: "Primerjalnik cen 2024 za električno energijo",
         });
 
-        onMounted(() => {
-            //include script in header
-            const script = document.createElement("script");
-            script.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
-            document.head.appendChild(script);
-        });
-
         return {
             is_table,
         };
