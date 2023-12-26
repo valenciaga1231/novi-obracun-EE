@@ -1,13 +1,12 @@
 <template>
-    <div class="header-content" :class="{ 'custom-light-theme': is_light_theme }">
+    <div class="header-content">
         <link v-if="is_light_theme" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_light.css" />
         <link v-if="!is_light_theme" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" />
-        <h1>Primerjalnik cen EE 2024</h1>
+        <h1 :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Primerjalnik cen EE 2024</h1>
         <div class="dark-mode-switch">
-            <div @click="changeTheme">Svetli način:</div>
-            <InputSwitch severity="info" v-model="is_light_theme" />
+            <div>Svetli način:</div>
+            <InputSwitch severity="info" v-model="is_light_theme" @change="changeTheme" />
         </div>
-
         <TabMenu v-model:activeIndex="active" :model="items" />
     </div>
 </template>
@@ -50,11 +49,23 @@ export default {
         ]);
         const active = useHeaderTab();
 
-        const changeTheme = () => (is_light_theme.value = !is_light_theme.value);
+        // TODO: Idk but something is wrong with this class assigning
+        const is_index_path = ref(false);
+        const router = useRouter();
+        onMounted(() => {
+            // on route change do something
+            router.afterEach((to, from) => {
+                if (to.fullPath === "/") is_index_path.value = true;
+                else is_index_path.value = false;
+            });
+        });
+
+        const changeTheme = () => localStorage.setItem("is_light_theme", JSON.stringify(is_light_theme.value));
 
         return {
             is_light_theme,
             items,
+            is_index_path,
             active,
             changeTheme,
         };
@@ -70,13 +81,21 @@ export default {
     padding: 0 1rem;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: wrap;
-
-    color: white;
+    color: rgb(255, 255, 255);
 }
 
+.h1 {
+    color: white;
+}
 .custom-light-theme {
-    background-color: white;
-    color: black;
+    color: black !important;
+}
+
+.dark-mode-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
 }
 
 .dark-mode-switch {

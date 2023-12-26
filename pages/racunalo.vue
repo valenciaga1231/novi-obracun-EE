@@ -28,25 +28,6 @@ export default {
     setup() {
         const is_table = useIsTable();
 
-        useHead({
-            title: "Primerjalnk cen Električne energije 2024",
-            meta: [
-                {
-                    name: "description",
-                    content: "Primerjalnik cen električne energije za leto 2024 in novi tarifni sistem",
-                },
-            ],
-            htmlAttrs: { lang: "si" },
-            link: [{ rel: "canonical", href: "https://novi-obracun-e76cc111cabe.herokuapp.com/" }],
-        });
-
-        useSeoMeta({
-            title: "Primerjalnik cen električne energije 2024",
-            ogTitle: "Primerjalnik cen električne energije 2024",
-            description: "Primerjalnik cen električne energije 2024",
-            ogDescription: "Primerjalnik cen 2024 za električno energijo",
-        });
-
         return {
             is_table,
         };

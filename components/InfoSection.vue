@@ -41,11 +41,9 @@ export default {
 .text-window {
     border-radius: 5px;
     margin: 10px 0;
-    font-size: 14px;
+    font-size: 16px;
 
     text-align: justify;
     text-justify: inter-word;
-
-    max-width: 800px;
 }
 </style>

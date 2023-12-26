@@ -1,13 +1,24 @@
 <template>
-    <div class="index-component">
+    <div class="index-component" :class="{ 'custom-light-theme': is_light_theme }">
         <div class="index-content">
             <Header />
-            <InfoSection style="margin-top: 20px; width: 60%" />
+            <InfoSection style="margin-top: 20px; width: 50%" />
         </div>
     </div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+export default {
+    setup() {
+        const is_light_theme = useIsLightTheme();
+        const router = useRouter();
+
+        return {
+            is_light_theme,
+        };
+    },
+};
+</script>
 
 <style scoped>
 .index-component {
@@ -26,7 +37,11 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha value to control dimness */
+    background-color: rgba(0, 0, 0, 0.6); /* Adjust the alpha value to control dimness */
+}
+
+.custom-light-theme::before {
+    background-color: rgba(0, 0, 0, 0.2); /* Adjust the alpha value to control dimness */
 }
 
 .index-content {
