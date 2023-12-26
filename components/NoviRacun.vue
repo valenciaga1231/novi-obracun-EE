@@ -194,7 +194,7 @@ h3 {
 
 .energy-table th,
 .energy-table td {
-    padding: 6px;
+    padding: 5px;
     text-align: center;
     border: 1px solid #e2e8f0;
 }

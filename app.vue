@@ -8,7 +8,6 @@
 export default {
     setup() {
         const title = "Primerjalnik";
-        const is_table = useIsTable();
 
         onMounted(() => {
             useUserData().value = true; // Sets to true so middleware works properly
@@ -36,7 +35,6 @@ export default {
 
         return {
             title,
-            is_table,
         };
     },
 };

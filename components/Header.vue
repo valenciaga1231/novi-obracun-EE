@@ -15,7 +15,6 @@
 <script lang="ts">
 export default {
     setup() {
-        const is_table = useIsTable();
         const is_light_theme = useIsLightTheme();
         const items = ref([
             {
@@ -52,7 +51,6 @@ export default {
         const changeTheme = () => (is_light_theme.value = !is_light_theme.value);
 
         return {
-            is_table,
             is_light_theme,
             items,
             active,

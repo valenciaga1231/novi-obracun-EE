@@ -81,6 +81,5 @@ export const useResetData = () => {
     useTotalEnergy().value = 0;
     useTotalEnergyVT().value = 0;
     useTotalEnergyMT().value = 0;
-    useIsTable().value = false;
     useBlokData().value = default_blok_data();
 };
