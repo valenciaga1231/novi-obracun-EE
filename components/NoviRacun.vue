@@ -105,13 +105,6 @@
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
                 </tr>
-                <!-- <tr>
-                    <td>Trošarina:</td>
-                    <td>{{ (mala_tarifa + velika_tarifa).toFixed(5) }}</td>
-                    <td>kWh</td>
-                    <td>{{ prispe }}</td>
-                    <td>{{ ((mala_tarifa + velika_tarifa) * 0.00153).toFixed(5) }}</td>
-                </tr> -->
                 <tr>
                     <th>Skupaj</th>
                     <th>...</th>
@@ -141,7 +134,6 @@ export default {
 
         onMounted(() => {});
 
-        // watch se;ectedCities
         watch(selected_settings, (val) => {
             console.log(val);
         });
@@ -185,6 +177,9 @@ export default {
 .novi-racun-component {
     background-color: white;
     font-size: 13px;
+
+    margin: 20px auto;
+    width: 80%;
 }
 
 .energy-table {
@@ -200,7 +195,7 @@ h3 {
 
 .energy-table th,
 .energy-table td {
-    padding: 8px; /* Adjust the padding value to make the rows tighter */
+    padding: 4px;
     text-align: center;
     border: 1px solid #e2e8f0;
 }

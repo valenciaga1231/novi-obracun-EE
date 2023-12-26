@@ -11,11 +11,18 @@ export default {
         const is_table = useIsTable();
         const items = ref([
             {
-                label: "Podatki",
+                label: "Domov",
                 icon: "pi pi-home",
                 command: () => {
                     console.log("Podatki");
                     useRouter().push({ name: "index" });
+                },
+            },
+            {
+                label: "Racunalo",
+                icon: "pi pi-home",
+                command: () => {
+                    useRouter().push({ name: "racunalo" });
                 },
             },
             {
