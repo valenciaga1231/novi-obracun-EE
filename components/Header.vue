@@ -1,6 +1,6 @@
 <template>
     <div class="header-content" :class="{ 'custom-light-theme': is_light_theme }">
-        <link v-if="is_light_theme" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com//themes/lara_light.css" />
+        <link v-if="is_light_theme" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_light.css" />
         <link v-if="!is_light_theme" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" />
         <h1>Primerjalnik cen EE 2024</h1>
         <div class="dark-mode-switch">
