@@ -1,6 +1,13 @@
 <template>
-    <div class="header-content">
+    <div class="header-content" :class="{ 'custom-light-theme': is_light_theme }">
+        <link v-if="is_light_theme" id="theme-link" rel="stylesheet" href="/themes/lara_light.css" />
+        <link v-if="!is_light_theme" id="theme-link-dark" rel="stylesheet" href="/themes/lara_dark.css" />
         <h1>Primerjalnik cen EE 2024</h1>
+        <div class="dark-mode-switch">
+            <div @click="changeTheme">Svetli način:</div>
+            <InputSwitch severity="info" v-model="is_light_theme" />
+        </div>
+
         <TabMenu v-model:activeIndex="active" :model="items" />
     </div>
 </template>
@@ -9,6 +16,7 @@
 export default {
     setup() {
         const is_table = useIsTable();
+        const is_light_theme = useIsLightTheme();
         const items = ref([
             {
                 label: "Domov",
@@ -41,17 +49,14 @@ export default {
         ]);
         const active = useHeaderTab();
 
-        onMounted(() => {
-            //include script in header
-            const script = document.createElement("script");
-            script.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
-            document.head.appendChild(script);
-        });
+        const changeTheme = () => (is_light_theme.value = !is_light_theme.value);
 
         return {
             is_table,
+            is_light_theme,
             items,
             active,
+            changeTheme,
         };
     },
 };
@@ -63,8 +68,21 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
-    background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: wrap;
+
+    color: white;
+}
+
+.custom-light-theme {
+    background-color: white;
+    color: black;
+}
+
+.dark-mode-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
 }
 </style>

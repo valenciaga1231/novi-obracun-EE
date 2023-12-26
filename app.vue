@@ -13,6 +13,10 @@ export default {
         onMounted(() => {
             useUserData().value = true; // Sets to true so middleware works properly
 
+            // Handle dark mode
+            const is_browser_dark_mode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            useIsLightTheme().value = !is_browser_dark_mode;
+
             // Get prikljucna moc from localStorage
             const data = localStorage.getItem("prikljucna_moc");
             if (data) usePrikljucnaMoc().value = JSON.parse(data);

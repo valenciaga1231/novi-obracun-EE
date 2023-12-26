@@ -85,7 +85,10 @@
         </div>
         <div class="all-buttons">
             <div>Spremeni vse bloke:</div>
-            <div><Button label="Vse +0.1" @click="handleAllClick(0.1)" rounded /> <Button label="Vse -0.1" @click="handleAllClick(-0.1)" severity="secondary" rounded /></div>
+            <div>
+                <Button label="Vse -0.1" @click="handleAllClick(-0.1)" severity="secondary" rounded />
+                <Button label="Vse +0.1" @click="handleAllClick(0.1)" rounded />
+            </div>
         </div>
     </div>
 </template>

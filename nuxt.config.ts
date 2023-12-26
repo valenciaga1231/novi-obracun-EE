@@ -8,7 +8,8 @@ export default defineNuxtConfig({
     build: {
         transpile: ["xlsx"],
     },
-    css: ["primevue/resources/themes/lara-light-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
+    // css: ["primevue/resources/themes/lara-light-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
+    css: ["@/assets/main.css", "primeicons/primeicons.css"],
     modules: ["nuxt-primevue"],
     //@ts-ignore
     primevue: {
@@ -16,7 +17,7 @@ export default defineNuxtConfig({
             ripple: true,
         },
         components: {
-            include: ["Calendar", "Button", "TabMenu", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel"],
+            include: ["Calendar", "Button", "TabMenu", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel", "InputSwitch"],
         },
         cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
     },

@@ -63,9 +63,7 @@ export default {
 
 <style scoped>
 .racunalo-content {
-    background-color: white;
     width: 100%;
-    /* height: 100vh; */
     height: 100%;
 }
 

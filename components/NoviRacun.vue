@@ -15,12 +15,12 @@
         </div>
         <table class="energy-table">
             <thead>
-                <tr>
-                    <th>Produkt</th>
-                    <th>Količina</th>
-                    <th>EM</th>
-                    <th>Cena [EUR/EM]</th>
-                    <th>Znesek EUR brez DDV</th>
+                <tr class="bold-row">
+                    <td>Produkt</td>
+                    <td>Količina</td>
+                    <td>EM</td>
+                    <td>Cena [EUR/EM]</td>
+                    <td>Znesek EUR brez DDV</td>
                 </tr>
             </thead>
             <tbody>
@@ -105,12 +105,12 @@
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
                 </tr>
-                <tr>
-                    <th>Skupaj</th>
-                    <th>...</th>
-                    <th>...</th>
-                    <th>...</th>
-                    <th>{{ sumAllCosts().toFixed(5) }}</th>
+                <tr class="bold-row">
+                    <td>Skupaj</td>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>...</td>
+                    <td>{{ sumAllCosts().toFixed(5) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -130,7 +130,7 @@ export default {
         const settings = useSettings();
         type SelectedSettings = { name: string; code: string };
         const selected_settings = ref([] as SelectedSettings[]);
-        const racun_settings = ref([{ name: "Prikazi vse presezne moči", code: "PM" }]);
+        const racun_settings = ref([{ name: "Prikaži vse presežne moči", code: "PM" }]);
 
         onMounted(() => {});
 
@@ -175,7 +175,6 @@ export default {
 
 <style scoped>
 .novi-racun-component {
-    background-color: white;
     font-size: 13px;
 
     margin: 20px auto;
@@ -195,7 +194,7 @@ h3 {
 
 .energy-table th,
 .energy-table td {
-    padding: 4px;
+    padding: 6px;
     text-align: center;
     border: 1px solid #e2e8f0;
 }
@@ -207,7 +206,6 @@ h3 {
 
 .bold-row {
     font-weight: bold;
-    background-color: #edf2f7;
 }
 
 .bold-row td {
@@ -219,8 +217,6 @@ h3 {
     border: 2px solid black;
     padding: 10px 20px;
     border-radius: 5px;
-
-    background-color: #edf2f7;
 }
 
 .blink-green {

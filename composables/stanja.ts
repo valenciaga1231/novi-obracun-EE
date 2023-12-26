@@ -12,6 +12,7 @@ export const useHeaderTab = () => useState<number>("header_value", () => 0); // 
 export const useUserData = () => useState<boolean>("user_data", () => false); // Currently just checking if user is active
 export const useSettings = () => useState<Settings>("settings", () => default_settings);
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
+export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => true);
 
 const default_blok_data = () => {
     let data = {} as BlokData;
@@ -81,4 +82,5 @@ export const useResetData = () => {
     useTotalEnergyVT().value = 0;
     useTotalEnergyMT().value = 0;
     useIsTable().value = false;
+    useBlokData().value = default_blok_data();
 };

@@ -31,7 +31,8 @@ export const useUploadDocument = async (file: File) => {
                 const P_index = header.indexOf("P+ Prejeta delovna moč");
 
                 // Loop cez vse vrstice Excel podatkov. Za vsako vrstico:
-                if (!useExcelData().value) useExcelData().value = []; // Initialize the array if it's undefined
+                useExcelData().value = []; // Initialize or reset array
+
                 excel_data.map((row, id) => {
                     const date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
                     const tarife_date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
@@ -164,6 +165,9 @@ export const dolociPrispevke = () => {
  * Doloci energijo v visoki in nizki tarifi.
  */
 export const dolociEnergijoVTinMT = () => {
+    useTotalEnergyVT().value = 0;
+    useTotalEnergyMT().value = 0;
+
     // Dolocimo kolicino energije v MT in VT
     useExcelData().value.map((row) => {
         const is_VT = row.is_VT;
@@ -316,6 +320,7 @@ export const sumAllCosts = () => {
     const omreznina = sestejVsoOmreznino();
     const prispevki = sestejVsePrispevke();
     let energija = 0;
+
     if (useSettings().value.tip_starega_obracuna === "VT+MT") {
         energija = useTotalEnergyVT().value * useSettings().value.vrednosti_tarif.VT + useTotalEnergyMT().value * useSettings().value.vrednosti_tarif.MT;
     } else if (useSettings().value.tip_starega_obracuna === "ET") {
