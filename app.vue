@@ -7,8 +7,6 @@
 <script lang="ts">
 export default {
     setup() {
-        const title = "Primerjalnik";
-
         onMounted(() => {
             useUserData().value = true; // Sets to true so middleware works properly
 
@@ -16,9 +14,13 @@ export default {
             const is_browser_dark_mode = window.matchMedia("(prefers-color-scheme: dark)").matches;
             useIsLightTheme().value = !is_browser_dark_mode;
 
-            // Get prikljucna moc from localStorage
+            // Get local storage data
             const data = localStorage.getItem("prikljucna_moc");
             if (data) usePrikljucnaMoc().value = JSON.parse(data);
+            const vrednosti_tarif = localStorage.getItem("vrednosti_tarif");
+            if (vrednosti_tarif) useSettings().value.vrednosti_tarif = JSON.parse(vrednosti_tarif);
+            const tip_starega_obracuna = localStorage.getItem("tip_starega_obracuna");
+            if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET";
 
             // Dobi vrednosti tarif
             const blok_data = useBlokData().value;
@@ -33,9 +35,7 @@ export default {
             }
         });
 
-        return {
-            title,
-        };
+        return {};
     },
 };
 </script>
@@ -43,7 +43,6 @@ export default {
 <style>
 html {
     box-sizing: border-box;
-    --shadow-dark: 0 2rem 6rem (0, 0, 0, 0.3);
 }
 
 body {

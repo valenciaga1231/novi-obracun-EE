@@ -35,7 +35,7 @@ const default_blok_data = () => {
 };
 
 const default_settings: Settings = {
-    tip_starega_obracuna: "VT+MT", // Default
+    tip_starega_obracuna: null, // Default
     vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },
     date: {
         start: null,

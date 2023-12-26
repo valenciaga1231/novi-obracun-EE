@@ -3,7 +3,7 @@
         <h2>Uvozi mesečne 15-min podatke iz MojElektro</h2>
         <div class="buttons">
             <div style="text-align: center; font-size: 12px">
-                <FileUpload mode="basic" accept=".xlsx, .xls, .csv" :auto="true" chooseLabel="Browse" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" class="customized-upload" style="font-size: 11px" />
+                <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" class="customized-upload" style="font-size: 11px" />
             </div>
             <Button @click="processData" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
         </div>

@@ -18,7 +18,7 @@
     min-height: 100vh;
 
     position: relative;
-    background: url("https://novi-obracun-e76cc111cabe.herokuapp.com/images/ozadje.png") no-repeat center center fixed;
+    background: url("https://novi-obracun-e76cc111cabe.herokuapp.com/images/ozadje.png") center center fixed;
 }
 /* To dim the background make pseudo element ::before to cover background */
 .index-component::before {

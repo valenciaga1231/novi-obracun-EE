@@ -122,6 +122,11 @@ export default {
             const input_values = Array.from(input_fields).map((input_field) => parseFloat((input_field as HTMLInputElement).value)) as PrikljucnaMoc; // Get all inputs current values
             const new_input_values = input_values.map((input_value) => (input_value + value).toFixed(1)); // Create new array of input values
 
+            // If any new values are below 0 set them to 0
+            for (let i = 0; i < input_fields.length; i++) {
+                if (parseFloat(new_input_values[i]) < 0) new_input_values[i] = "0";
+            }
+
             for (let i = 0; i < input_fields.length; i++) {
                 (input_fields[i] as HTMLInputElement).value = new_input_values[i]; // Assign new values to inputs
                 usePrikljucnaMoc().value[i] = parseFloat(new_input_values[i]); // Posodobi prikljucne moci
@@ -183,6 +188,12 @@ export default {
             if (input_values[id - 1] < input_values[id - 2]) {
                 (input_fields[id - 1] as HTMLInputElement).value = input_values[id - 2].toString();
                 input_values[id - 1] = input_values[id - 2];
+            }
+
+            // If any below 0 set to 0
+            if (input_values[id - 1] < 0) {
+                (input_fields[id - 1] as HTMLInputElement).value = "0";
+                input_values[id - 1] = 0;
             }
 
             // Posodobi prikljucne moci
