@@ -55,6 +55,13 @@ export default {
             link: [{ rel: "canonical", href: "https://novi-obracun-e76cc111cabe.herokuapp.com/" }],
         });
 
+        useSeoMeta({
+            title: "Primerjalnik cen električne energije 2024",
+            ogTitle: "Primerjalnik cen električne energije 2024",
+            description: "Primerjalnik cen električne energije 2024",
+            ogDescription: "Primerjalnik cen 2024 za električno energijo",
+        });
+
         onMounted(() => {
             //include script in header
             const script = document.createElement("script");
