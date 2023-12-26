@@ -4,10 +4,10 @@
         <link v-if="!is_light_theme" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" />
         <h1 :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Primerjalnik cen EE 2024</h1>
         <div class="dark-mode-switch">
-            <div>Svetli način:</div>
+            <div :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Svetli način:</div>
             <InputSwitch severity="info" v-model="is_light_theme" @change="changeTheme" />
         </div>
-        <TabMenu v-model:activeIndex="active" :model="items" />
+        <TabMenu v-model:activeIndex="active" :model="items" style="margin-bottom: 0px" />
     </div>
 </template>
 
@@ -77,15 +77,19 @@ export default {
 .header-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 0 1rem;
+    align-items: end;
+    padding: 0 0 0px 1rem;
     border-bottom: 1px solid #dee2e6;
     flex-wrap: wrap;
     color: rgb(255, 255, 255);
 }
 
-.h1 {
+h1 {
     color: white;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    padding: 15px 10px;
+    border-radius: 5px;
+    margin: 10px;
 }
 .custom-light-theme {
     color: black !important;
@@ -95,13 +99,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 12px;
-}
+    font-size: 14px;
 
-.dark-mode-switch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 </style>
