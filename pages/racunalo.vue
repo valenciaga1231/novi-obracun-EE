@@ -1,7 +1,7 @@
 <template>
     <div class="racunalo-content">
         <Header />
-        <div class="index-content">
+        <div class="page-content">
             <section class="data-input-section">
                 <PrikljucnaMocForm />
                 <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap">
@@ -37,19 +37,17 @@ export default {
 
 <style scoped>
 .racunalo-content {
-    width: 100%;
-    height: 100%;
-
-    max-width: 2000px;
-    margin: auto;
 }
 
-.index-content {
+.page-content {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
 
     flex-wrap: wrap;
+
+    max-width: 2500px;
+    margin: auto;
 }
 .data-input-section {
     flex: 45%;
