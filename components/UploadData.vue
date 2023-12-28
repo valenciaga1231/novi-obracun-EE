@@ -3,17 +3,18 @@
         <h2>Uvozi mesečne 15-min podatke iz MojElektro</h2>
         <div class="buttons">
             <div style="text-align: center; font-size: 12px">
-                <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="1000000" @select="handleFileUpload($event)" @clear="clearFile()" class="customized-upload" style="font-size: 11px" />
+                <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="1000000" @select="handleFileUpload($event)" class="customized-upload" style="font-size: 11px" />
             </div>
             <Button @click="processData" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
         </div>
-        <div v-if="data_file" style="text-align: center">
+        <div v-if="data_file" @click="clearFile" style="text-align: center; cursor: pointer">
             <p>Datoteka:</p>
             <div class="file-data">
-                <ExcelIcon :width="30" :height="30" />
+                <SvgsExcelIcon :width="30" :height="30" />
                 {{ data_file.name }}
             </div>
         </div>
+        <span class="warning">Opozorilo: Izračun za mesec November 2023 je verjetno napačen, ker je napaka pri izvozu podatkov iz portala MojElektro.</span>
     </div>
 </template>
 
@@ -37,9 +38,8 @@ export default {
                 // first clear uploade
                 uploaded_files.value.push(files[0]); // Store uploaded file in the uploaded_files array
             }
-            console.log("DATAFILE: ");
-
-            console.log(data_file.value);
+            console.log("DATAFILE: "); //! Dev
+            console.log(data_file.value); //! Dev
         };
 
         // Enable button if file and tarifs are set
@@ -62,8 +62,8 @@ export default {
             // useRouter().push({ name: "racun" });
         };
 
-        // const clearFile = () => (data_file.value = null);
-        const clearFile = () => {};
+        const clearFile = () => (data_file.value = null);
+
         return {
             handleFileUpload,
             processData,
@@ -72,7 +72,7 @@ export default {
             settings,
             data_file,
             is_button_disabled,
-            uploaded_files, // Add uploaded_files to the return object
+            uploaded_files,
         };
     },
 };
@@ -107,5 +107,12 @@ h2 {
     width: 250px;
     word-wrap: break-word; /* Allows long words to break and wrap */
     white-space: normal; /* Ensures whitespace is handled normally */
+}
+
+.warning {
+    margin: 10px auto;
+    text-align: center;
+    font-size: 12px;
+    color: red;
 }
 </style>

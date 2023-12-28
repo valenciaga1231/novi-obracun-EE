@@ -9,17 +9,17 @@
             <div v-if="settings.tip_starega_obracuna !== null">
                 <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <span class="p-float-label" style="margin-bottom: 30px">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="5" locale="de-DE" suffix="                      EUR/kWh" />
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
                         <label for="number-input">VT</label>
                     </span>
                     <span class="p-float-label">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="5" locale="de-DE" suffix="                      EUR/kWh" />
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
                         <label for="number-input">MT</label>
                     </span>
                 </div>
                 <div v-if="settings.tip_starega_obracuna === 'ET'">
                     <span class="p-float-label">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="5" locale="de-DE" suffix="                      EUR/kWh" />
+                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
                         <label for="number-input">ET</label>
                     </span>
                 </div>
