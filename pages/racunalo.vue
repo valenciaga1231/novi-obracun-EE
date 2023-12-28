@@ -39,6 +39,9 @@ export default {
 .racunalo-content {
     width: 100%;
     height: 100%;
+
+    max-width: 2000px;
+    margin: auto;
 }
 
 .index-content {
@@ -56,6 +59,8 @@ export default {
     margin: auto;
     margin-bottom: 50px;
     margin-top: 0px;
+
+    max-width: 1250px;
 }
 
 .new-bill-section {
