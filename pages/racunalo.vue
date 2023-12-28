@@ -49,23 +49,23 @@ export default {
     flex-wrap: wrap;
 }
 .data-input-section {
-    flex: 55%;
+    flex: 45%;
 
     display: flex;
     flex-direction: column;
     margin: auto;
-    max-width: 1000px;
     margin-bottom: 50px;
     margin-top: 0px;
 }
 
 .new-bill-section {
-    flex: 45%;
+    flex: 55%;
     vertical-align: top;
+
+    padding: 0px 25px;
 
     display: flex;
     flex-direction: column;
-    max-width: 1250px;
     text-align: center;
 }
 </style>

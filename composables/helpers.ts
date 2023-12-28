@@ -115,9 +115,14 @@ export const parseEnergyBlocks = () => {
     const excel_data = useExcelData();
     if (!excel_data.value) throw new Error("Excel data not initialized.");
 
+    // Reset energija in cena_omreznine_energije
+    for (const blok in useBlokData().value) {
+        useBlokData().value[blok].energija = 0;
+        useBlokData().value[blok].cena_omreznine_energije = 0;
+    }
+
     for (let i = 0; i < excel_data.value.length; i++) {
         const b = excel_data.value[i].blok;
-
         useBlokData().value[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
 
         // Omreznina za energijo (to se ne rabi izvajati v loopu, bi lahko dali ven)
@@ -165,6 +170,7 @@ export const dolociPrispevke = () => {
  * Doloci energijo v visoki in nizki tarifi.
  */
 export const dolociEnergijoVTinMT = () => {
+    // Reset energije
     useTotalEnergyVT().value = 0;
     useTotalEnergyMT().value = 0;
 
