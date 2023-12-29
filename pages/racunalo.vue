@@ -21,7 +21,9 @@
                 <Button label="Primerjaj novi/stari racun" icon="pi pi-window-maximize" @click="useIsPrimerjavaModal().value = true" style="max-width: 250px; margin: auto" />
             </section>
         </div>
-        <NoviStariPrimerjava v-if="useIsPrimerjavaModal().value" />
+        <Transition name="slide-fade">
+            <NoviStariPrimerjava v-if="useIsPrimerjavaModal().value" />
+        </Transition>
     </div>
 </template>
 
@@ -98,5 +100,23 @@ export default {
     display: flex;
     flex-direction: column;
     text-align: center;
+}
+
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
 }
 </style>
