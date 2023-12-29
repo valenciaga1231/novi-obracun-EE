@@ -48,7 +48,7 @@ export default {
     position: relative;
     width: 90%;
     height: 80%;
-    background-color: white;
+    background-color: var(--surface-a); /* PrimeVue color */
     overflow: auto;
     cursor: default;
 
