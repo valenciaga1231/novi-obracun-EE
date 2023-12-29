@@ -30,24 +30,24 @@
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
-                        <td>{{ velika_tarifa.toFixed(4) }}</td>
+                        <td>{{ velika_tarifa.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(6) }}</td>
-                        <td>{{ (velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(velika_tarifa) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: left">Električna energija MT</td>
-                        <td>{{ mala_tarifa.toFixed(4) }}</td>
+                        <td>{{ mala_tarifa.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(6) }}</td>
-                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(mala_tarifa) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
                         <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                        <td>{{ (mala_tarifa * settings.vrednosti_tarif.MT + velika_tarifa * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(mala_tarifa) * settings.vrednosti_tarif.MT + Math.round(velika_tarifa) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <template v-if="settings.tip_starega_obracuna === 'ET'">

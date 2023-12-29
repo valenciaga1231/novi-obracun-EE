@@ -160,10 +160,10 @@ export const izracunajOmrezninoMoci = () => {
 };
 
 export const dolociPrispevke = () => {
-    usePrispevki().value.operater_trga.price = useTotalEnergy().value * usePrispevki().value.operater_trga.price_per_unit;
-    usePrispevki().value.energetsko_ucinkovitost.price = useTotalEnergy().value * usePrispevki().value.energetsko_ucinkovitost.price_per_unit;
+    usePrispevki().value.operater_trga.price = Math.round(useTotalEnergy().value) * usePrispevki().value.operater_trga.price_per_unit;
+    usePrispevki().value.energetsko_ucinkovitost.price = Math.round(useTotalEnergy().value) * usePrispevki().value.energetsko_ucinkovitost.price_per_unit;
     usePrispevki().value.spte_ove.price = usePrikljucnaMocStara().value * usePrispevki().value.spte_ove.price_per_unit;
-    usePrispevki().value.trosarina.price = useTotalEnergy().value * usePrispevki().value.trosarina.price_per_unit;
+    usePrispevki().value.trosarina.price = Math.round(useTotalEnergy().value) * usePrispevki().value.trosarina.price_per_unit;
 };
 
 /**
@@ -308,6 +308,8 @@ export const dolociTarifeZaBlok = () => {
  * Vrne ceno vseh prispevkov.
  */
 export const sestejVsePrispevke = () => {
+    dolociPrispevke();
+
     let celotni_prispevki = 0;
     for (const prispevek in usePrispevki().value) {
         //@ts-ignore

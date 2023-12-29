@@ -83,11 +83,17 @@
                 </template>
             </Card>
         </div>
-        <div class="all-buttons">
-            <div>Spremeni vse bloke:</div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 50px; flex-wrap: wrap">
+            <div class="all-buttons">
+                <div>Spremeni vse bloke:</div>
+                <div>
+                    <Button label="Vse -0.1" @click="handleAllClick(-0.1)" severity="secondary" style="margin-right: 10px; scale: 0.9" />
+                    <Button label="Vse +0.1" @click="handleAllClick(0.1)" style="margin-right: 10px; scale: 0.9" />
+                </div>
+            </div>
+
             <div>
-                <Button label="Vse -0.1" @click="handleAllClick(-0.1)" severity="secondary" rounded />
-                <Button label="Vse +0.1" @click="handleAllClick(0.1)" rounded />
+                <StaraPrikljucna />
             </div>
         </div>
     </div>

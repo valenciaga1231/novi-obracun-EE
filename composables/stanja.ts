@@ -9,10 +9,10 @@ export const useTotalEnergyVT = () => useState<number>("total_energy_VT", () => 
 export const useTotalEnergyMT = () => useState<number>("total_energy_MT", () => 0);
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
-export const useUserData = () => useState<boolean>("user_data", () => false); // Currently just checking if user is active
 export const useSettings = () => useState<Settings>("settings", () => default_settings);
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
 export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => false);
+export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
 
 const default_blok_data = () => {
     let data = {} as BlokData;
@@ -76,7 +76,6 @@ const prispevki: Prispevki = {
  * before handling new Excel input, add your data to this function.
  */
 export const useResetData = () => {
-    usePrikljucnaMocStara().value = 7;
     useExcelData().value = [];
     useTotalEnergy().value = 0;
     useTotalEnergyVT().value = 0;
