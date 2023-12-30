@@ -127,7 +127,6 @@ export default {
         };
 
         onMounted(() => {
-            console.log(sumAllCosts());
             old_costs.value = sumAllCosts();
         });
 

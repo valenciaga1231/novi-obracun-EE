@@ -38,8 +38,8 @@ export default {
                 // first clear uploade
                 uploaded_files.value.push(files[0]); // Store uploaded file in the uploaded_files array
             }
-            console.log("DATAFILE: "); //! Dev
-            console.log(data_file.value); //! Dev
+            // console.log("DATAFILE: "); //! Dev
+            // console.log(data_file.value); //! Dev
         };
 
         // Enable button if file and tarifs are set
@@ -51,7 +51,7 @@ export default {
             if (data_file.value) await useUploadDocument(data_file.value);
             else throw new Error("No file uploaded");
 
-            console.log(useExcelData().value);
+            // console.log(useExcelData().value); //! Dev
             console.log("Processing data"); //! Dev
 
             parseEnergyBlocks();
@@ -60,6 +60,16 @@ export default {
             // Change header tab TODO: Could be moved somwhere else
             // useHeaderTab().value = 1;
             // useRouter().push({ name: "racun" });
+
+            // Call the API endpoint
+            const response = await fetch("https://api.counterapi.dev/v1/elektricna_energija/klik_izracun/up", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) throw new Error("API request failed");
         };
 
         const clearFile = () => (data_file.value = null);

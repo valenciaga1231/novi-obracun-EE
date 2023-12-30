@@ -20,7 +20,6 @@ export default {
                 label: "Domov",
                 icon: "pi pi-home",
                 command: () => {
-                    console.log("Podatki");
                     useRouter().push({ name: "index" });
                 },
             },
@@ -36,7 +35,6 @@ export default {
                 icon: "pi pi-money-bill",
                 disabled: true,
                 command: () => {
-                    console.log("Racun");
                     useRouter().push({ name: "racun" });
                 },
             },
