@@ -1,5 +1,6 @@
 <template>
     <div class="racunalo-content">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Header />
         <div class="page-content">
             <section class="data-input-section">
@@ -19,6 +20,13 @@
                     <NoviRacun />
                 </div>
                 <Button label="Primerjaj novi/stari racun" icon="pi pi-window-maximize" @click="useIsPrimerjavaModal().value = true" style="max-width: 250px; margin: auto" />
+            </section>
+            <section v-else class="instructions-section">
+                <h3>Navodila za uporabo:</h3>
+                <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok.</p>
+                <p>2. Velika in mala tarifa sta podani na poloznici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+                <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni mesec.</p>
+                <p>4. Kliknemo <b>Izračunaj</b> in izpisal se nam bo prenovljenei račun za elektriko z novimi tarifami.</p>
             </section>
         </div>
         <Transition name="slide-fade">
@@ -100,6 +108,24 @@ export default {
     display: flex;
     flex-direction: column;
     text-align: center;
+}
+
+.instructions-section {
+    flex: 25%;
+
+    padding: 0px 25px;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.instructions-section p {
+    margin: 0px;
+    margin-bottom: 10px;
+
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /*
