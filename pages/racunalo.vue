@@ -21,12 +21,20 @@
                 </div>
                 <Button label="Primerjaj novi/stari racun" icon="pi pi-window-maximize" @click="useIsPrimerjavaModal().value = true" style="max-width: 250px; margin: auto" />
             </section>
-            <section v-else class="instructions-section">
-                <h3>Navodila za uporabo:</h3>
-                <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok.</p>
-                <p>2. Velika in mala tarifa sta podani na poloznici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
-                <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni mesec.</p>
-                <p>4. Kliknemo <b>Izračunaj</b> in izpisal se nam bo prenovljenei račun za elektriko z novimi tarifami.</p>
+            <section v-else class="instructions-info-section">
+                <div class="instructions">
+                    <h3>Navodila za uporabo:</h3>
+                    <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok.</p>
+                    <p>2. Velika in mala tarifa sta podani na poloznici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+                    <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni mesec.</p>
+                    <p>4. Kliknemo <b>Izračunaj</b> in izpisal se nam bo prenovljenei račun za elektriko z novimi tarifami.</p>
+                </div>
+                <div class="info">
+                    <h3>Informacije o računalu:</h3>
+                    <p>1. Kalkulator bo pravilno deloval, če boste vnesli podatke za en mesec.</p>
+                    <p>2. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
+                    <p>3. Za samooskrbne uporabnike bo izračun dodan kmalu. Tudi izračun za več mesecev hkrati bo dodan kmalu.</p>
+                </div>
             </section>
         </div>
         <Transition name="slide-fade">
@@ -110,7 +118,7 @@ export default {
     text-align: center;
 }
 
-.instructions-section {
+.instructions-info-section {
     flex: 25%;
 
     padding: 0px 25px;
@@ -120,7 +128,15 @@ export default {
     text-align: center;
 }
 
-.instructions-section p {
+.instructions p {
+    margin: 0px;
+    margin-bottom: 10px;
+
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.info p {
     margin: 0px;
     margin-bottom: 10px;
 
