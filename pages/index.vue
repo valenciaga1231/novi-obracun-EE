@@ -29,7 +29,7 @@ export default {
     min-height: 100vh;
 
     position: relative;
-    background: url("https://novi-obracun-e76cc111cabe.herokuapp.com/images/ozadje.png") center center fixed;
+    background: url("/images/ozadje.webp") center center fixed;
     background-size: cover;
 }
 /* To dim the background make pseudo element ::before to cover background */
