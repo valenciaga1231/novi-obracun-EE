@@ -1,20 +1,22 @@
 <template>
     <div class="header-content">
-        <link v-if="is_light_theme" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_light.css" />
-        <link v-if="!is_light_theme" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" />
+        <!-- <link v-if="is_light_theme" crossorigin="" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_light.css" />
+        <link v-if="!is_light_theme" crossorigin="" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" /> -->
         <h1 :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Primerjalnik cen EE 2024</h1>
-        <div class="dark-mode-switch">
+        <!-- <div class="dark-mode-switch">
             <div :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Svetli način:</div>
             <InputSwitch severity="info" v-model="is_light_theme" @change="changeTheme" />
-        </div>
+        </div> -->
         <TabMenu v-model:activeIndex="active" :model="items" style="margin-bottom: 0px" />
     </div>
 </template>
 
 <script lang="ts">
+// import { usePrimeVue } from "primevue/config";
 export default {
     setup() {
         const is_light_theme = useIsLightTheme();
+
         const items = ref([
             {
                 label: "Domov",
@@ -68,7 +70,11 @@ export default {
             (val) => (items.value[2].disabled = !val)
         );
 
-        const changeTheme = () => localStorage.setItem("is_light_theme", JSON.stringify(is_light_theme.value));
+        const changeTheme = () => {
+            // if (is_light_theme.value) PrimeVue.changeTheme("lara-light-green", "lara-dark-green", "theme-link-dark", () => {});
+            // else PrimeVue.changeTheme("lara-dark-green", "lara-light-green", "theme-link", () => {});
+            // localStorage.setItem("is_light_theme", JSON.stringify(is_light_theme.value));
+        };
 
         return {
             is_light_theme,

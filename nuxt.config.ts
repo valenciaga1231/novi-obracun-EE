@@ -8,8 +8,7 @@ export default defineNuxtConfig({
     build: {
         transpile: ["xlsx"],
     },
-    // css: ["primevue/resources/themes/lara-light-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
-    css: ["@/assets/main.css", "primeicons/primeicons.css"],
+    css: ["primevue/resources/themes/lara-dark-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
     modules: ["nuxt-primevue"],
     //@ts-ignore
     primevue: {
