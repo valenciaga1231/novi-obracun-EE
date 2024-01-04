@@ -177,9 +177,9 @@ export default {
 
             // Ponovno izracunaj omreznino za moc in presezno moc
             izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
+            // izracunajPreseznoMoc();
+            // izracunajCenoPresezneMoci();
+            // dolociTarifeZaBlok();
         };
 
         const handleInputChange = (id: number) => {
@@ -210,9 +210,9 @@ export default {
 
             // Ponovno izracunaj omreznino za moc in presezno moc
             izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
+            // izracunajPreseznoMoc();
+            // izracunajCenoPresezneMoci();
+            // dolociTarifeZaBlok();
         };
 
         return {

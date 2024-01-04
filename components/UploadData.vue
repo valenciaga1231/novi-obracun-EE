@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import type { FileUploadSelectEvent } from "primevue/fileupload";
+import { parseDocumentData } from "~/composables/documentParser";
 
 export default {
     setup() {
@@ -48,7 +49,7 @@ export default {
         const processData = async () => {
             useResetData(); // Reset data
 
-            if (data_file.value) await useUploadDocument(data_file.value);
+            if (data_file.value) await parseDocumentData(data_file.value);
             else throw new Error("No file uploaded");
 
             // console.log(useExcelData().value); //! Dev

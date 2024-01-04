@@ -1,161 +1,128 @@
-import * as XLSX from "xlsx";
-import { useExcelData, useTotalEnergyMT, useTotalEnergyVT } from "./stanja";
-import moment from "moment-timezone";
+import { months } from "moment-timezone";
+import type { BlokData, ExcelRow, MonthData, MonthsData } from "~/types";
 
 /**
- * Parses the uploaded document and saves the data to the states.
- * @param file File to be parsed
+ * TODO: Should be called for each month separately
  */
-export const useUploadDocument = async (file: File) => {
-    const reader = new FileReader(); // Init file reader
-
-    // Create a promise to wait for the onload event to complete
-    const onloadPromise = new Promise<void>((resolve, reject) => {
-        // On file load event
-        reader.onload = (event: Event) => {
-            try {
-                const data = (event.target as FileReader).result; // Get file
-                const workbook = XLSX.read(data as string, { type: "binary" });
-                const sheets_name_list = workbook.SheetNames; // Get sheet names
-                const worksheet = workbook.Sheets[sheets_name_list[0]]; // Set first sheet as active
-
-                // Parse data to object
-                const excel_data: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Convert worksheet to array of arrays
-                const header = excel_data.shift();
-                if (!header) throw new Error("No header found in Excel table.");
-
-                // Save all data to states
-                const timestamp_index = header.indexOf("Časovna značka");
-                const W_index = header.indexOf("Energija A+");
-                const blok_index = header.indexOf("Blok");
-                const P_index = header.indexOf("P+ Prejeta delovna moč");
-
-                // Loop cez vse vrstice Excel podatkov. Za vsako vrstico:
-                useExcelData().value = []; // Initialize or reset array
-
-                excel_data.map((row, id) => {
-                    const date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
-                    const tarife_date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
-                    /**
-                     * Odsteti moramo 15min, ker na MojElektro pac v timestamp 12:00:00 AM oz. 00:00:00,
-                     * se v prejsnjem dnevu, ker smo do takrat porabili toliko energije.
-                     */
-                    tarife_date.setMinutes(tarife_date.getMinutes() - 15);
-
-                    useExcelData().value[id] = {
-                        blok: row[blok_index],
-                        W: row[W_index],
-                        P: row[P_index],
-                        is_VT: isTarifVT(tarife_date),
-                        date: date,
-                    };
-                });
-
-                // Get first and last date from excel data
-                useSettings().value.date.start = useExcelData().value[0].date;
-                useSettings().value.date.end = useExcelData().value[useExcelData().value.length - 2].date;
-
-                // Resolve the promise to indicate that the onload event has completed
-                resolve();
-            } catch (error) {
-                // Reject the promise if there's an error
-                reject(error);
-            }
-        };
-    });
-
-    // To actually read the file
-    reader.readAsBinaryString(file);
-
-    // Wait for the onload event to complete beforecontinuing
-    await onloadPromise;
-};
-
-/**
- * Se uporablja, da pretvorimo serial date v Date object, ki pravilno kaze
- * cas v Sloveniji.
- *
- * @param serial Serial number of the date
- * @param timezone Timezone
- * @returns Return date in the specified timezone
- */
-const convertSerialDate = (serial: number, timezone: string) => {
-    const origin_date = new Date(1899, 11, 30); // Excel's origin date: December 30, 1899
-    const milliseconds_per_day = 24 * 60 * 60 * 1000;
-
-    /**
-     * Poda pravilni datum po slovenskem casu, ker gleda cas od zacetka stetja Excela
-     ** Razlaga:
-     * The serial number itself doesn't specify the time zone.
-     * It's just a count of days and fractional days since a base date
-     *
-     * Zato je treba excelu odsteti 1 uro, ker se ne zaveda poletnega in zimskega casa
-     * in tako dobimo podatke, ki so vsi zamaknjeni za 1 uro naprej.
-     */
-    //! Done with pure JS: problem, ker ce tam, ko JS laufa ni Slovenija, bo cas narobe
-    const date = new Date(origin_date.getTime() + serial * milliseconds_per_day);
-    const current_offset = date.getTimezoneOffset(); // Gets the time zone difference in minutes
-    // If date is DST, subtract 1 hour
-    if (current_offset === -120) date.setHours(date.getHours() - 1);
-    // console.log(date); //! Dev
-
-    return date;
-
-    //! Done with moment.js:
-    // Create moment date object
-    const moment_date = moment(date).tz(timezone);
-
-    // If date is DST, subtract 1 hour
-    if (moment_date.isDST()) moment_date.subtract(1, "hour"); // Nastavi poletni cas
-
-    return moment_date.toDate();
-};
-
 export const parseEnergyBlocks = () => {
+    const months_data = useMonthsArray();
+
     const excel_data = useExcelData();
     if (!excel_data.value) throw new Error("Excel data not initialized.");
 
     // Reset energija in cena_omreznine_energije
-    for (const blok in useBlokData().value) {
-        useBlokData().value[blok].energija = 0;
-        useBlokData().value[blok].cena_omreznine_energije = 0;
-    }
+    // for (const blok in useBlokData().value) {
+    //     useBlokData().value[blok].energija = 0;
+    //     useBlokData().value[blok].cena_omreznine_energije = 0;
+    // }
 
     for (let i = 0; i < excel_data.value.length; i++) {
-        const b = excel_data.value[i].blok;
-        useBlokData().value[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
+        // get month from JS Date object
+        const date = new Date(excel_data.value[i].date);
+        date.setMinutes(date.getMinutes() - 15);
+        const month = date.getMonth() + 1; // As months start from 0
 
-        // Omreznina za energijo (to se ne rabi izvajati v loopu, bi lahko dali ven)
-        useBlokData().value[b].cena_omreznine_energije += excel_data.value[i].W * (getTarifeData()[b].distribucija.tarifna_postavka_W + getTarifeData()[b].prenos.tarifna_postavka_W);
+        // Check if current month already exists in useMonthsArray
+        if (!useMonthsArray().value[month]) {
+            useMonthsArray().value[month] = {
+                month: month,
+                active_blocks: [0, 0, 0, 0, 0],
+                blok_data: initDefaultBlokData(),
+                total_energy: 0,
+                vt_energy: 0,
+                mt_energy: 0,
+                data_rows: [],
+            };
+        }
+
+        const b = excel_data.value[i].blok;
+        months_data.value[month].blok_data[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
+
+        // TODO: Omreznina za energijo (to se ne rabi izvajati v loopu, bi lahko dali ven)
+        months_data.value[month].blok_data[b].cena_omreznine_energije += excel_data.value[i].W * (getTarifeData()[b].distribucija.tarifna_postavka_W + getTarifeData()[b].prenos.tarifna_postavka_W);
+
+        // Add row to data_rows
+        months_data.value[month].data_rows.push(excel_data.value[i]);
     }
 
-    // get all bloks that exist in the excel data
-    const aktivni_bloki = new Set(); // Aktivni bloki v prilozeni datoteki
-    excel_data.value.map((row) => aktivni_bloki.add(row.blok));
-    for (const blok in useBlokData().value) useBlokData().value[blok].is_active = aktivni_bloki.has(parseInt(blok));
+    // Assign properties for all months
+    for (const month in useMonthsArray().value) {
+        // Pogledamo kateri bloki so aktivni
+        const aktivni_bloki = new Set(); // Naredi Set, ali [1, 2, 3, 4] ali [2, 3, 4, 5]
+        months_data.value[month].data_rows.map((row: ExcelRow) => aktivni_bloki.add(row.blok));
+
+        for (const blok in useBlokData().value) {
+            months_data.value[month].blok_data[blok].is_active = aktivni_bloki.has(parseInt(blok));
+            months_data.value[month].active_blocks[parseInt(blok) - 1] = aktivni_bloki.has(parseInt(blok)) ? 1 : 0;
+        }
+
+        dolociTarifeZaBlok(parseInt(month));
+
+        // Izracun skupne energije v mesecu
+        months_data.value[month].total_energy = 0;
+        months_data.value[month].total_energy = months_data.value[month].data_rows.reduce((total, row) => total + row.W, 0);
+
+        // Izracunaj energijo za vsak blok
+        for (const blok in useBlokData().value) {
+            months_data.value[month].blok_data[blok].energija = months_data.value[month].data_rows.reduce((skupna_energija, row) => {
+                if (row.blok === parseInt(blok)) return skupna_energija + row.W;
+                else return skupna_energija;
+            }, 0);
+        }
+
+        // Izracun VT in MT energije // TODO: daj v funkcijo
+        months_data.value[month].vt_energy = 0;
+        months_data.value[month].mt_energy = 0;
+        for (const row of months_data.value[month].data_rows) {
+            if (row.is_VT) months_data.value[month].vt_energy += row.W;
+            else months_data.value[month].mt_energy += row.W;
+        }
+
+        // Izracun cena_omreznine_moci
+        const month_int = parseInt(month);
+        izracunajOmrezninoMoci(month_int);
+        izracunajPreseznoMoc(month_int);
+
+        console.log("months_data", months_data.value[month].total_energy);
+    }
+    console.log("useMonthsArray", useMonthsArray().value); //! Dev
 
     // Izracun skupne energije
-    useTotalEnergy().value = 0;
-    for (const blok in useBlokData().value) useTotalEnergy().value += useBlokData().value[blok].energija;
+    // let test = 0;
+    // for (const blok in useBlokData().value) test += useBlokData().value[blok].energija;
+    // console.log(test);
 
     // Izracun cena_omreznine_moci
-    izracunajOmrezninoMoci();
-    izracunajPreseznoMoc();
-    izracunajCenoPresezneMoci();
+    // izracunajOmrezninoMoci();
+    // izracunajPreseznoMoc();
+    // izracunajCenoPresezneMoci();
 
     // Dolocimo prispevke
     dolociPrispevke();
 
     // Dolocimo energijo v VT in MT
     dolociEnergijoVTinMT();
-    dolociTarifeZaBlok();
 };
 
-export const izracunajOmrezninoMoci = () => {
+// TODO: Calculate bill for month
+export const calculateBillForMonth = () => {};
+
+export const izracunajOmrezninoMoci = (month?: number) => {
     // Izracunamo omreznino za moc
-    for (const blok in useBlokData().value) {
+    // for (const blok in useBlokData().value) {
+    //     const id = parseInt(blok) - 1; // Convert string to number and to index
+    //     useBlokData().value[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P);
+    // }
+
+    const months = useMonthsArray();
+    if (!months.value) throw new Error("Months data not initialized.");
+
+    // Update month blok data
+    //@ts-ignore
+    for (const blok in months.value[month].blok_data) {
         const id = parseInt(blok) - 1; // Convert string to number and to index
-        useBlokData().value[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P);
+        //@ts-ignore
+        months.value[month].blok_data[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P);
     }
 };
 
@@ -192,7 +159,7 @@ export const dolociEnergijoVTinMT = () => {
  * @param datum Datum, ki je 15 min zamaknjen nazaj glede na pravi cas.
  * @returns
  */
-const isTarifVT = (datum: Date) => {
+export const isTarifVT = (datum: Date) => {
     let is_VT = false;
 
     // Check if hour MT or VT
@@ -213,26 +180,6 @@ const isTarifVT = (datum: Date) => {
 };
 
 /**
- * Funkcija, ki pretvori datum iz oblike 01.01.2021 v 2021-01-01
- * @param date_string Datum v obliki 01.01.2021
- * @returns Datum v obliki 2021-01-01
- */
-const convertDateFormat = (date_string: string): string => {
-    const [day, month, year] = date_string.split(".");
-    return `${year}-${month}-${day}`;
-};
-
-/**
- * Funkcija, ki preveri, ali sta dva datuma isti dan.
- * @param date1 Prvi datum
- * @param date2 Drugi datum
- * @returns Vrne true, ce sta datuma enaka, false sicer.
- */
-const isSameDay = (date1: Date, date2: Date) => {
-    return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
-};
-
-/**
  * @returns Vrne vse omreznine za vse bloke
  */
 export const sestejVsoOmreznino = () => {
@@ -248,59 +195,67 @@ export const sestejVsoOmreznino = () => {
 /**
  * Izracuna presezno moc za vsak blok in jo shrani v useBlokData()
  */
-export const izracunajPreseznoMoc = () => {
+export const izracunajPreseznoMoc = (month: number) => {
     const excel_data = useExcelData();
     if (!excel_data.value) throw new Error("Excel data not initialized.");
 
+    const months = useMonthsArray();
+
     // Reset presezna moc and intervali presezna moc
-    for (const blok in useBlokData().value) {
-        useBlokData().value[blok].presezna_moc = 0;
-        useBlokData().value[blok].intervali_moc_presezena = 0;
+    for (const blok in months.value[month].blok_data) {
+        // useBlokData().value[blok].presezna_moc = 0;
+        // useBlokData().value[blok].intervali_moc_presezena = 0;
+        months.value[month].blok_data[blok].presezna_moc = 0;
+        months.value[month].blok_data[blok].intervali_moc_presezena = 0;
     }
 
     // 1. Pogledamo moc, ki je presezena za vsak interval. Torej for loop in sestevamo v spremenljivko
-    for (let i = 0; i < excel_data.value.length; i++) {
-        const b = excel_data.value[i].blok;
+    for (let i = 0; i < months.value[month].data_rows.length; i++) {
+        const b = months.value[month].data_rows[i].blok;
 
         // Pogledamo ali moc presega obracunsko moc za blok v katerem je trenutni interval
-        const presezna_moc = excel_data.value[i].P - usePrikljucnaMoc().value[b - 1];
+        const presezna_moc = months.value[month].data_rows[i].P - usePrikljucnaMoc().value[b - 1];
 
         if (presezna_moc > 0) {
             // Presezna moc je pozitivna, torej jo pristejemo vrednosti v bloku po formuli
-            useBlokData().value[b].presezna_moc += presezna_moc * presezna_moc;
+            months.value[month].blok_data[b].presezna_moc += presezna_moc * presezna_moc;
 
             // Stejemo koliko intervalov je moc presegla obracunsko vrednost
-            useBlokData().value[b].intervali_moc_presezena++;
+            months.value[month].blok_data[b].intervali_moc_presezena++;
         }
     }
 
     // Za vsak blok se koreni vsoto kvadratov presezne moci, da dobimo koncko vrednost presezne moci za blok
     for (const blok in useBlokData().value) {
-        useBlokData().value[blok].presezna_moc = Math.sqrt(useBlokData().value[blok].presezna_moc);
+        months.value[month].blok_data[blok].presezna_moc = Math.sqrt(months.value[month].blok_data[blok].presezna_moc);
     }
-};
 
-/**
- * Izracuna ceno presezne moci za vsak blok in jo shrani v useBlokData()
- */
-export const izracunajCenoPresezneMoci = () => {
+    // Izracunamo se ceno presezne moci
     const faktor_presezne_moci = 0.9; // TODO: Dodaj v nastavitve
 
     // Izracunamo ceno presezne moci
-    for (const blok in useBlokData().value) {
-        useBlokData().value[blok].cena_presezne_moci = useBlokData().value[blok].presezna_moc * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P) * faktor_presezne_moci;
+    // for (const blok in months.value[month].blok_data) {
+    //     months.value[month].blok_data[blok].cena_presezne_moci = months.value[month].blok_data[blok].presezna_moc * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P) * faktor_presezne_moci;
+    // }
+    for (const [month_key, month_value] of Object.entries(months.value[month].blok_data)) {
+        //!! A tole ostane raktivno? pac a je month_value.cean_presezne_moci bindan na original object
+        month_value.cena_presezne_moci = month_value.presezna_moc * (getTarifeData()[month_key].distribucija.tarifna_postavka_P + getTarifeData()[month_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
     }
 };
 
 /**
  * Doloci tarife za vsak blok
+ *
+ * TODO: To bi se lahko dalo drugam, ker tarifa za moc se itak izracuna ze na vstopu v aplikacijo....
  */
-export const dolociTarifeZaBlok = () => {
-    for (const blok in useBlokData().value) {
+export const dolociTarifeZaBlok = (month: number) => {
+    const months = useMonthsArray();
+
+    for (const blok in months.value[month].blok_data) {
         // doloci skupno_tarifo za moc za vsak blok
-        // useBlokData().value[blok].skupna_tarifa_moc = getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P;
-        useBlokData().value[blok].skupna_tarifa_energija = getTarifeData()[blok].distribucija.tarifna_postavka_W + getTarifeData()[blok].prenos.tarifna_postavka_W;
-        useBlokData().value[blok].skupna_tarifa_presezna_moc = useBlokData().value[blok].skupna_tarifa_moc * 0.9;
+        months.value[month].blok_data[blok].skupna_tarifa_moc = getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P;
+        months.value[month].blok_data[blok].skupna_tarifa_energija = getTarifeData()[blok].distribucija.tarifna_postavka_W + getTarifeData()[blok].prenos.tarifna_postavka_W;
+        months.value[month].blok_data[blok].skupna_tarifa_presezna_moc = useBlokData().value[blok].skupna_tarifa_moc * 0.9;
     }
 };
 
