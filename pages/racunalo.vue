@@ -4,24 +4,26 @@
         <Header />
         <div class="page-content">
             <section class="data-input-section">
-                <PrikljucnaMocForm />
-                <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
-                    <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
-                        <TarifaForm />
-                    </Fieldset>
-                    <UploadData style="flex: 33%" />
-                    <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
-                        <PrispevkiForm />
-                    </Fieldset>
-                </div>
+                <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
+                    <PrikljucnaMocForm />
+                    <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
+                        <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
+                            <TarifaForm />
+                        </Fieldset>
+                        <UploadData style="flex: 33%" />
+                        <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
+                            <PrispevkiForm />
+                        </Fieldset>
+                    </div>
+                </Fieldset>
             </section>
-            <section v-if="is_table" class="new-bill-section">
+            <!-- <section v-if="is_table" class="new-bill-section">
                 <div>
                     <NoviRacun />
                 </div>
                 <Button label="Primerjaj novi/stari racun" icon="pi pi-window-maximize" @click="useIsPrimerjavaModal().value = true" style="max-width: 250px; margin: auto" />
-            </section>
-            <section v-else class="instructions-info-section">
+            </section> -->
+            <section v-if="!is_table" class="instructions-info-section">
                 <div class="instructions">
                     <h3>Navodila za uporabo:</h3>
                     <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok.</p>
@@ -37,9 +39,13 @@
                 </div>
             </section>
         </div>
-        <div>
-            <span>MONTHS</span>
-            <DisplayMonths />
+        <div class="data-display" style="padding: 20px">
+            <div>
+                <DisplayMonths />
+            </div>
+            <div class="data-tables">
+                <DisplayMonthsData />
+            </div>
         </div>
         <Transition name="slide-fade">
             <NoviStariPrimerjava v-if="useIsPrimerjavaModal().value" />
@@ -108,7 +114,7 @@ export default {
     margin-bottom: 50px;
     margin-top: 0px;
 
-    max-width: 1250px;
+    max-width: 1400px;
 }
 
 .new-bill-section {
@@ -146,6 +152,22 @@ export default {
 
     text-align: justify;
     text-justify: inter-word;
+}
+
+.data-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 0px;
+
+    max-width: 1400px;
+}
+
+.data-tables {
 }
 
 /*

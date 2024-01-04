@@ -228,9 +228,6 @@ h3 {
     0% {
         background-color: #ffbc85;
     }
-    /* 50% {
-        background-color: transparent;
-    } */
     100% {
         background-color: transparent;
     }
