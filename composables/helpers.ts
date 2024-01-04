@@ -104,16 +104,26 @@ export const parseEnergyBlocks = () => {
     dolociEnergijoVTinMT();
 };
 
+/**
+ * Funkcija, ki se klice ob spremembi prikljucne moci.
+ */
+export const updatedPrikljucnaMoc = () => {
+    const startTime = performance.now();
+
+    for (const month in useMonthsArray().value) {
+        const month_int = parseInt(month);
+        izracunajOmrezninoMoci(month_int);
+        izracunajPreseznoMoc(month_int); //! Glede na meritve pobere ta funkcija 99% casa. Na voljo je se nekaj optimizacij
+    }
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    console.log(`Execution time updatedPrikljucnaMoc: ${executionTime} milliseconds`); //! Dev
+};
+
 // TODO: Calculate bill for month
 export const calculateBillForMonth = () => {};
 
 export const izracunajOmrezninoMoci = (month?: number) => {
-    // Izracunamo omreznino za moc
-    // for (const blok in useBlokData().value) {
-    //     const id = parseInt(blok) - 1; // Convert string to number and to index
-    //     useBlokData().value[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P);
-    // }
-
     const months = useMonthsArray();
     if (!months.value) throw new Error("Months data not initialized.");
 
@@ -194,6 +204,7 @@ export const sestejVsoOmreznino = () => {
 
 /**
  * Izracuna presezno moc za vsak blok in jo shrani v useBlokData()
+ * TODO: Iteriraj zgoolj cez blok, ki je bil spremenjen, ce je v inputu podan tudi blok, ki je optional parameter
  */
 export const izracunajPreseznoMoc = (month: number) => {
     const excel_data = useExcelData();
@@ -203,18 +214,17 @@ export const izracunajPreseznoMoc = (month: number) => {
 
     // Reset presezna moc and intervali presezna moc
     for (const blok in months.value[month].blok_data) {
-        // useBlokData().value[blok].presezna_moc = 0;
-        // useBlokData().value[blok].intervali_moc_presezena = 0;
         months.value[month].blok_data[blok].presezna_moc = 0;
         months.value[month].blok_data[blok].intervali_moc_presezena = 0;
     }
+    const prikljucna_moc = usePrikljucnaMoc().value;
 
     // 1. Pogledamo moc, ki je presezena za vsak interval. Torej for loop in sestevamo v spremenljivko
     for (let i = 0; i < months.value[month].data_rows.length; i++) {
         const b = months.value[month].data_rows[i].blok;
 
         // Pogledamo ali moc presega obracunsko moc za blok v katerem je trenutni interval
-        const presezna_moc = months.value[month].data_rows[i].P - usePrikljucnaMoc().value[b - 1];
+        const presezna_moc = months.value[month].data_rows[i].P - prikljucna_moc[b - 1];
 
         if (presezna_moc > 0) {
             // Presezna moc je pozitivna, torej jo pristejemo vrednosti v bloku po formuli
