@@ -47,9 +47,9 @@
                 <DisplayMonthsData />
             </div>
         </div>
-        <Transition name="slide-fade">
+        <!-- <Transition name="slide-fade">
             <NoviStariPrimerjava v-if="useIsPrimerjavaModal().value" />
-        </Transition>
+        </Transition> -->
     </div>
 </template>
 

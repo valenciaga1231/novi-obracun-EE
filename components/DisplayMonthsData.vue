@@ -98,27 +98,7 @@ export default {
     setup() {
         const months = useMonthsArray();
 
-        // make a map to map number to month with first three month letters
-        const month_map = new Map<number, string>([
-            [1, "Jan"],
-            [2, "Feb"],
-            [3, "Mar"],
-            [4, "Apr"],
-            [5, "Maj"],
-            [6, "Jun"],
-            [7, "Jul"],
-            [8, "Avg"],
-            [9, "Sep"],
-            [10, "Okt"],
-            [11, "Nov"],
-            [12, "Dec"],
-        ]);
-
-        function getMonthAbbreviation(number: number): string {
-            return month_map.get(number) || "";
-        }
-
-        return { months, getMonthAbbreviation };
+        return { months };
     },
 };
 </script>

@@ -59,3 +59,22 @@ export const convertDateFormat = (date_string: string): string => {
 export const isSameDay = (date1: Date, date2: Date) => {
     return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate();
 };
+
+const month_map = new Map<number, string>([
+    [1, "Jan"],
+    [2, "Feb"],
+    [3, "Mar"],
+    [4, "Apr"],
+    [5, "Maj"],
+    [6, "Jun"],
+    [7, "Jul"],
+    [8, "Avg"],
+    [9, "Sep"],
+    [10, "Okt"],
+    [11, "Nov"],
+    [12, "Dec"],
+]);
+
+export const getMonthAbbreviation = (number: number): string => {
+    return month_map.get(number) || "";
+};

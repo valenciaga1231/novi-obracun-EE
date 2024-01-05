@@ -42,7 +42,7 @@ export default {
         watch(
             () => settings.value.vrednosti_tarif,
             (val) => {
-                if (useIsTable().value) sumAllCosts();
+                // if (useIsTable().value) sumAllCosts();
                 localStorage.setItem("vrednosti_tarif", JSON.stringify(val));
             },
             { deep: true }

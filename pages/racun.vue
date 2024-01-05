@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section class="racun-section">
-            <NoviRacun v-if="useIsTable().value" style="max-width: 1000px" />
+            <NoviRacun :month="11" v-if="useIsTable().value" style="max-width: 1000px" />
         </section>
     </div>
 </template>

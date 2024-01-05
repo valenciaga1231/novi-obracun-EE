@@ -8,7 +8,7 @@
             <div>
                 <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
-                    <b>Cena: </b> <span class="price">{{ sumAllCosts().toFixed(2) }} </span>
+                    <b>Cena: </b> <span class="price">{{ sumMonthCosts(props.month).toFixed(2) }} </span>
                     € (brez DDV)
                 </p>
             </div>
@@ -30,24 +30,24 @@
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
-                        <td>{{ velika_tarifa.toFixed(0) }}</td>
+                        <td>{{ month_bill.vt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(velika_tarifa) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: left">Električna energija MT</td>
-                        <td>{{ mala_tarifa.toFixed(0) }}</td>
+                        <td>{{ month_bill.mt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(mala_tarifa) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
+                        <td>{{ (month_bill.mt_energy + month_bill.vt_energy).toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                        <td>{{ (Math.round(mala_tarifa) * settings.vrednosti_tarif.MT + Math.round(velika_tarifa) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <template v-if="settings.tip_starega_obracuna === 'ET'">
@@ -60,12 +60,12 @@
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (mala_tarifa + velika_tarifa).toFixed(0) }}</td>
+                        <td>{{ (month_bill.mt_energy + month_bill.vt_energy).toFixed(0) }}</td>
                         <td colspan="2"></td>
                         <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in blok_data" :key="blok">
+                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
                     <tr v-if="data.is_active">
                         <td style="text-align: left">Energija blok {{ blok }}</td>
                         <td>{{ data.energija.toFixed(2) }}</td>
@@ -74,7 +74,7 @@
                         <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in blok_data" :key="blok">
+                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
                     <tr v-if="data.is_active">
                         <td style="text-align: left">Dogovorjena moč blok {{ blok }}</td>
                         <td>{{ prikljucna_moc[blok - 1] }}</td>
@@ -83,7 +83,7 @@
                         <td>{{ data.cena_omreznine_moci.toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in blok_data" :key="blok">
+                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
                     <tr v-if="data.is_active && (selected_settings.some((setting) => setting.code === 'PM') || data.cena_presezne_moci > 0)">
                         <td style="text-align: left">Presežna moč blok {{ blok }}</td>
                         <td>{{ data.presezna_moc.toFixed(5) }}</td>
@@ -97,11 +97,11 @@
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>{{ sestejVsoOmreznino().toFixed(5) }}</td>
+                    <td>{{ sestejVsoOmreznino(props.month).toFixed(5) }}</td>
                 </tr>
-                <tr v-for="(prispevek, id) in prispevki" :key="id">
+                <tr v-for="(prispevek, id) in month_bill.prispevki" :key="id">
                     <td style="text-align: left">{{ prispevek.name }}</td>
-                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : total_energy.toFixed(0) }}</td>
+                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_bill.total_energy.toFixed(0) }}</td>
                     <td>{{ id == "spte_ove" ? "kW" : "kWh" }}</td>
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
@@ -111,12 +111,12 @@
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>{{ sestejVsePrispevke().toFixed(5) }}</td>
+                    <td>{{ sestejVsePrispevke(props.month).toFixed(5) }}</td>
                 </tr>
                 <tr class="bold-row" style="border-top: 1.75px solid black; padding-top: 20px; height: 50px">
                     <td style="text-align: left">Skupaj</td>
                     <td colspan="3"></td>
-                    <td>{{ sumAllCosts().toFixed(5) }}</td>
+                    <td>{{ sumMonthCosts(props.month).toFixed(5) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -125,49 +125,33 @@
 
 <script lang="ts">
 export default {
-    setup() {
-        const blok_data = useBlokData();
+    props: {
+        month: {
+            type: Number,
+            required: true,
+        },
+    },
+
+    setup(props) {
         const prikljucna_moc = usePrikljucnaMoc();
         const prikljucna_moc_stara = usePrikljucnaMocStara();
-        const total_energy = useTotalEnergy();
-        const prispevki = usePrispevki();
-        const mala_tarifa = useTotalEnergyMT();
-        const velika_tarifa = useTotalEnergyVT();
         const settings = useSettings();
+        const month_bill = createMonthBill(props.month);
+
         type SelectedSettings = { name: string; code: string };
         const selected_settings = ref([] as SelectedSettings[]);
         const racun_settings = ref([{ name: "Prikaži vse presežne moči", code: "PM" }]);
 
-        // if settings.vrednosti_tarif.VT is updated blink the row
-        watch(
-            () => settings.value.vrednosti_tarif.VT,
-            (val) => {
-                const elVT = document.querySelector(".energija-VT") as HTMLElement;
-                elVT.classList.add("blink-green");
-                setTimeout(() => elVT.classList.remove("blink-green"), 1500);
-
-                const elPrice = document.querySelector(".price") as HTMLElement;
-                elPrice.classList.add("blink-green");
-                setTimeout(() => elPrice.classList.remove("blink-green"), 1500);
-
-                if (useIsTable().value) sumAllCosts();
-            }
-        );
-
         return {
-            blok_data,
+            props,
             prikljucna_moc,
-            total_energy,
-            prispevki,
             prikljucna_moc_stara,
-            mala_tarifa,
-            velika_tarifa,
             settings,
             selected_settings,
             racun_settings,
             sestejVsoOmreznino,
             sestejVsePrispevke,
-            sumAllCosts,
+            month_bill,
         };
     },
 };
@@ -218,18 +202,5 @@ h3 {
     border: 1.75px solid black;
     padding: 10px 20px;
     border-radius: 5px;
-}
-
-.blink-green {
-    animation: blink-green-animation 1.5s infinite;
-}
-
-@keyframes blink-green-animation {
-    0% {
-        background-color: #ffbc85;
-    }
-    100% {
-        background-color: transparent;
-    }
 }
 </style>

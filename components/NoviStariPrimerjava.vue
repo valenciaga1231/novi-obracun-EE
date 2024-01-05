@@ -2,8 +2,8 @@
     <div class="container" @click="closePopup">
         <div class="popup" @click.stop>
             <div class="popup-content">
-                <NoviRacun style="width: 100%; flex: 45%" />
-                <StariRacun style="width: 100%; flex: 45%" />
+                <NoviRacun :month="props.month" style="width: 100%; flex: 45%" />
+                <!-- <StariRacun style="width: 100%; flex: 45%" /> -->
             </div>
         </div>
     </div>
@@ -11,7 +11,13 @@
 
 <script>
 export default {
-    setup() {
+    props: {
+        month: {
+            type: Number,
+            required: true,
+        },
+    },
+    setup(props) {
         const closePopup = () => {
             useIsPrimerjavaModal().value = false;
         };
@@ -26,6 +32,7 @@ export default {
 
         return {
             closePopup,
+            props,
         };
     },
 };
