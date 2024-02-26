@@ -26,6 +26,13 @@ export default {
                 },
             },
             {
+                label: "Proizvodnja",
+                icon: "pi pi-sun",
+                command: () => {
+                    window.open("http://localhost:3000", "_blank");
+                },
+            },
+            {
                 label: "Računalo",
                 icon: "pi pi-calculator",
                 command: () => {
@@ -61,7 +68,7 @@ export default {
             });
 
             // Enable or disable Racun section in menu bar
-            items.value[2].disabled = !useIsTable().value;
+            items.value[3].disabled = !useIsTable().value;
         });
 
         // Watch  to enable or disable Racun section in menu bar

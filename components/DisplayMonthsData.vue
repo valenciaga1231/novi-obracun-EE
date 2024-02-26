@@ -1,5 +1,8 @@
 <template>
     <div class="months-data-content">
+        <Fieldset legend="Povzetek"
+            >Celotni novi stroski brez DDV po novem izracunu <b>{{ total_new_cost.toFixed(2) }} EUR</b></Fieldset
+        >
         <Fieldset legend="Poraba energije" :toggleable="true">
             <table>
                 <thead>
@@ -97,8 +100,15 @@
 export default {
     setup() {
         const months = useMonthsArray();
+        const total_new_cost = ref(0);
 
-        return { months };
+        onMounted(() => {
+            for (const month in months.value) {
+                total_new_cost.value += sumMonthCosts(months.value[month].month);
+            }
+        });
+
+        return { months, total_new_cost };
     },
 };
 </script>

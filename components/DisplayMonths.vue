@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 style="text-align: center">Vnešeni meseci</h3>
         <div class="cards-content">
             <div v-for="(data, month, id) in months_data" :key="id">
                 <Card class="custom-card" @click="odpriRacun(data.month)" :pt="change_style_object">
