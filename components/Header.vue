@@ -29,7 +29,7 @@ export default {
                 label: "Proizvodnja",
                 icon: "pi pi-sun",
                 command: () => {
-                    window.open("http://localhost:3000", "_blank");
+                    useRouter().push({ name: "proizvodnja" });
                 },
             },
             {
@@ -74,7 +74,7 @@ export default {
         // Watch  to enable or disable Racun section in menu bar
         watch(
             () => useIsTable().value,
-            (val) => (items.value[2].disabled = !val)
+            (val) => (items.value[3].disabled = !val)
         );
 
         const changeTheme = () => {

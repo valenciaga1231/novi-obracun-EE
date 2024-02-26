@@ -19,6 +19,19 @@ export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispev
 export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => false);
 export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
 
+type EnergySourcesObject = {
+    BIOMASS: Array<number> | undefined;
+    COAL_BROWN: Array<number> | undefined;
+    FOSSIL_GAS: Array<number> | undefined;
+    HYDRO_PUMP: Array<number> | undefined;
+    HYDRO_RIVER: Array<number> | undefined;
+    NUCLEAR: Array<number> | undefined;
+    SOLAR: Array<number> | undefined;
+    WIND_ONSHORE: Array<number> | undefined;
+};
+
+export const apiGenerationData = () => useState<EnergySourcesObject>("api_generation_data", () => ({} as EnergySourcesObject));
+
 export const initDefaultBlokData = () => {
     let data = {} as BlokData;
     // for loop from onw to 5
