@@ -30,8 +30,6 @@ type EnergySourcesObject = {
     WIND_ONSHORE: Array<number> | undefined;
 };
 
-export const apiGenerationData = () => useState<EnergySourcesObject>("api_generation_data", () => ({} as EnergySourcesObject));
-
 export const initDefaultBlokData = () => {
     let data = {} as BlokData;
     // for loop from onw to 5

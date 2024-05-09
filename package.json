@@ -19,7 +19,6 @@
     "vue-tsc": "^1.8.25"
   },
   "dependencies": {
-    "echarts": "^5.5.0",
     "moment-timezone": "^0.5.43",
     "primeicons": "^6.0.1",
     "primevue": "^3.45.0",

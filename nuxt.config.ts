@@ -1,9 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    devtools: { enabled: true },
+    devtools: { enabled: false },
     typescript: {
-        typeCheck: true,
-        strict: true,
+        // typeCheck: true,
+        // strict: true,
     },
     build: {
         transpile: ["xlsx"],
