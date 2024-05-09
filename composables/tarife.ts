@@ -1,3 +1,8 @@
+/**
+ * Tarife za prenos in distribucijo električne energije
+ */
+export const getTarifeData = (): TarifeData => JSON.parse(json);
+
 const json = `{
     "1": {
         "prenos": {
@@ -63,8 +68,3 @@ type TarifeData = {
         };
     };
 };
-
-/**
- * Tarife za prenos in distribucijo električne energije
- */
-export const getTarifeData = (): TarifeData => JSON.parse(json);

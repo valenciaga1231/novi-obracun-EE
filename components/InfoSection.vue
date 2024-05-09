@@ -2,7 +2,7 @@
     <div class="info-content">
         <Panel header="V letu 2024 prihaja nov tarifni sistem">
             <div class="text-window">
-                <p>Z dnem <b>1. 6. 2024</b> bo stopil v veljavo nov tarifni sistem. Le ta se nanaša samo na omrežnino. Njegov cilj je spodbuditi uporabnike, da s prilagajanjem odjema prispevajo k optimizaciji distribucijskega in tudi širše elektroenergetskega sistema. Tako lahko dosežemo razbremenitev omrežja v času, ko je to najbolj obremenjeno z vidika porabe električne energije in moči.</p>
+                <p>Z dnem <b>1. 7. 2024</b> bo stopil v veljavo nov tarifni sistem. Le ta se nanaša samo na omrežnino. Njegov cilj je spodbuditi uporabnike, da s prilagajanjem odjema prispevajo k optimizaciji distribucijskega in tudi širše elektroenergetskega sistema. Tako lahko dosežemo razbremenitev omrežja v času, ko je to najbolj obremenjeno z vidika porabe električne energije in moči.</p>
                 <p>Uporabnik bo lahko svoj odjem prilagajal tako po moči kot po porabljeni električni energiji in s tem privarčeval.</p>
                 <p style="display: flex; align-items: center; justify-content: space-between">
                     <span>Te zanima kakšen račun boš imel?</span>

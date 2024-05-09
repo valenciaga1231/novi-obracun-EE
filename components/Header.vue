@@ -33,14 +33,6 @@ export default {
                 },
             },
             {
-                label: "Račun",
-                icon: "pi pi-money-bill",
-                disabled: true,
-                command: () => {
-                    useRouter().push({ name: "racun" });
-                },
-            },
-            {
                 label: "Analiza",
                 icon: "pi pi-list",
                 command: () => {
@@ -59,16 +51,7 @@ export default {
                 if (to.fullPath === "/") is_index_path.value = true;
                 else is_index_path.value = false;
             });
-
-            // Enable or disable Racun section in menu bar
-            items.value[2].disabled = !useIsTable().value;
         });
-
-        // Watch  to enable or disable Racun section in menu bar
-        watch(
-            () => useIsTable().value,
-            (val) => (items.value[2].disabled = !val)
-        );
 
         const changeTheme = () => {
             // if (is_light_theme.value) PrimeVue.changeTheme("lara-light-green", "lara-dark-green", "theme-link-dark", () => {});

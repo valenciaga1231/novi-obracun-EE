@@ -4,42 +4,42 @@
         <Header />
         <div class="page-content">
             <section class="data-input-section">
-                <PrikljucnaMocForm />
-                <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
-                    <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
-                        <TarifaForm />
-                    </Fieldset>
-                    <UploadData style="flex: 33%" />
-                    <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
-                        <PrispevkiForm />
-                    </Fieldset>
-                </div>
+                <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
+                    <PrikljucnaMocForm />
+                    <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
+                        <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
+                            <TarifaForm />
+                        </Fieldset>
+                        <UploadData style="flex: 33%" />
+                        <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
+                            <PrispevkiForm />
+                        </Fieldset>
+                    </div>
+                </Fieldset>
             </section>
-            <section v-if="is_table" class="new-bill-section">
-                <div>
-                    <NoviRacun />
-                </div>
-                <Button label="Primerjaj novi/stari racun" icon="pi pi-window-maximize" @click="useIsPrimerjavaModal().value = true" style="max-width: 250px; margin: auto" />
-            </section>
-            <section v-else class="instructions-info-section">
+            <section class="instructions-info-section">
                 <div class="instructions">
                     <h3>Navodila za uporabo:</h3>
                     <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok.</p>
-                    <p>2. Velika in mala tarifa sta podani na poloznici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
-                    <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni mesec.</p>
+                    <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+                    <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
                     <p>4. Kliknemo <b>Izračunaj</b> in izpisal se nam bo prenovljenei račun za elektriko z novimi tarifami.</p>
                 </div>
                 <div class="info">
                     <h3>Informacije o računalu:</h3>
-                    <p>1. Kalkulator bo pravilno deloval, če boste vnesli podatke za en mesec.</p>
-                    <p>2. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
-                    <p>3. Za samooskrbne uporabnike bo izračun dodan kmalu. Tudi izračun za več mesecev hkrati bo dodan kmalu.</p>
+                    <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
+                    <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
                 </div>
             </section>
         </div>
-        <Transition name="slide-fade">
-            <NoviStariPrimerjava v-if="useIsPrimerjavaModal().value" />
-        </Transition>
+        <div class="data-display" style="padding: 20px">
+            <div v-if="useIsTable().value === true">
+                <DisplayMonths />
+            </div>
+            <div class="data-tables" v-if="useIsTable().value === true">
+                <DisplayMonthsData />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -104,7 +104,7 @@ export default {
     margin-bottom: 50px;
     margin-top: 0px;
 
-    max-width: 1250px;
+    max-width: 1400px;
 }
 
 .new-bill-section {
@@ -142,6 +142,22 @@ export default {
 
     text-align: justify;
     text-justify: inter-word;
+}
+
+.data-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 0px;
+
+    max-width: 1400px;
+}
+
+.data-tables {
 }
 
 /*

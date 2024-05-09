@@ -1,20 +1,25 @@
-import type { BlokData, ExcelRow, PrikljucnaMoc, Prispevki, Settings } from "~/types";
+import type { BlokData, ExcelRow, MonthData, MonthsData, PrikljucnaMoc, Prispevki, Settings } from "~/types";
 
 export const usePrikljucnaMoc = () => useState<PrikljucnaMoc>("prikljucna_moc", () => [4.2, 5.4, 5.4, 5.4, 5.4]);
 export const usePrikljucnaMocStara = () => useState<number>("prikljucna_moc_stara", () => 7);
 export const useExcelData = () => useState<ExcelRow[]>("excel_data", () => [] as ExcelRow[]);
-export const useBlokData = () => useState<BlokData>("blok_data", () => default_blok_data());
+export const useBlokData = () => useState<BlokData>("blok_data", () => initDefaultBlokData());
+export const useMonthsArray = () => useState<MonthsData>("months_array", () => ({} as MonthsData));
+
+// TODO: Spodnje tri bomo lahko dali stran
 export const useTotalEnergy = () => useState<number>("total_energy", () => 0);
 export const useTotalEnergyVT = () => useState<number>("total_energy_VT", () => 0);
 export const useTotalEnergyMT = () => useState<number>("total_energy_MT", () => 0);
+
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
 export const useSettings = () => useState<Settings>("settings", () => default_settings);
+
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
 export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => false);
 export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
 
-const default_blok_data = () => {
+export const initDefaultBlokData = () => {
     let data = {} as BlokData;
     // for loop from onw to 5
     for (let b = 1; b <= 5; b++) {
@@ -77,6 +82,8 @@ const prispevki: Prispevki = {
  */
 export const useResetData = () => {
     useExcelData().value = [];
+    useBlokData().value = initDefaultBlokData();
+    useMonthsArray().value = {} as MonthsData;
     useTotalEnergy().value = 0;
     useTotalEnergyVT().value = 0;
     useTotalEnergyMT().value = 0;

@@ -176,10 +176,12 @@ export default {
             localStorage.setItem("prikljucna_moc", JSON.stringify(new_input_values));
 
             // Ponovno izracunaj omreznino za moc in presezno moc
-            izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
+            // izracunajOmrezninoMoci();
+            // izracunajPreseznoMoc();
+            // izracunajCenoPresezneMoci();
+            // dolociTarifeZaBlok();
+
+            updatedPrikljucnaMoc();
         };
 
         const handleInputChange = (id: number) => {
@@ -209,10 +211,12 @@ export default {
             localStorage.setItem("prikljucna_moc", JSON.stringify(input_values));
 
             // Ponovno izracunaj omreznino za moc in presezno moc
-            izracunajOmrezninoMoci();
-            izracunajPreseznoMoc();
-            izracunajCenoPresezneMoci();
-            dolociTarifeZaBlok();
+            // izracunajOmrezninoMoci();
+            // izracunajPreseznoMoc();
+            // izracunajCenoPresezneMoci();
+            // dolociTarifeZaBlok();
+
+            updatedPrikljucnaMoc();
         };
 
         return {

@@ -26,7 +26,13 @@ export type BlokData = {
     };
 };
 
-type PrispevkiKeys = "operater_trga" | "energetsko_ucinkovitost" | "spte_ove" | "trosarina";
+enum PrispevkiKeys {
+    OperaterTrga = "operater_trga",
+    EnergetskoUcinkovitost = "energetsko_ucinkovitost",
+    SpteOve = "spte_ove",
+    Trosarina = "trosarina",
+}
+
 export type Prispevki = {
     [key in PrispevkiKeys]: {
         name: string;
@@ -47,4 +53,46 @@ export type Settings = {
         start: Date | null;
         end: Date | null;
     };
+};
+
+export type MonthData = {
+    month: number; // From 0 to 11 aka. January to December
+    active_blocks: [0 | 1, 0 | 1, 0 | 1, 0 | 1, 0 | 1]; //? Kaksna boljsa resitev za definicio blokov? Morda samo arraz [1, 2, 3, 4]?
+    blok_data: BlokData;
+    prispevki: Prispevki;
+    total_energy: number;
+    vt_energy: number;
+    mt_energy: number;
+    data_rows: ExcelRow[];
+};
+
+export type MonthsData = {
+    [key: number]: MonthData;
+};
+
+/**
+ * Se uporabi, ko se prikaze nov racun na zaslonu.
+ */
+export type MonthBill = {
+    month_name: string;
+    total_energy: number;
+    vt_energy: number;
+    mt_energy: number;
+    blok_data: BlokData;
+    prispevki: Prispevki;
+    total_sum: number;
+    total_sum_DDV: number;
+};
+
+/**
+ * Se uporabi, ko se prikaze nov racun na zaslonu.
+ */
+export type MonthBillOld = {
+    month_name: string;
+    total_energy: number;
+    vt_energy: number;
+    mt_energy: number;
+    prispevki: Prispevki;
+    total_sum: number;
+    total_sum_DDV: number;
 };
