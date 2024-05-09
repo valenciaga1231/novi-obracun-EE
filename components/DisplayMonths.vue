@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div ref="display_months">
         <h3 style="text-align: center">Vnešeni meseci</h3>
+        <p style="text-align: center">(klikni na mesec za vpogled racunov)</p>
         <div class="cards-content">
             <div v-for="(data, month, id) in months_data" :key="id">
                 <Card class="custom-card" @click="odpriRacun(data.month)" :pt="change_style_object">
@@ -26,6 +27,11 @@ export default {
     setup() {
         const months_data = useMonthsArray();
         const month_bill = ref(0);
+        const display_months = ref<HTMLElement | null>(null);
+
+        onMounted(() => {
+            if (display_months.value) display_months.value.scrollIntoView({ behavior: "smooth", block: "start" }); // Scroll on data
+        });
 
         const odpriRacun = (month: number) => {
             createMonthBill(month);
@@ -39,7 +45,7 @@ export default {
                 style: `font-size: 15px; text-align: center; padding: 0px;`,
             },
             body: {
-                style: `font-size: 10px; text-align: center; padding: 10px 5px;`,
+                style: `font-size: 12px; text-align: center; padding: 10px 5px;`,
             },
         };
 
@@ -47,6 +53,7 @@ export default {
             months_data,
             change_style_object,
             month_bill,
+            display_months,
             odpriRacun,
         };
     },
@@ -70,14 +77,14 @@ export default {
 }
 
 .custom-card-body {
-    font-size: 10px;
+    font-size: 15px;
     text-align: center;
     padding: 10px 5px;
 }
 
 .custom-card:hover {
     transition: transform 0.3s;
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 /*

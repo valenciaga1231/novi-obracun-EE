@@ -83,3 +83,16 @@ export type MonthBill = {
     total_sum: number;
     total_sum_DDV: number;
 };
+
+/**
+ * Se uporabi, ko se prikaze nov racun na zaslonu.
+ */
+export type MonthBillOld = {
+    month_name: string;
+    total_energy: number;
+    vt_energy: number;
+    mt_energy: number;
+    prispevki: Prispevki;
+    total_sum: number;
+    total_sum_DDV: number;
+};

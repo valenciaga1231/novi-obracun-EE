@@ -5,7 +5,7 @@
             <div style="text-align: center; font-size: 12px">
                 <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="10000000" @select="handleFileUpload($event)" class="customized-upload" style="font-size: 11px" />
             </div>
-            <Button @click="processData" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
+            <Button @click="processData()" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
         </div>
         <div v-if="data_file" @click="clearFile" style="text-align: center; cursor: pointer">
             <p>Datoteka:</p>
@@ -15,6 +15,10 @@
             </div>
         </div>
         <span class="warning">Opozorilo: Izračun za mesec November 2023 je verjetno napačen, ker je napaka pri izvozu podatkov iz portala MojElektro.</span>
+        <div class="rectangle-popup" v-if="on_going_calculation">
+            <ProgressSpinner></ProgressSpinner>
+            Izracunavam
+        </div>
     </div>
 </template>
 
@@ -29,6 +33,7 @@ export default {
         const settings = useSettings();
         const is_button_disabled = ref(true);
         const uploaded_files = ref<File[]>([]); // New data property
+        const on_going_calculation = ref(false);
 
         const handleFileUpload = (event: FileUploadSelectEvent) => {
             const files = event.files;
@@ -44,9 +49,15 @@ export default {
         };
 
         // Enable button if file and tarifs are set
-        watch([data_file, settings], (value) => (data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true)), { deep: true });
+        watch([data_file, settings], (value) => {
+            data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true);
+        }),
+            { deep: true };
 
         const processData = async () => {
+            is_button_disabled.value = true;
+            useIsTable().value = false;
+            on_going_calculation.value = true;
             useResetData(); // Reset data
 
             if (data_file.value) await parseDocumentData(data_file.value);
@@ -56,21 +67,8 @@ export default {
             console.log("Processing data"); //! Dev
 
             parseEnergyBlocks();
+            on_going_calculation.value = false;
             useIsTable().value = true;
-
-            // Change header tab TODO: Could be moved somwhere else
-            // useHeaderTab().value = 1;
-            // useRouter().push({ name: "racun" });
-
-            // Call the API endpoint
-            const response = await fetch("https://api.counterapi.dev/v1/elektricna_energija/klik_izracun/up", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!response.ok) throw new Error("API request failed");
         };
 
         const clearFile = () => (data_file.value = null);
@@ -84,6 +82,7 @@ export default {
             data_file,
             is_button_disabled,
             uploaded_files,
+            on_going_calculation,
         };
     },
 };
@@ -125,5 +124,27 @@ h2 {
     text-align: center;
     font-size: 12px;
     color: red;
+}
+
+.rectangle-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 </style>

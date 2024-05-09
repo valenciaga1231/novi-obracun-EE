@@ -1,5 +1,5 @@
 import { months } from "moment-timezone";
-import { type BlokData, type ExcelRow, type MonthBill, type MonthData, type MonthsData } from "~/types";
+import { type BlokData, type ExcelRow, type MonthBill, type MonthBillOld, type MonthData, type MonthsData } from "~/types";
 
 /**
  * TODO: Should be called for each month separately
@@ -9,12 +9,6 @@ export const parseEnergyBlocks = () => {
 
     const excel_data = useExcelData();
     if (!excel_data.value) throw new Error("Excel data not initialized.");
-
-    // Reset energija in cena_omreznine_energije
-    // for (const blok in useBlokData().value) {
-    //     useBlokData().value[blok].energija = 0;
-    //     useBlokData().value[blok].cena_omreznine_energije = 0;
-    // }
 
     for (let i = 0; i < excel_data.value.length; i++) {
         // get month from JS Date object
@@ -87,19 +81,6 @@ export const parseEnergyBlocks = () => {
         console.log("months_data", months_data.value[month].total_energy);
     }
     console.log("useMonthsArray", useMonthsArray().value); //! Dev
-
-    // Izracun skupne energije
-    // let test = 0;
-    // for (const blok in useBlokData().value) test += useBlokData().value[blok].energija;
-    // console.log(test);
-
-    // Izracun cena_omreznine_moci
-    // izracunajOmrezninoMoci();
-    // izracunajPreseznoMoc();
-    // izracunajCenoPresezneMoci();
-
-    // Dolocimo prispevke
-    // dolociPrispevke(11);
 
     // Dolocimo energijo v VT in MT
     dolociEnergijoVTinMT();
@@ -240,11 +221,7 @@ export const izracunajPreseznoMoc = (month: number) => {
     const faktor_presezne_moci = 0.9; // TODO: Dodaj v nastavitve
 
     // Izracunamo ceno presezne moci
-    // for (const blok in months.value[month].blok_data) {
-    //     months.value[month].blok_data[blok].cena_presezne_moci = months.value[month].blok_data[blok].presezna_moc * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P) * faktor_presezne_moci;
-    // }
     for (const [month_key, month_value] of Object.entries(months.value[month].blok_data)) {
-        //!! A tole ostane raktivno? pac a je month_value.cean_presezne_moci bindan na original object
         month_value.cena_presezne_moci = month_value.presezna_moc * (getTarifeData()[month_key].distribucija.tarifna_postavka_P + getTarifeData()[month_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
     }
 };
@@ -288,23 +265,34 @@ export const sestejVsePrispevke = (month: number) => {
 
 /**
  * Vrne ceno vseh stroskov na racunu, brez DDV.
+ *
+ * TO BO ZA STARI RACUN????
  */
-export const sumAllCosts = () => {
-    const omreznina = sestejVsoOmreznino(11);
-    const prispevki = sestejVsePrispevke(11);
-    let energija = 0;
+export const sumMonthCostsOld = (month: number) => {
+    const months = useMonthsArray().value;
 
+    const omreznina_moc = usePrikljucnaMocStara().value * 0.77417;
+    let omreznina_energija = 0;
+    //TODO NUJNO DODATI SE CENO ZA OMREZNINO, lahko v spodnje else if stavke
+    // consto mreznina_energija
+    const prispevki = sestejVsePrispevke(month);
+
+    let energija = 0;
     if (useSettings().value.tip_starega_obracuna === "VT+MT") {
-        energija = useTotalEnergyVT().value * useSettings().value.vrednosti_tarif.VT + useTotalEnergyMT().value * useSettings().value.vrednosti_tarif.MT;
+        energija = months[month].vt_energy * useSettings().value.vrednosti_tarif.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif.MT;
+        omreznina_energija = months[month].vt_energy * 0.04182 + months[month].mt_energy * 0.03215;
     } else if (useSettings().value.tip_starega_obracuna === "ET") {
-        energija = useTotalEnergy().value * useSettings().value.vrednosti_tarif.ET;
+        energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
+        omreznina_energija = months[month].total_energy * 0.03215; //TODO: Pogledati je treba ceno omreznine energije za ET
     } else {
         throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
     }
-
-    return omreznina + energija + prispevki;
+    return omreznina_moc + omreznina_energija + prispevki + energija;
 };
 
+/**
+ * Vrne ceno vseh stroskov na NOVEM racunu za izbran mesec, brez DDV.
+ */
 export const sumMonthCosts = (month: number): number => {
     const months = useMonthsArray().value;
 
@@ -336,6 +324,25 @@ export const createMonthBill = (month: number) => {
         vt_energy: months[month].vt_energy,
         mt_energy: months[month].mt_energy,
         blok_data: months[month].blok_data,
+        prispevki: usePrispevki().value,
+        total_sum: month_costs,
+        total_sum_DDV: month_costs * 1.22,
+    };
+
+    return bill;
+};
+
+export const createMonthBillOld = (month: number) => {
+    const months = useMonthsArray().value;
+    if (!months) throw new Error("Months data not initialized.");
+
+    const month_costs = sumMonthCostsOld(month);
+
+    const bill: MonthBillOld = {
+        month_name: getMonthAbbreviation(months[month].month),
+        total_energy: months[month].total_energy,
+        vt_energy: months[month].vt_energy,
+        mt_energy: months[month].mt_energy,
         prispevki: usePrispevki().value,
         total_sum: month_costs,
         total_sum_DDV: month_costs * 1.22,

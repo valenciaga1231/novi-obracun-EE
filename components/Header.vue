@@ -26,25 +26,10 @@ export default {
                 },
             },
             {
-                label: "Proizvodnja",
-                icon: "pi pi-sun",
-                command: () => {
-                    useRouter().push({ name: "proizvodnja" });
-                },
-            },
-            {
                 label: "Računalo",
                 icon: "pi pi-calculator",
                 command: () => {
                     useRouter().push({ name: "racunalo" });
-                },
-            },
-            {
-                label: "Račun",
-                icon: "pi pi-money-bill",
-                disabled: true,
-                command: () => {
-                    useRouter().push({ name: "racun" });
                 },
             },
             {
@@ -66,16 +51,7 @@ export default {
                 if (to.fullPath === "/") is_index_path.value = true;
                 else is_index_path.value = false;
             });
-
-            // Enable or disable Racun section in menu bar
-            items.value[3].disabled = !useIsTable().value;
         });
-
-        // Watch  to enable or disable Racun section in menu bar
-        watch(
-            () => useIsTable().value,
-            (val) => (items.value[3].disabled = !val)
-        );
 
         const changeTheme = () => {
             // if (is_light_theme.value) PrimeVue.changeTheme("lara-light-green", "lara-dark-green", "theme-link-dark", () => {});

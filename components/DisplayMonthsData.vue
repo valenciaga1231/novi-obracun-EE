@@ -1,8 +1,40 @@
 <template>
     <div class="months-data-content">
-        <Fieldset legend="Povzetek"
-            >Celotni novi stroski brez DDV po novem izracunu <b>{{ total_new_cost.toFixed(2) }} EUR</b></Fieldset
-        >
+        <Fieldset legend="Povzetek">
+            <p>
+                Celotni novi stroski z DDV po starem izracunu <b>{{ (total_old_cost * 1.22).toFixed(2) }} EUR</b>
+            </p>
+            <p>
+                Celotni novi stroski z DDV po novem izracunu <b>{{ (total_new_cost * 1.22).toFixed(2) }} EUR</b>
+            </p>
+            <br />
+            Porast/upad cene po mesecih:
+            <table>
+                <thead>
+                    <tr class="table-header">
+                        <th></th>
+                        <template v-for="(month, index) in months" :key="index">
+                            <th>{{ getMonthAbbreviation(month.month) }}</th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Stara</p>
+                            <p>Nova</p>
+                            <p>Sprememba</p>
+                        </td>
+                        <td v-for="(value, index) in new_costs" :key="index">
+                            <p>{{ (old_costs[index] * 1.22).toFixed(2) }}</p>
+                            <p>{{ (new_costs[index] * 1.22).toFixed(2) }}</p>
+                            <p class="blue-100">{{ (((new_costs[index] * 1.22) / (old_costs[index] * 1.22)) * 100 - 100).toFixed(2) }} %</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="font-size: 14px">Vse cene v zgornji tabeli so z DDV.</div>
+        </Fieldset>
         <Fieldset legend="Poraba energije" :toggleable="true">
             <table>
                 <thead>
@@ -83,7 +115,7 @@
                         <td v-for="(month, index) in months" :key="index">
                             <template v-if="month.blok_data">
                                 <template v-for="(data, index) in month.blok_data" :key="index">
-                                    <p :style="{ backgroundColor: data.is_active ? '' : 'gray', color: data.is_active ? '' : 'gray' }">
+                                    <p :style="{ backgroundColor: calculateBackgroundColor(data.is_active, data.presezna_moc), color: data.is_active ? '' : 'gray' }">
                                         {{ data.presezna_moc.toFixed(2) }}
                                     </p>
                                 </template>
@@ -101,14 +133,30 @@ export default {
     setup() {
         const months = useMonthsArray();
         const total_new_cost = ref(0);
+        const total_old_cost = ref(0);
+        const new_costs = ref<number[]>([]);
+        const old_costs = ref<number[]>([]);
 
         onMounted(() => {
             for (const month in months.value) {
-                total_new_cost.value += sumMonthCosts(months.value[month].month);
+                const new_cost = sumMonthCosts(months.value[month].month);
+                const old_cost = sumMonthCostsOld(months.value[month].month);
+
+                total_new_cost.value += new_cost;
+                total_old_cost.value += old_cost;
+
+                new_costs.value.push(new_cost);
+                old_costs.value.push(old_cost);
             }
         });
 
-        return { months, total_new_cost };
+        const calculateBackgroundColor = (is_active: boolean, presezna_moc: number) => {
+            if (!is_active) return "gray";
+            if (presezna_moc > 0) return "#cd5c5c";
+            return "";
+        };
+
+        return { months, total_new_cost, total_old_cost, new_costs, old_costs, calculateBackgroundColor };
     },
 };
 </script>

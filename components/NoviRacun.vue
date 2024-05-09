@@ -8,8 +8,8 @@
             <div>
                 <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
-                    <b>Cena: </b> <span class="price">{{ sumMonthCosts(props.month).toFixed(2) }} </span>
-                    € (brez DDV)
+                    <b>Cena: </b> <span class="price">{{ (sumMonthCosts(props.month) * 1.22).toFixed(2) }} </span>
+                    € (z DDV)
                 </p>
             </div>
         </div>
@@ -114,7 +114,7 @@
                     <td>{{ sestejVsePrispevke(props.month).toFixed(5) }}</td>
                 </tr>
                 <tr class="bold-row" style="border-top: 1.75px solid black; padding-top: 20px; height: 50px">
-                    <td style="text-align: left">Skupaj</td>
+                    <td style="text-align: left">Skupaj (brez DDV)</td>
                     <td colspan="3"></td>
                     <td>{{ sumMonthCosts(props.month).toFixed(5) }}</td>
                 </tr>
@@ -149,8 +149,6 @@ export default {
             settings,
             selected_settings,
             racun_settings,
-            sestejVsoOmreznino,
-            sestejVsePrispevke,
             month_bill,
         };
     },
