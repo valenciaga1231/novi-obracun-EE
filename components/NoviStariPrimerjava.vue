@@ -2,8 +2,8 @@
     <div class="container" @click="closePopup">
         <div class="popup" @click.stop>
             <div class="popup-content">
-                <NoviRacun :month="props.month" style="width: 100%; flex: 45%" />
-                <StariRacun :month="props.month" style="width: 100%; flex: 45%" />
+                <BillsNew :month="props.month" style="width: 100%; flex: 45%" />
+                <BillsOld :month="props.month" style="width: 100%; flex: 45%" />
             </div>
         </div>
     </div>

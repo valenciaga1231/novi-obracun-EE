@@ -7,7 +7,7 @@
             <div>
                 <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
-                    <b>Cena: </b> <span class="price">{{ (month_bill.total_sum * 1.22).toFixed(2) }} </span>
+                    <b>Cena: </b> <span class="price">{{ month_data.total_sum_old_DDV.toFixed(2) }} </span>
                     € (z DDV)
                 </p>
             </div>
@@ -30,24 +30,24 @@
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
-                        <td>{{ month_bill.vt_energy.toFixed(0) }}</td>
+                        <td>{{ month_data.vt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: left">Električna energija MT</td>
-                        <td>{{ month_bill.mt_energy.toFixed(0) }}</td>
+                        <td>{{ month_data.mt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (month_bill.mt_energy + month_bill.vt_energy).toFixed(0) }}</td>
+                        <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <tr>
@@ -59,28 +59,28 @@
                 </tr>
                 <tr>
                     <td style="text-align: left">Omrežnina VT</td>
-                    <td>{{ month_bill.vt_energy.toFixed(0) }}</td>
+                    <td>{{ month_data.vt_energy.toFixed(0) }}</td>
                     <td>kW</td>
                     <td>{{ "0.041820" }}</td>
-                    <td>{{ (month_bill.vt_energy * 0.04182).toFixed(5) }}</td>
+                    <td>{{ (month_data.vt_energy * 0.04182).toFixed(5) }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: left">Omrežnina MT</td>
-                    <td>{{ month_bill.mt_energy.toFixed(0) }}</td>
+                    <td>{{ month_data.mt_energy.toFixed(0) }}</td>
                     <td>kW</td>
                     <td>{{ "0.032150" }}</td>
-                    <td>{{ (month_bill.mt_energy * 0.03215).toFixed(5) }}</td>
+                    <td>{{ (month_data.mt_energy * 0.03215).toFixed(5) }}</td>
                 </tr>
                 <tr class="bold-row">
                     <td style="text-align: left">Skupaj omrežnina</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>{{ (Math.round(month_bill.mt_energy) * 0.03215 + Math.round(month_bill.vt_energy) * 0.04182 + Math.round(prikljucna_moc_stara) * 0.77417).toFixed(5) }}</td>
+                    <td>{{ (Math.round(month_data.mt_energy) * 0.03215 + Math.round(month_data.vt_energy) * 0.04182 + Math.round(prikljucna_moc_stara) * 0.77417).toFixed(5) }}</td>
                 </tr>
-                <tr v-for="(prispevek, id) in month_bill.prispevki" :key="id">
+                <tr v-for="(prispevek, id) in month_data.prispevki" :key="id">
                     <td style="text-align: left">{{ prispevek.name }}</td>
-                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_bill.total_energy.toFixed(0) }}</td>
+                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_data.total_energy.toFixed(0) }}</td>
                     <td>{{ id == "spte_ove" ? "kW" : "kWh" }}</td>
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
@@ -113,46 +113,15 @@ export default {
 
     setup(props) {
         const prikljucna_moc_stara = usePrikljucnaMocStara();
-        const total_energy = useTotalEnergy();
-        const prispevki = usePrispevki();
-        const mala_tarifa = useTotalEnergyMT();
-        const velika_tarifa = useTotalEnergyVT();
         const settings = useSettings();
-        const old_costs = ref(0);
 
-        const month_bill = createMonthBillOld(props.month);
-
-        // summ all stari racun costs
-        const sumAllCosts = () => {
-            let sum = 0;
-
-            // Dodaj prispevke
-            sum += sestejVsePrispevke();
-
-            // Dodaj elektricno energijo
-            sum += Math.round(mala_tarifa.value) * settings.value.vrednosti_tarif.MT + Math.round(velika_tarifa.value) * settings.value.vrednosti_tarif.VT;
-
-            // Dodaj omreznino
-            sum += prikljucna_moc_stara.value * 0.77417 + Math.round(mala_tarifa.value) * 0.03215 + Math.round(velika_tarifa.value) * 0.04182;
-
-            return sum;
-        };
-
-        onMounted(() => {
-            // old_costs.value = sumAllCosts();
-        });
+        const month_data = useMonthsArray().value[props.month];
 
         return {
             props,
             prikljucna_moc_stara,
-            total_energy,
-            prispevki,
-            mala_tarifa,
-            velika_tarifa,
             settings,
-            old_costs,
-
-            month_bill,
+            month_data,
         };
     },
 };

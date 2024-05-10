@@ -64,35 +64,12 @@ export type MonthData = {
     vt_energy: number;
     mt_energy: number;
     data_rows: ExcelRow[];
+    total_sum: number;
+    total_sum_DDV: number;
+    total_sum_old: number;
+    total_sum_old_DDV: number;
 };
 
 export type MonthsData = {
     [key: number]: MonthData;
-};
-
-/**
- * Se uporabi, ko se prikaze nov racun na zaslonu.
- */
-export type MonthBill = {
-    month_name: string;
-    total_energy: number;
-    vt_energy: number;
-    mt_energy: number;
-    blok_data: BlokData;
-    prispevki: Prispevki;
-    total_sum: number;
-    total_sum_DDV: number;
-};
-
-/**
- * Se uporabi, ko se prikaze nov racun na zaslonu.
- */
-export type MonthBillOld = {
-    month_name: string;
-    total_energy: number;
-    vt_energy: number;
-    mt_energy: number;
-    prispevki: Prispevki;
-    total_sum: number;
-    total_sum_DDV: number;
 };

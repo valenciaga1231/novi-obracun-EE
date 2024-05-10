@@ -175,12 +175,6 @@ export default {
             // Set prikljucna moc to local storage
             localStorage.setItem("prikljucna_moc", JSON.stringify(new_input_values));
 
-            // Ponovno izracunaj omreznino za moc in presezno moc
-            // izracunajOmrezninoMoci();
-            // izracunajPreseznoMoc();
-            // izracunajCenoPresezneMoci();
-            // dolociTarifeZaBlok();
-
             updatedPrikljucnaMoc();
         };
 
@@ -209,12 +203,6 @@ export default {
 
             // Set prikljucna moc to local storage
             localStorage.setItem("prikljucna_moc", JSON.stringify(input_values));
-
-            // Ponovno izracunaj omreznino za moc in presezno moc
-            // izracunajOmrezninoMoci();
-            // izracunajPreseznoMoc();
-            // izracunajCenoPresezneMoci();
-            // dolociTarifeZaBlok();
 
             updatedPrikljucnaMoc();
         };

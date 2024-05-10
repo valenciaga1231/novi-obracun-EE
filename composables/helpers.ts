@@ -1,5 +1,4 @@
-import { months } from "moment-timezone";
-import { type BlokData, type ExcelRow, type MonthBill, type MonthBillOld, type MonthData, type MonthsData } from "~/types";
+import { type ExcelRow } from "~/types";
 
 /**
  * TODO: Should be called for each month separately
@@ -27,6 +26,10 @@ export const parseEnergyBlocks = () => {
                 vt_energy: 0,
                 mt_energy: 0,
                 data_rows: [],
+                total_sum: 0,
+                total_sum_DDV: 0,
+                total_sum_old: 0,
+                total_sum_old_DDV: 0,
             };
         }
 
@@ -78,6 +81,15 @@ export const parseEnergyBlocks = () => {
         izracunajOmrezninoMoci(month_int);
         izracunajPreseznoMoc(month_int);
 
+        // Get month expenses
+        const month_expenses = sumMonthCosts(month_int);
+        months_data.value[month].total_sum = month_expenses;
+        months_data.value[month].total_sum_DDV = month_expenses * 1.22;
+
+        const month_expenses_old = sumMonthCostsOld(month_int);
+        months_data.value[month].total_sum_old = month_expenses_old;
+        months_data.value[month].total_sum_old_DDV = month_expenses_old * 1.22;
+
         console.log("months_data", months_data.value[month].total_energy);
     }
     console.log("useMonthsArray", useMonthsArray().value); //! Dev
@@ -87,28 +99,38 @@ export const parseEnergyBlocks = () => {
 };
 
 /**
- * Funkcija, ki se klice ob spremembi prikljucne moci.
+ * Funkcija, ki se klice ob spremembi prikljucne moci, kjer je potrebno posodobiti
+ * nove omreznine za moci, izracun preseznih moci in celotne mesecne stroske.
  */
 export const updatedPrikljucnaMoc = () => {
     const startTime = performance.now();
 
     for (const month in useMonthsArray().value) {
         const month_int = parseInt(month);
+
+        // Calculate network fee and excess power
         izracunajOmrezninoMoci(month_int);
         izracunajPreseznoMoc(month_int); //! Glede na meritve pobere ta funkcija 99% casa. Na voljo je se nekaj optimizacij
+
+        // Update total month expenses
+        const month_expenses = sumMonthCosts(month_int);
+        useMonthsArray().value[month].total_sum = month_expenses;
+        useMonthsArray().value[month].total_sum_DDV = month_expenses * 1.22;
     }
     const endTime = performance.now();
     const executionTime = endTime - startTime;
     console.log(`Execution time updatedPrikljucnaMoc: ${executionTime} milliseconds`); //! Dev
 };
 
-// TODO: Calculate bill for month
-export const calculateBillForMonth = () => {};
-
+/**
+ * Funkcija izracuna ceno omreznine moci in jo zapise v objekt meseca
+ * za katerega use racuna.
+ *
+ * @param month Mesec za katerega se racuna omreznino
+ */
 export const izracunajOmrezninoMoci = (month?: number) => {
     const months = useMonthsArray();
     if (!months.value) throw new Error("Months data not initialized.");
-
     // Update month blok data
     //@ts-ignore
     for (const blok in months.value[month].blok_data) {
@@ -165,7 +187,7 @@ export const isTarifVT = (datum: Date) => {
 };
 
 /**
- * @returns Vrne vse omreznine za vse bloke
+ * @returns Vrne ceno celotne omreznine za mesec (ceno omreznine energije + moci)
  */
 export const sestejVsoOmreznino = (month: number) => {
     const months = useMonthsArray().value;
@@ -180,8 +202,8 @@ export const sestejVsoOmreznino = (month: number) => {
 };
 
 /**
- * Izracuna presezno moc za vsak blok in jo shrani v useBlokData()
- * TODO: Iteriraj zgoolj cez blok, ki je bil spremenjen, ce je v inputu podan tudi blok, ki je optional parameter
+ * Izracuna presezno moc za vsak blok v definiranem mesecu in jo shrani
+ * v mesec objekt.
  */
 export const izracunajPreseznoMoc = (month: number) => {
     const excel_data = useExcelData();
@@ -227,9 +249,8 @@ export const izracunajPreseznoMoc = (month: number) => {
 };
 
 /**
- * Doloci tarife za vsak blok
- *
- * TODO: To bi se lahko dalo drugam, ker tarifa za moc se itak izracuna ze na vstopu v aplikacijo....
+ * Doloci tarife za vsak blok v mesecu. Torej sesteje omreznino za prenos in distribucijo
+ * ter jih nato shrani v objekt meseca.
  */
 export const dolociTarifeZaBlok = (month: number) => {
     const months = useMonthsArray();
@@ -243,7 +264,7 @@ export const dolociTarifeZaBlok = (month: number) => {
 };
 
 /**
- * Vrne ceno vseh prispevkov.
+ * Vrne ceno vseh prispevkov za mesec.
  */
 export const sestejVsePrispevke = (month: number) => {
     const months = useMonthsArray().value;
@@ -264,34 +285,7 @@ export const sestejVsePrispevke = (month: number) => {
 };
 
 /**
- * Vrne ceno vseh stroskov na racunu, brez DDV.
- *
- * TO BO ZA STARI RACUN????
- */
-export const sumMonthCostsOld = (month: number) => {
-    const months = useMonthsArray().value;
-
-    const omreznina_moc = usePrikljucnaMocStara().value * 0.77417;
-    let omreznina_energija = 0;
-    //TODO NUJNO DODATI SE CENO ZA OMREZNINO, lahko v spodnje else if stavke
-    // consto mreznina_energija
-    const prispevki = sestejVsePrispevke(month);
-
-    let energija = 0;
-    if (useSettings().value.tip_starega_obracuna === "VT+MT") {
-        energija = months[month].vt_energy * useSettings().value.vrednosti_tarif.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif.MT;
-        omreznina_energija = months[month].vt_energy * 0.04182 + months[month].mt_energy * 0.03215;
-    } else if (useSettings().value.tip_starega_obracuna === "ET") {
-        energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
-        omreznina_energija = months[month].total_energy * 0.03215; //TODO: Pogledati je treba ceno omreznine energije za ET
-    } else {
-        throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
-    }
-    return omreznina_moc + omreznina_energija + prispevki + energija;
-};
-
-/**
- * Vrne ceno vseh stroskov na NOVEM racunu za izbran mesec, brez DDV.
+ * Vrne ceno vseh stroskov na NOVEM racunu za definiran mesec, brez DDV.
  */
 export const sumMonthCosts = (month: number): number => {
     const months = useMonthsArray().value;
@@ -312,41 +306,26 @@ export const sumMonthCosts = (month: number): number => {
     return omreznina + prispevki + energija;
 };
 
-export const createMonthBill = (month: number) => {
+/**
+ * Vrne ceno vseh stroskov na STAREM racunu za definiran mesec, brez DDV.
+ */
+export const sumMonthCostsOld = (month: number) => {
     const months = useMonthsArray().value;
-    if (!months) throw new Error("Months data not initialized.");
 
-    const month_costs = sumMonthCosts(month);
+    const omreznina_moc = usePrikljucnaMocStara().value * 0.77417; // Calculate network fee for old billing
+    const prispevki = sestejVsePrispevke(month);
 
-    const bill: MonthBill = {
-        month_name: getMonthAbbreviation(months[month].month),
-        total_energy: months[month].total_energy,
-        vt_energy: months[month].vt_energy,
-        mt_energy: months[month].mt_energy,
-        blok_data: months[month].blok_data,
-        prispevki: usePrispevki().value,
-        total_sum: month_costs,
-        total_sum_DDV: month_costs * 1.22,
-    };
+    let energija = 0;
+    let omreznina_energija = 0;
 
-    return bill;
-};
-
-export const createMonthBillOld = (month: number) => {
-    const months = useMonthsArray().value;
-    if (!months) throw new Error("Months data not initialized.");
-
-    const month_costs = sumMonthCostsOld(month);
-
-    const bill: MonthBillOld = {
-        month_name: getMonthAbbreviation(months[month].month),
-        total_energy: months[month].total_energy,
-        vt_energy: months[month].vt_energy,
-        mt_energy: months[month].mt_energy,
-        prispevki: usePrispevki().value,
-        total_sum: month_costs,
-        total_sum_DDV: month_costs * 1.22,
-    };
-
-    return bill;
+    if (useSettings().value.tip_starega_obracuna === "VT+MT") {
+        energija = months[month].vt_energy * useSettings().value.vrednosti_tarif.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif.MT;
+        omreznina_energija = months[month].vt_energy * 0.04182 + months[month].mt_energy * 0.03215;
+    } else if (useSettings().value.tip_starega_obracuna === "ET") {
+        energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
+        omreznina_energija = months[month].total_energy * 0.03215; //TODO: Pogledati je treba ceno omreznine energije za ET
+    } else {
+        throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
+    }
+    return omreznina_moc + omreznina_energija + prispevki + energija;
 };

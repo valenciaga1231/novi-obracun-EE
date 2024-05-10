@@ -37,8 +37,6 @@ export default {
             (new_val) => {
                 stara_prikljucna_moc.value = new_val; // Update state
                 localStorage.setItem("stara_prikljucna_moc", JSON.stringify(new_val)); // Update local storage
-
-                // if (useIsTable().value) sumMonthCostsOld(); // Update table if it is displayed //! MORAMO DODATI ZA MESEC
             }
         );
 

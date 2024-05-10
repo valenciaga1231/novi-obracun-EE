@@ -49,10 +49,15 @@ export default {
         };
 
         // Enable button if file and tarifs are set
-        watch([data_file, settings], (value) => {
-            data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true);
-        }),
-            { deep: true };
+        watch(
+            [data_file, settings],
+            (value) => {
+                console.log(value);
+
+                data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true);
+            },
+            { deep: true }
+        );
 
         const processData = async () => {
             is_button_disabled.value = true;

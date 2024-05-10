@@ -1,24 +1,31 @@
-import type { BlokData, ExcelRow, MonthData, MonthsData, PrikljucnaMoc, Prispevki, Settings } from "~/types";
+import type { BlokData, ExcelRow, MonthsData, PrikljucnaMoc, Prispevki, Settings } from "~/types";
 
-export const usePrikljucnaMoc = () => useState<PrikljucnaMoc>("prikljucna_moc", () => [4.2, 5.4, 5.4, 5.4, 5.4]);
-export const usePrikljucnaMocStara = () => useState<number>("prikljucna_moc_stara", () => 7);
+// Array of rows read from excel
 export const useExcelData = () => useState<ExcelRow[]>("excel_data", () => [] as ExcelRow[]);
-export const useBlokData = () => useState<BlokData>("blok_data", () => initDefaultBlokData());
-export const useMonthsArray = () => useState<MonthsData>("months_array", () => ({} as MonthsData));
 
-// TODO: Spodnje tri bomo lahko dali stran
+// Main state for storing inputed months data
+export const useMonthsArray = () => useState<MonthsData>("months_array", () => ({} as MonthsData));
+export const useBlokData = () => useState<BlokData>("blok_data", () => initDefaultBlokData()); // Used within every month
+
+// Store total energy for all inputed months
 export const useTotalEnergy = () => useState<number>("total_energy", () => 0);
 export const useTotalEnergyVT = () => useState<number>("total_energy_VT", () => 0);
 export const useTotalEnergyMT = () => useState<number>("total_energy_MT", () => 0);
 
+// Settings
+export const useSettings = () => useState<Settings>("settings", () => default_settings);
+export const usePrikljucnaMoc = () => useState<PrikljucnaMoc>("prikljucna_moc", () => [4.2, 5.4, 5.4, 5.4, 5.4]);
+export const usePrikljucnaMocStara = () => useState<number>("prikljucna_moc_stara", () => 7);
+export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => false);
+
+// Stores prispevki data (names, prices...)
+export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
+
+export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
-export const useSettings = () => useState<Settings>("settings", () => default_settings);
 
-export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
-export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => false);
-export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
-
+// Initalize blok data
 export const initDefaultBlokData = () => {
     let data = {} as BlokData;
     // for loop from onw to 5
@@ -39,6 +46,7 @@ export const initDefaultBlokData = () => {
     return data;
 };
 
+// Define default settings
 const default_settings: Settings = {
     tip_starega_obracuna: null, // Default
     vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },

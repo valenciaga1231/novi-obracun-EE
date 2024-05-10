@@ -30,24 +30,24 @@
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
-                        <td>{{ month_bill.vt_energy.toFixed(0) }}</td>
+                        <td>{{ month_data.vt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: left">Električna energija MT</td>
-                        <td>{{ month_bill.mt_energy.toFixed(0) }}</td>
+                        <td>{{ month_data.mt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (month_bill.mt_energy + month_bill.vt_energy).toFixed(0) }}</td>
+                        <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                        <td>{{ (Math.round(month_bill.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_bill.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <template v-if="settings.tip_starega_obracuna === 'ET'">
@@ -60,12 +60,12 @@
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (month_bill.mt_energy + month_bill.vt_energy).toFixed(0) }}</td>
+                        <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
                         <td colspan="2"></td>
                         <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
+                <template v-for="(data, blok) in month_data.blok_data" :key="blok">
                     <tr v-if="data.is_active">
                         <td style="text-align: left">Energija blok {{ blok }}</td>
                         <td>{{ data.energija.toFixed(2) }}</td>
@@ -74,7 +74,7 @@
                         <td>{{ data.cena_omreznine_energije.toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
+                <template v-for="(data, blok) in month_data.blok_data" :key="blok">
                     <tr v-if="data.is_active">
                         <td style="text-align: left">Dogovorjena moč blok {{ blok }}</td>
                         <td>{{ prikljucna_moc[blok - 1] }}</td>
@@ -83,7 +83,7 @@
                         <td>{{ data.cena_omreznine_moci.toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-for="(data, blok) in month_bill.blok_data" :key="blok">
+                <template v-for="(data, blok) in month_data.blok_data" :key="blok">
                     <tr v-if="data.is_active && (selected_settings.some((setting) => setting.code === 'PM') || data.cena_presezne_moci > 0)">
                         <td style="text-align: left">Presežna moč blok {{ blok }}</td>
                         <td>{{ data.presezna_moc.toFixed(5) }}</td>
@@ -99,9 +99,9 @@
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>{{ sestejVsoOmreznino(props.month).toFixed(5) }}</td>
                 </tr>
-                <tr v-for="(prispevek, id) in month_bill.prispevki" :key="id">
+                <tr v-for="(prispevek, id) in month_data.prispevki" :key="id">
                     <td style="text-align: left">{{ prispevek.name }}</td>
-                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_bill.total_energy.toFixed(0) }}</td>
+                    <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_data.total_energy.toFixed(0) }}</td>
                     <td>{{ id == "spte_ove" ? "kW" : "kWh" }}</td>
                     <td>{{ prispevek.is_active ? prispevek.price_per_unit.toFixed(5) : "0.00000" }}</td>
                     <td>{{ prispevek.is_active ? prispevek?.price.toFixed(5) : "0.00000" }}</td>
@@ -136,7 +136,7 @@ export default {
         const prikljucna_moc = usePrikljucnaMoc();
         const prikljucna_moc_stara = usePrikljucnaMocStara();
         const settings = useSettings();
-        const month_bill = createMonthBill(props.month);
+        const month_data = useMonthsArray().value[props.month];
 
         type SelectedSettings = { name: string; code: string };
         const selected_settings = ref([] as SelectedSettings[]);
@@ -149,16 +149,13 @@ export default {
             settings,
             selected_settings,
             racun_settings,
-            month_bill,
+            month_data,
         };
     },
 };
 </script>
 
 <style scoped>
-.novi-racun-component {
-}
-
 .main-header {
     color: #d16f3a;
     border-top: none;
