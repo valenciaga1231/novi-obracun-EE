@@ -7,9 +7,9 @@
             </div>
             <Button @click="processData()" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
         </div>
-        <div v-if="data_file" @click="clearFile" style="text-align: center; cursor: pointer">
+        <div v-if="data_file" style="text-align: center">
             <p>Datoteka:</p>
-            <div class="file-data">
+            <div @click="clearFile" class="file-data" style="cursor: pointer">
                 <SvgsExcelIcon :width="30" :height="30" />
                 {{ data_file.name }}
             </div>
@@ -52,8 +52,6 @@ export default {
         watch(
             [data_file, settings],
             (value) => {
-                console.log(value);
-
                 data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true);
             },
             { deep: true }

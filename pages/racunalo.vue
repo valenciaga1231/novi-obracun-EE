@@ -33,9 +33,6 @@
             </section>
         </div>
         <div class="data-display" style="padding: 20px">
-            <!-- <div v-if="useIsTable().value === true">
-                <DisplayMonths />
-            </div> -->
             <div class="data-tables" v-if="useIsTable().value === true">
                 <DisplayMonthsData />
             </div>

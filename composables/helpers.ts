@@ -89,10 +89,8 @@ export const parseEnergyBlocks = () => {
         const month_expenses_old = sumMonthCostsOld(month_int);
         months_data.value[month].total_sum_old = month_expenses_old;
         months_data.value[month].total_sum_old_DDV = month_expenses_old * 1.22;
-
-        console.log("months_data", months_data.value[month].total_energy);
     }
-    console.log("useMonthsArray", useMonthsArray().value); //! Dev
+    // console.log("useMonthsArray", useMonthsArray().value); //! Dev
 
     // Dolocimo energijo v VT in MT
     dolociEnergijoVTinMT();
