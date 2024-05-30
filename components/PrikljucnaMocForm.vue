@@ -198,7 +198,7 @@ export default {
                 input_values[id - 1] = 0;
             }
 
-            // Posodobi prikljucne moci
+            // Update prikljucne moci
             usePrikljucnaMoc().value = input_values;
 
             // Set prikljucna moc to local storage

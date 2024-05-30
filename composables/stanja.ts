@@ -43,6 +43,7 @@ export const initDefaultBlokData = () => {
             is_active: true,
         };
     }
+
     return data;
 };
 
@@ -90,7 +91,6 @@ const prispevki: Prispevki = {
  */
 export const useResetData = () => {
     useExcelData().value = [];
-    useBlokData().value = initDefaultBlokData();
     useMonthsArray().value = {} as MonthsData;
     useTotalEnergy().value = 0;
     useTotalEnergyVT().value = 0;

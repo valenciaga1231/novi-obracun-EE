@@ -68,7 +68,7 @@ export const parseEnergyBlocks = () => {
             }, 0);
         }
 
-        // Izracun VT in MT energije // TODO: daj v funkcijo
+        // Izracun VT in MT energije za mesec
         months_data.value[month].vt_energy = 0;
         months_data.value[month].mt_energy = 0;
         for (const row of months_data.value[month].data_rows) {
@@ -103,6 +103,19 @@ export const parseEnergyBlocks = () => {
 export const updatedPrikljucnaMoc = () => {
     const startTime = performance.now();
 
+    // First update global useBlokData()
+    const blok_data = useBlokData().value;
+    const tarife = getTarifeData();
+    for (const blok in blok_data) {
+        // Doloci skupno tarifo omreznine za moc
+        blok_data[blok].skupna_tarifa_moc = tarife[blok].prenos.tarifna_postavka_P + tarife[blok].distribucija.tarifna_postavka_P;
+
+        // Doloci skupno ceno omreznine za moc
+        const id = parseInt(blok) - 1;
+        blok_data[blok].cena_omreznine_moci = blok_data[blok].skupna_tarifa_moc * usePrikljucnaMoc().value[id];
+    }
+
+    // Update all months BlokData
     for (const month in useMonthsArray().value) {
         const month_int = parseInt(month);
 

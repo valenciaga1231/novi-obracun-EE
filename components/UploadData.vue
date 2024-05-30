@@ -14,7 +14,6 @@
                 {{ data_file.name }}
             </div>
         </div>
-        <span class="warning">Opozorilo: Izračun za mesec November 2023 je verjetno napačen, ker je napaka pri izvozu podatkov iz portala MojElektro.</span>
         <div class="rectangle-popup" v-if="on_going_calculation">
             <ProgressSpinner></ProgressSpinner>
             Izracunavam
