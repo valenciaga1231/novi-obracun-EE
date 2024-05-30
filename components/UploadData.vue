@@ -28,7 +28,6 @@ import { parseDocumentData } from "~/composables/documentParser";
 export default {
     setup() {
         const data_file = ref<File | null>(null);
-        const prikljucna_moc = usePrikljucnaMoc();
         const settings = useSettings();
         const is_button_disabled = ref(true);
         const uploaded_files = ref<File[]>([]); // New data property
@@ -79,7 +78,6 @@ export default {
             handleFileUpload,
             processData,
             clearFile,
-            prikljucna_moc,
             settings,
             data_file,
             is_button_disabled,

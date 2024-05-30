@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-    console.log("Middleware: ", to.path, from.path); //! Dev
+    // console.log("Middleware: ", to.path, from.path); //! Dev
 
     // Set header tab
     if (to.path === "/racunalo") {

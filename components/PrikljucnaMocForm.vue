@@ -14,7 +14,7 @@
                         <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ useBlokData().value[1].cena_omreznine_moci.toFixed(2) }}</b> €
+                        Cena: <b>{{ usePrikljucnaMocPrices().value[0].toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -30,7 +30,7 @@
                         <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ useBlokData().value[2].cena_omreznine_moci.toFixed(2) }}</b> €
+                        Cena: <b>{{ usePrikljucnaMocPrices().value[1].toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -46,7 +46,7 @@
                         <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ useBlokData().value[3].cena_omreznine_moci.toFixed(2) }}</b> €
+                        Cena: <b>{{ usePrikljucnaMocPrices().value[2].toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -62,7 +62,7 @@
                         <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ useBlokData().value[4].cena_omreznine_moci.toFixed(2) }}</b> €
+                        Cena: <b>{{ usePrikljucnaMocPrices().value[3].toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -78,7 +78,7 @@
                         <span class="input-text"><b> kW</b></span>
                     </div>
                     <p style="text-align: center">
-                        Cena: <b>{{ useBlokData().value[5].cena_omreznine_moci.toFixed(2) }}</b> €
+                        Cena: <b>{{ usePrikljucnaMocPrices().value[4].toFixed(2) }}</b> €
                     </p>
                 </template>
             </Card>
@@ -106,7 +106,6 @@ export default {
         const prispevki = usePrispevki();
         const settings = useSettings();
         const timeout = ref<NodeJS.Timeout | null>(null);
-        const blok_data = useBlokData();
         const tarife_data = getTarifeData();
 
         const handleUpClick = (id: number) => {
@@ -215,7 +214,6 @@ export default {
             prikljucna_moc,
             prispevki,
             settings,
-            blok_data,
             tarife_data,
         };
     },

@@ -32,8 +32,8 @@
                 </div>
             </section>
         </div>
-        <div class="data-display" style="padding: 20px">
-            <div class="data-tables" v-if="useIsTable().value === true">
+        <div class="data-display" v-if="useIsTable().value === true" style="padding: 20px">
+            <div class="data-tables">
                 <DisplayMonthsData />
             </div>
         </div>
@@ -41,6 +41,8 @@
 </template>
 
 <script lang="ts">
+import { usePrikljucnaMocPrices } from "~/composables/stanja";
+
 export default {
     setup() {
         const is_table = useIsTable();
@@ -56,16 +58,12 @@ export default {
             const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
             if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
 
-            // Dobi vrednosti tarif
-            const blok_data = useBlokData().value;
+            // Set prices for prikljucna moc
             const tarife = getTarifeData();
-            for (const blok in useBlokData().value) {
-                // Doloci skupno tarifo omreznine za moc
-                blok_data[blok].skupna_tarifa_moc = tarife[blok].prenos.tarifna_postavka_P + tarife[blok].distribucija.tarifna_postavka_P;
-
-                // Doloci skupno ceno omreznine za moc
-                const id = parseInt(blok) - 1;
-                blok_data[blok].cena_omreznine_moci = blok_data[blok].skupna_tarifa_moc * usePrikljucnaMoc().value[id];
+            const blok_price_data = usePrikljucnaMocPrices().value;
+            for (let i = 0; i < blok_price_data.length; i++) {
+                const skupna_tarifna_moc = tarife[i + 1].prenos.tarifna_postavka_P + tarife[i + 1].distribucija.tarifna_postavka_P;
+                blok_price_data[i] = skupna_tarifna_moc * usePrikljucnaMoc().value[i];
             }
         });
 
