@@ -49,11 +49,12 @@ export const parseDocumentData = async (file: File) => {
             throw new Error("Invalid date format in Excel data.");
         }
 
+        const tariffDate = new Date(date.getTime() - 15 * 60 * 1000); // Tariff is 15 minutes before the date
         useExcelData().value[id] = {
             blok: row[blokIndex],
             W: row[wIndex],
             P: row[pIndex],
-            is_VT: isTarifVT(date),
+            is_VT: isTarifVT(tariffDate),
             date: date,
         };
     }
