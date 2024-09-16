@@ -2,73 +2,67 @@ import * as XLSX from "xlsx";
 
 /**
  * Parses the uploaded document and saves the Excel data
- * to state
+ * to state.
  *
  * TODO: Add .csv file support
  * @param file File to be parsed
  */
 export const parseDocumentData = async (file: File) => {
-    const reader = new FileReader(); // Init file reader
+    // Read the file as an ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
 
-    // Create a promise to wait for the onload event to complete
-    const on_load_promise = new Promise<void>((resolve, reject) => {
-        // On file load event
-        reader.onload = (event: Event) => {
-            try {
-                const data = (event.target as FileReader).result; // Get file
-                const workbook = XLSX.read(data as string, { type: "binary" });
-                const sheets_name_list = workbook.SheetNames; // Get sheet names
-                const worksheet = workbook.Sheets[sheets_name_list[0]]; // Set first sheet as active
+    // Read the workbook from the ArrayBuffer
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: "array" });
 
-                // Parse data to object
-                const excel_data: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Convert worksheet to array of arrays
-                const header = excel_data.shift();
-                if (!header) throw new Error("No header found in Excel table.");
+    const sheetNames = workbook.SheetNames;
+    const worksheet = workbook.Sheets[sheetNames[0]];
 
-                // Get all required headers index
-                const timestamp_index = header.indexOf("Časovna značka");
-                const W_index = header.indexOf("Energija A+");
-                const blok_index = header.indexOf("Blok");
-                const P_index = header.indexOf("P+ Prejeta delovna moč");
+    // Convert worksheet to array of arrays
+    const excelData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                useExcelData().value = []; // Initialize or reset array
+    const header = excelData.shift();
+    if (!header) throw new Error("No header found in Excel table.");
 
-                // Loop cez vse vrstice Excel podatkov.
-                excel_data.map((row, id) => {
-                    // Za vsako vrstico:
-                    const date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
-                    const tarife_date = convertSerialDate(row[timestamp_index], "Europe/Ljubljana");
-                    /**
-                     * Odsteti moramo 15min, ker na MojElektro pac v timestamp 12:00:00 AM oz. 00:00:00,
-                     * se v prejsnjem dnevu, ker smo do takrat porabili toliko energije.
-                     */
-                    tarife_date.setMinutes(tarife_date.getMinutes() - 15);
+    // Get indices of required headers
+    const timestampIndex = header.indexOf("Časovna značka");
+    const wIndex = header.indexOf("Energija A+");
+    const blokIndex = header.indexOf("Blok");
+    const pIndex = header.indexOf("P+ Prejeta delovna moč");
 
-                    useExcelData().value[id] = {
-                        blok: row[blok_index],
-                        W: row[W_index],
-                        P: row[P_index],
-                        is_VT: isTarifVT(tarife_date),
-                        date: date,
-                    };
-                });
+    useExcelData().value = []; // Initialize or reset array
 
-                // Get first and last date from excel data
-                useSettings().value.date.start = useExcelData().value[0].date;
-                useSettings().value.date.end = useExcelData().value[useExcelData().value.length - 2].date;
+    // Loop through all rows of Excel data
+    for (let id = 0; id < excelData.length - 1; id++) {
+        const row = excelData[id];
 
-                // Resolve the promise as file should have been succesfully readed
-                resolve();
-            } catch (error) {
-                // Reject the promise if there's an error
-                reject(error);
-            }
+        // For each row:
+        const dateCell = row[timestampIndex];
+
+        // Parse the date
+        let date: Date;
+        if (typeof dateCell === "number") {
+            date = parseExcelDate(dateCell);
+        } else if (typeof dateCell === "string") {
+            date = new Date(dateCell);
+        } else {
+            throw new Error("Invalid date format in Excel data.");
+        }
+
+        useExcelData().value[id] = {
+            blok: row[blokIndex],
+            W: row[wIndex],
+            P: row[pIndex],
+            is_VT: isTarifVT(date),
+            date: date,
         };
-    });
+    }
 
-    // To actually read the file
-    reader.readAsBinaryString(file);
-
-    // Wait for the onload event to complete beforecontinuing
-    await on_load_promise;
+    // Get first and last date from excel data
+    if (useExcelData().value.length > 0) {
+        useSettings().value.date.start = useExcelData().value[0].date;
+        useSettings().value.date.end = useExcelData().value[useExcelData().value.length - 1].date;
+    } else {
+        throw new Error("No data parsed from Excel file.");
+    }
 };
