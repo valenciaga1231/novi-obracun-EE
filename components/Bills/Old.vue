@@ -128,17 +128,17 @@ export default {
 </script>
 
 <style scoped>
-.energy-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: auto;
-}
-
 .main-header {
     color: #d16f3a;
     border-top: none;
 
     border-bottom: 1.75px solid black;
+}
+
+.energy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
 }
 
 h3 {
