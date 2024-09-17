@@ -1,27 +1,28 @@
-import { type ExcelRow } from "~/types";
-
 /**
  * TODO: Should be called for each month separately
  */
 export const parseEnergyBlocks = () => {
-    const months_data = useMonthsArray();
+    const monthsData = useMonthsArray();
+    const excelData = useExcelData();
+    if (!excelData.value) throw new Error("Excel data not initialized.");
 
-    const excel_data = useExcelData();
-    if (!excel_data.value) throw new Error("Excel data not initialized.");
+    const tarifeData = getTarifeData();
+    const prispevki = usePrispevki().value;
 
-    for (let i = 0; i < excel_data.value.length; i++) {
-        // get month from JS Date object
-        const date = new Date(excel_data.value[i].date);
+    // First pass: Aggregate data per month and block
+    for (const row of excelData.value) {
+        // Adjust date and extract month (1-based index)
+        const date = new Date(row.date);
         date.setMinutes(date.getMinutes() - 15);
-        const month = date.getMonth() + 1; // As months start from 0
+        const month = date.getMonth() + 1;
 
-        // Check if current month already exists in useMonthsArray
-        if (!useMonthsArray().value[month]) {
-            useMonthsArray().value[month] = {
-                month: month,
-                active_blocks: [0, 0, 0, 0, 0],
+        // Initialize month data if it doesn't exist
+        if (!monthsData.value[month]) {
+            monthsData.value[month] = {
+                month,
+                active_blocks: [0, 0, 0, 0, 0], // Blocks 1 to 5
                 blok_data: initDefaultBlokData(),
-                prispevki: usePrispevki().value,
+                prispevki,
                 total_energy: 0,
                 vt_energy: 0,
                 mt_energy: 0,
@@ -30,70 +31,89 @@ export const parseEnergyBlocks = () => {
                 total_sum_DDV: 0,
                 total_sum_old: 0,
                 total_sum_old_DDV: 0,
+                date: {
+                    start: null,
+                    end: null,
+                },
             };
         }
 
-        const b = excel_data.value[i].blok;
-        months_data.value[month].blok_data[b].energija += excel_data.value[i].W; // Pristej energijo pravilnemu bloku
+        const monthData = monthsData.value[month];
+        const block = row.blok;
 
-        // TODO: Omreznina za energijo (to se ne rabi izvajati v loopu, bi lahko dali ven)
-        months_data.value[month].blok_data[b].cena_omreznine_energije += excel_data.value[i].W * (getTarifeData()[b].distribucija.tarifna_postavka_W + getTarifeData()[b].prenos.tarifna_postavka_W);
+        // Update total energy
+        monthData.total_energy += row.W;
+
+        // Update VT and MT energy
+        if (row.is_VT) {
+            monthData.vt_energy += row.W;
+        } else {
+            monthData.mt_energy += row.W;
+        }
+
+        // Update block data
+        const blockData = monthData.blok_data[block];
+        blockData.energija += row.W;
+        blockData.is_active = true;
+
+        // Mark block as active
+        monthData.active_blocks[block - 1] = 1;
+
+        // Update network fee for energy
+        const tarifnaPostavkaW = tarifeData[block].distribucija.tarifna_postavka_W + tarifeData[block].prenos.tarifna_postavka_W;
+        blockData.cena_omreznine_energije += row.W * tarifnaPostavkaW;
 
         // Add row to data_rows
-        months_data.value[month].data_rows.push(excel_data.value[i]);
+        monthData.data_rows.push(row);
     }
 
-    // Assign properties for all months
-    for (const month in useMonthsArray().value) {
-        // Pogledamo kateri bloki so aktivni
-        const aktivni_bloki = new Set<number>(); // Naredi Set, ali [1, 2, 3, 4] ali [2, 3, 4, 5]
-        months_data.value[month].data_rows.map((row: ExcelRow) => aktivni_bloki.add(row.blok));
+    // Second pass: Compute per-month summaries
+    Object.values(monthsData.value).forEach((monthData) => {
+        const monthInt = monthData.month;
 
-        for (const blok of aktivni_bloki) {
-            months_data.value[month].blok_data[blok].is_active = aktivni_bloki.has(blok);
-            months_data.value[month].active_blocks[blok - 1] = aktivni_bloki.has(blok) ? 1 : 0;
-        }
+        // Determine tariffs for blocks
+        dolociTarifeZaBlok(monthInt);
 
-        dolociTarifeZaBlok(parseInt(month));
+        // Calculate network fee and excess power
+        izracunajOmrezninoMoci(monthInt);
+        izracunajPreseznoMoc(monthInt);
 
-        // Izracun skupne energije v mesecu
-        months_data.value[month].total_energy = 0;
-        months_data.value[month].total_energy = months_data.value[month].data_rows.reduce((total, row) => total + row.W, 0);
+        // Calculate monthly expenses
+        const monthExpenses = sumMonthCosts(monthInt);
+        monthData.total_sum = monthExpenses;
+        monthData.total_sum_DDV = monthExpenses * 1.22;
 
-        // Izracunaj energijo za vsak blok
-        for (const blok of aktivni_bloki) {
-            months_data.value[month].blok_data[blok].energija = months_data.value[month].data_rows.reduce((skupna_energija, row) => {
-                if (row.blok === blok) return skupna_energija + row.W;
-                else return skupna_energija;
-            }, 0);
-        }
+        const monthExpensesOld = sumMonthCostsOld(monthInt);
+        monthData.total_sum_old = monthExpensesOld;
+        monthData.total_sum_old_DDV = monthExpensesOld * 1.22;
+    });
 
-        // Izracun VT in MT energije za mesec
-        months_data.value[month].vt_energy = 0;
-        months_data.value[month].mt_energy = 0;
-        for (const row of months_data.value[month].data_rows) {
-            if (row.is_VT) months_data.value[month].vt_energy += row.W;
-            else months_data.value[month].mt_energy += row.W;
-        }
-
-        // Izracun cena_omreznine_moci
-        const month_int = parseInt(month);
-        izracunajOmrezninoMoci(month_int);
-        izracunajPreseznoMoc(month_int);
-
-        // Get month expenses
-        const month_expenses = sumMonthCosts(month_int);
-        months_data.value[month].total_sum = month_expenses;
-        months_data.value[month].total_sum_DDV = month_expenses * 1.22;
-
-        const month_expenses_old = sumMonthCostsOld(month_int);
-        months_data.value[month].total_sum_old = month_expenses_old;
-        months_data.value[month].total_sum_old_DDV = month_expenses_old * 1.22;
-    }
-    // console.log("useMonthsArray", useMonthsArray().value); //! Dev
-
-    // Dolocimo energijo v VT in MT
+    // Final adjustments
     dolociEnergijoVTinMT();
+    setMonthDates();
+};
+
+/**
+ * Sets the start and end date for each month based on the first and last row in the month's data.
+ */
+export const setMonthDates = () => {
+    const months_data = useMonthsArray();
+    const excel_data = useExcelData();
+    if (!excel_data.value) throw new Error("Excel data not initialized.");
+
+    for (const month in months_data.value) {
+        const monthData = months_data.value[month];
+        const dataRows = monthData.data_rows;
+
+        if (dataRows.length > 0) {
+            const startDate = new Date(dataRows[0].date);
+            const endDate = new Date(dataRows[dataRows.length - 1].date);
+            endDate.setMinutes(endDate.getMinutes() - 15);
+
+            monthData.date.start = startDate;
+            monthData.date.end = endDate;
+        }
+    }
 };
 
 /**

@@ -5,7 +5,7 @@
                 <h3 style="font-size: 24px; font-weight: bold">Stari račun</h3>
             </div>
             <div>
-                <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
+                <p v-if="month_data.date.start && month_data.date.end" style="text-align: center"><b>Datum: </b>{{ month_data.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ month_data.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
                     <b>Cena: </b> <span class="price">{{ month_data.total_sum_old_DDV.toFixed(2) }} </span>
                     € (z DDV)

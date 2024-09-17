@@ -6,7 +6,7 @@
                 <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem" style="font-size: 16px; width: 200px" />
             </div>
             <div>
-                <p v-if="settings.date.start && settings.date.end" style="text-align: center"><b>Datum: </b>{{ settings.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ settings.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
+                <p v-if="month_data.date.start && month_data.date.end" style="text-align: center"><b>Datum: </b>{{ month_data.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ month_data.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
                 <p class="price-window">
                     <b>Cena: </b> <span class="price">{{ (sumMonthCosts(props.month) * 1.22).toFixed(2) }} </span>
                     € (z DDV)

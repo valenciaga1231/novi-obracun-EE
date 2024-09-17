@@ -68,6 +68,10 @@ export type MonthData = {
     total_sum_DDV: number;
     total_sum_old: number;
     total_sum_old_DDV: number;
+    date: {
+        start: Date | null;
+        end: Date | null;
+    };
 };
 
 export type MonthsData = {
