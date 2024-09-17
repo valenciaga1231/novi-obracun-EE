@@ -5,7 +5,7 @@
             <div style="text-align: center; font-size: 12px">
                 <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="10000000" @select="handleFileUpload($event)" class="customized-upload" style="font-size: 11px" />
             </div>
-            <Button @click="processData()" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="is_button_disabled">Izračunaj</Button>
+            <Button @click="processData()" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="isButtonDisabled">Izračunaj</Button>
         </div>
         <div v-if="data_file" style="text-align: center">
             <p>Datoteka:</p>
@@ -29,7 +29,6 @@ export default {
     setup() {
         const data_file = ref<File | null>(null);
         const settings = useSettings();
-        const is_button_disabled = ref(true);
         const uploaded_files = ref<File[]>([]); // New data property
         const on_going_calculation = ref(false);
 
@@ -39,38 +38,37 @@ export default {
             if (files && files.length > 0) {
                 console.log("File uploaded"); //! Dev
                 data_file.value = files[0];
-                // first clear uploade
                 uploaded_files.value.push(files[0]); // Store uploaded file in the uploaded_files array
             }
             // console.log("DATAFILE: "); //! Dev
             // console.log(data_file.value); //! Dev
         };
 
-        // Enable button if file and tarifs are set
-        watch(
-            [data_file, settings],
-            (value) => {
-                data_file.value && settings.value.tip_starega_obracuna ? (is_button_disabled.value = false) : (is_button_disabled.value = true);
-            },
-            { deep: true }
-        );
-
         const processData = async () => {
-            is_button_disabled.value = true;
-            useIsTable().value = false;
+            if (on_going_calculation.value) return; // Prevent multiple clicks
+
             on_going_calculation.value = true;
+            useIsTable().value = false;
             useResetData(); // Reset data
 
-            if (data_file.value) await parseDocumentData(data_file.value);
-            else throw new Error("No file uploaded");
+            try {
+                console.log("Reading data from file"); //! Dev
+                if (data_file.value) await parseDocumentData(data_file.value);
+                else throw new Error("No file uploaded");
 
-            // console.log(useExcelData().value); //! Dev
-            console.log("Processing data"); //! Dev
-
-            parseEnergyBlocks();
-            on_going_calculation.value = false;
-            useIsTable().value = true;
+                parseEnergyBlocks();
+            } catch (error) {
+                console.error("Error during processing:", error);
+            } finally {
+                setTimeout(() => (on_going_calculation.value = false), 500); // Prevent multiple clicks
+                useIsTable().value = true;
+            }
         };
+
+        // Computed property to determine if the button should be disabled
+        const isButtonDisabled = computed(() => {
+            return !data_file.value || !settings.value.tip_starega_obracuna || on_going_calculation.value;
+        });
 
         const clearFile = () => (data_file.value = null);
 
@@ -80,7 +78,7 @@ export default {
             clearFile,
             settings,
             data_file,
-            is_button_disabled,
+            isButtonDisabled,
             uploaded_files,
             on_going_calculation,
         };

@@ -62,7 +62,10 @@ export const parseDocumentData = async (file: File) => {
     // Get first and last date from excel data
     if (useExcelData().value.length > 0) {
         useSettings().value.date.start = useExcelData().value[0].date;
-        useSettings().value.date.end = useExcelData().value[useExcelData().value.length - 1].date;
+
+        // Subtract 15 minutes from the last date so it does not include the next tariff
+        const endDate = useExcelData().value[useExcelData().value.length - 1].date;
+        useSettings().value.date.end = new Date(endDate.getTime() - 15 * 60 * 1000);
     } else {
         throw new Error("No data parsed from Excel file.");
     }
