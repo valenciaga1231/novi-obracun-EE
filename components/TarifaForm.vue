@@ -1,26 +1,25 @@
 <template>
     <div class="tarifa-component">
-        <!-- <h2>Podatki o tarifi:</h2> -->
         <div class="tarifa-content">
             <div class="p-float-label">
-                <Dropdown v-model="selected_tarif" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" style="width: 200px" />
-                <label for="dd-city">Izberi tarifo (brez DDV)</label>
+                <label for="input-tariff">Izberi tarifo (brez DDV)</label>
+                <Select inputId="input-tariff" v-model="selected_tarif" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" fluid />
             </div>
             <div v-if="settings.tip_starega_obracuna !== null">
-                <div v-if="settings.tip_starega_obracuna === 'VT+MT'">
-                    <span class="p-float-label" style="margin-bottom: 30px">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
-                        <label for="number-input">VT</label>
+                <div v-if="settings.tip_starega_obracuna === 'VT+MT'" style="display: flex; flex-direction: column">
+                    <span class="flex-auto" style="margin-bottom: 30px">
+                        <label for="number-input-vt" class="font-bold block mb-2">VT</label>
+                        <InputNumber inputId="number-input-vt" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" fluid />
                     </span>
-                    <span class="p-float-label">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
-                        <label for="number-input">MT</label>
+                    <span class="flex-auto">
+                        <label for="number-input-mt">MT</label>
+                        <InputNumber inputId="number-input-mt" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" fluid />
                     </span>
                 </div>
                 <div v-if="settings.tip_starega_obracuna === 'ET'">
                     <span class="p-float-label">
-                        <InputNumber id="number-input" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" />
-                        <label for="number-input">ET</label>
+                        <label for="number-input-et">ET</label>
+                        <InputNumber inputId="number-input-et" v-model="settings.vrednosti_tarif.ET" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" fluid />
                     </span>
                 </div>
             </div>

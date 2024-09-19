@@ -1,6 +1,6 @@
 <template>
     <div class="info-content">
-        <Panel header="V letu 2024 prihaja nov tarifni sistem">
+        <Panel header="V letu 2024 prihaja nov tarifni sistem" style="margin-top: 20px; background-color: var(--p-surface-900)">
             <div class="text-window">
                 <p>Z dnem <b>1. 10. 2024</b> bo stopil v veljavo nov tarifni sistem. Le ta se nanaša samo na omrežnino. Njegov cilj je spodbuditi uporabnike, da s prilagajanjem odjema prispevajo k optimizaciji distribucijskega in tudi širše elektroenergetskega sistema. Tako lahko dosežemo razbremenitev omrežja v času, ko je to najbolj obremenjeno z vidika porabe električne energije in moči.</p>
                 <p>Uporabnik bo lahko svoj odjem prilagajal tako po moči kot po porabljeni električni energiji in s tem privarčeval.</p>
@@ -38,6 +38,7 @@ export default {
     margin: auto;
     opacity: 0.9;
 }
+
 .text-window {
     border-radius: 5px;
     margin: 10px 0;

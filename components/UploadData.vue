@@ -5,7 +5,7 @@
             <div style="text-align: center; font-size: 12px">
                 <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Browse" :maxFileSize="10000000" @select="handleFileUpload($event)" class="customized-upload" style="font-size: 11px" />
             </div>
-            <Button @click="processData()" severity="warning" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="isButtonDisabled">Izračunaj</Button>
+            <Button @click="processData()" severity="warn" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="isButtonDisabled">Izračunaj</Button>
         </div>
         <div v-if="data_file" style="text-align: center">
             <p>Datoteka:</p>

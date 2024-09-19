@@ -18,9 +18,9 @@
                     </Card>
                 </div>
             </div>
-            <Transition name="slide-fade">
-                <NoviStariPrimerjava :month="month_bill" v-if="useIsPrimerjavaModal().value" style="z-index: 2" />
-            </Transition>
+            <Dialog v-model:visible="showPrimerjava" maximizable style="width: 80%">
+                <NoviStariPrimerjava :month="month_bill" style="z-index: 2" />
+            </Dialog>
         </div>
 
         <Fieldset legend="Povzetek">
@@ -159,6 +159,7 @@ export default {
         const total_old_cost = ref(0);
         const display_months = ref<HTMLElement | null>(null);
         const month_bill = ref(0);
+        const showPrimerjava = ref(false);
 
         onMounted(() => {
             if (display_months.value) display_months.value.scrollIntoView({ behavior: "smooth", block: "start" }); // Scroll on data
@@ -187,7 +188,7 @@ export default {
         // Odpre prikaz racuna, primerjavo med novim in starim racunom
         const openBill = (month: number) => {
             month_bill.value = month;
-            useIsPrimerjavaModal().value = true;
+            showPrimerjava.value = true;
         };
 
         const change_style_object = {
@@ -205,7 +206,7 @@ export default {
             return "";
         };
 
-        return { months, total_new_cost, total_old_cost, change_style_object, month_bill, display_months, calculateBackgroundColor, openBill };
+        return { months, total_new_cost, showPrimerjava, total_old_cost, change_style_object, month_bill, display_months, calculateBackgroundColor, openBill };
     },
 };
 </script>

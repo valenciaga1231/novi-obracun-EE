@@ -1,11 +1,11 @@
 <template>
     <div>
         <p style="text-align: center; margin: 0px">Trenutna priključna moč:</p>
-        <InputNumber v-model="stara_prikljucna_moc" showButtons buttonLayout="horizontal" suffix="  kW" decrementButtonClassName="pi pi-plus" incrementButtonClassName="pi pi-minus" :pt="change_style_object">
-            <template #incrementbuttonicon>
+        <InputNumber v-model="stara_prikljucna_moc" :min="0" :max="100" showButtons buttonLayout="horizontal" suffix="  kW" decrementButtonClassName="pi pi-plus" incrementButtonClassName="pi pi-minus" :pt="change_style_object">
+            <template>
                 <span class="pi pi-plus" />
             </template>
-            <template #decrementbuttonicon>
+            <template>
                 <span class="pi pi-minus" />
             </template>
         </InputNumber>

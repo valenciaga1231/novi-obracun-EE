@@ -1,70 +1,61 @@
 <template>
     <div class="header-content">
-        <!-- <link v-if="is_light_theme" crossorigin="" id="theme-link" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_light.css" />
-        <link v-if="!is_light_theme" crossorigin="" id="theme-link-dark" rel="stylesheet" href="https://novi-obracun-e76cc111cabe.herokuapp.com/themes/lara_dark.css" /> -->
-        <h1 :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Primerjalnik cen EE 2024</h1>
-        <!-- <div class="dark-mode-switch">
-            <div :class="{ 'custom-light-theme': is_index_path == false && is_light_theme }">Svetli način:</div>
-            <InputSwitch severity="info" v-model="is_light_theme" @change="changeTheme" />
-        </div> -->
-        <TabMenu v-model:activeIndex="active" :model="items" style="margin-bottom: 0px" />
+        <h1>Primerjalnik cen EE 2024</h1>
+        <div class="card">
+            <Tabs :value="tabValue">
+                <TabList>
+                    <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value" @click="router.push({ name: tab.route })" :disabled="tab.disabled">
+                        <i :class="tab.icon" />
+                        {{ tab.title }}
+                    </Tab>
+                </TabList>
+            </Tabs>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-// import { usePrimeVue } from "primevue/config";
 export default {
     setup() {
-        const is_light_theme = useIsLightTheme();
-
-        const items = ref([
+        const router = useRouter();
+        const tabValue = ref("0");
+        const tabs = ref([
             {
-                label: "Domov",
+                title: "Domov",
                 icon: "pi pi-home",
-                command: () => {
-                    useRouter().push({ name: "index" });
-                },
+                route: "index",
+                value: "0",
+                disabled: false,
             },
             {
-                label: "Računalo",
+                title: "Računalo",
                 icon: "pi pi-calculator",
-                command: () => {
-                    useRouter().push({ name: "racunalo" });
-                },
+                route: "racunalo",
+                value: "1",
+                disabled: false,
             },
             {
-                label: "Analiza",
+                title: "Analiza",
                 icon: "pi pi-list",
-                command: () => {
-                    useRouter().push({ name: "analiza" });
-                },
+                route: "analiza",
+                value: "2",
+                disabled: true,
             },
         ]);
-        const active = useHeaderTab();
 
-        // TODO: Idk but something is wrong with this class assigning
-        const is_index_path = ref(false);
-        const router = useRouter();
-        onMounted(() => {
-            // on route change do something
-            router.afterEach((to, from) => {
-                if (to.fullPath === "/") is_index_path.value = true;
-                else is_index_path.value = false;
-            });
+        // Watch for route changes and update the tab value
+        watchEffect(() => {
+            const currentRoute = router.currentRoute.value.name;
+            const tab = tabs.value.find((tab) => tab.route === currentRoute);
+            if (tab) {
+                tabValue.value = tab.value;
+            }
         });
 
-        const changeTheme = () => {
-            // if (is_light_theme.value) PrimeVue.changeTheme("lara-light-green", "lara-dark-green", "theme-link-dark", () => {});
-            // else PrimeVue.changeTheme("lara-dark-green", "lara-light-green", "theme-link", () => {});
-            // localStorage.setItem("is_light_theme", JSON.stringify(is_light_theme.value));
-        };
-
         return {
-            is_light_theme,
-            items,
-            is_index_path,
-            active,
-            changeTheme,
+            tabs,
+            tabValue,
+            router,
         };
     },
 };
@@ -88,18 +79,13 @@ h1 {
     border-radius: 5px;
     margin: 10px;
 }
-.custom-light-theme {
-    color: black !important;
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.dark-mode-switch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 14px;
-
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 5px 10px;
-    border-radius: 5px;
+a:visited {
+    color: inherit;
 }
 </style>

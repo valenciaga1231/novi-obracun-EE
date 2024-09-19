@@ -1,7 +1,6 @@
 <template>
     <div class="index-component" :class="{ 'custom-light-theme': is_light_theme }">
         <div class="index-content">
-            <Header />
             <InfoSection style="margin-top: 20px; width: 50%" />
         </div>
     </div>

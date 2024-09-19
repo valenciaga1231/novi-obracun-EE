@@ -1,4 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// import Lara from "@primevue/themes/lara";
+import Aura from "@primevue/themes/aura";
+
 export default defineNuxtConfig({
     devtools: { enabled: false },
     typescript: {
@@ -8,19 +11,26 @@ export default defineNuxtConfig({
     build: {
         transpile: ["xlsx"],
     },
-    css: ["primevue/resources/themes/lara-dark-green/theme.css", "@/assets/main.css", "primeicons/primeicons.css"],
-    modules: ["nuxt-primevue"],
+    ssr: false,
+    css: ["primeicons/primeicons.css"],
+    modules: ["@primevue/nuxt-module"],
     //@ts-ignore
     primevue: {
         options: {
             ripple: true,
+            inputVariant: "filled",
+            theme: {
+                preset: Aura,
+                options: {
+                    prefix: "p",
+                    darkModeSelector: "system",
+                    cssLayer: false,
+                },
+            },
         },
         components: {
-            include: ["Calendar", "Button", "TabMenu", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel", "InputSwitch", "InputNumber", "ProgressBar", "ProgressSpinner"],
+            include: ["Calendar", "Button", "Drawer", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel", "InputSwitch", "InputNumber", "ProgressBar", "ProgressSpinner", "Dialog", "Tabs", "TabList", "Tab"],
         },
-        cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
-    },
-    imports: {
         autoImport: true,
     },
 });

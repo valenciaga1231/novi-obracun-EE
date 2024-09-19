@@ -1,7 +1,7 @@
 <template>
     <div class="racunalo-content">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Header />
+        <!-- <Header /> -->
         <div class="page-content">
             <section class="data-input-section">
                 <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
@@ -18,49 +18,75 @@
                 </Fieldset>
             </section>
             <!-- Button to toggle instructions panel -->
-            <Button @click="toggleInstructions" class="toggle-instructions-btn">Navodila</Button>
-
+            <button @click="toggleInstructions" class="toggle-instructions-btn">Navodila</button>
             <!-- Sliding instructions panel -->
-            <transition name="slide-fade">
-                <div v-show="showInstructions" class="instructions-panel" @click.stop>
-                    <Button icon="pi pi-times" class="p-button-rounded p-button-text close-instructions-btn" @click="toggleInstructions" />
-                    <section class="instructions-info-section">
-                        <div class="instructions">
-                            <h3>Navodila za uporabo:</h3>
-                            <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
-                            <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
-                            <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
-                            <p>4. Kliknemo <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
-                        </div>
-                        <div class="info">
-                            <h3>Informacije o računalu:</h3>
-                            <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
-                            <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
-                        </div>
-                    </section>
-                </div>
-            </transition>
+            <Drawer name="slide-fade" v-model:visible="showInstructions" position="right" style="width: 50%">
+                <section class="instructions-info-section">
+                    <div class="instructions">
+                        <h3 style="margin-top: 0px">Navodila za uporabo:</h3>
+                        <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
+                        <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+                        <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
+                        <p>4. Kliknemo <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
+                    </div>
+                    <div class="info">
+                        <h3>Informacije o računalu:</h3>
+                        <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
+                        <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
+                    </div>
+                </section>
+            </Drawer>
         </div>
         <div class="data-display" v-if="useIsTable().value === true" style="padding: 20px">
             <div class="data-tables">
+                <Button @click="showDialog = true" class="optimize-btn">Optimizacija stroškov&nbsp;<b>(novo)</b></Button>
                 <DisplayMonthsData />
             </div>
         </div>
+        <!-- Dialog for optimization results -->
+        <Dialog header="Optimizacija Blokov" v-model:visible="showDialog" modal :style="{ width: '50vw' }">
+            <p>V primeru na klik spodnjega gumba bo stekla optimizacija moči posameznega bloka glede na podane podatke. Optimizacija sloni na tem, da se poišče minimum stroškov glede na vnešeno obdobje.</p>
+            <p>
+                Vaši trenutni stroški po novem obračunu za vnešeno obdobje so trenutno:
+                <b>{{ (totalCosts * 1.22).toFixed(2) }} €</b> <br />
+                V primeru, da bi rad izvedel na koliko lahko znizas stroške kliki spodnji gumb.
+            </p>
+            <div class="card flex justify-center">
+                <Button type="button" label="Optimiziraj" :loading="isOptimizing" icon="pi pi-refresh" @click="onClickOptimizePowerSettings()" />
+            </div>
+            <div v-if="totalCostsOptimized > 0">
+                <h4>Z optimizacijo smo dobili sledeče rezultate:</h4>
+                <p>Nove optimizirane vrednosti blokov so:</p>
+                <div style="display: flex; flex-direction: row; justify-content: space-evenly">
+                    <div v-for="(moc, id) in optimizedPrikljucnaMoc">
+                        <div>Blok {{ id + 1 }}</div>
+                        <div style="margin-left: 5px">{{ moc }}</div>
+                    </div>
+                </div>
+                <p>
+                    Skupni stroški po optimizaciji so: <b>{{ totalCostsOptimized.toFixed(2) }} €</b> Kar je prihranek v višini: <b>{{ (totalCosts * 1.22 - totalCostsOptimized).toFixed(2) }} €</b> <br />
+                    Vnesi te vrednosti blokov in ponovi izračun z klikom na gumb za vpogled podatkov po mesecih: <Button @click="repeatcalculationWithOptimizedBloks" size="small">Ponovi izračun z optimiziranimi bloki</Button>
+                </p>
+                <p><b>POZOR:</b> Optimizacija je bila narejena na podlagi podatkov o preteklosti, kar ne nujno pomeni, da bi v primeru spremembe dogovorjene moči pri operaterju pomenilo nizje stroške!</p>
+            </div>
+        </Dialog>
     </div>
 </template>
 
 <script lang="ts">
-import { usePrikljucnaMocPrices } from "~/composables/stanja";
-
 export default {
     setup() {
         const is_table = useIsTable();
-
         const showInstructions = ref(false);
-
-        const toggleInstructions = () => {
-            showInstructions.value = !showInstructions.value;
-        };
+        const showDialog = ref(false);
+        const optimizedPrikljucnaMoc = ref<number[]>([]);
+        const monthsData = useMonthsArray();
+        const totalCosts = computed(() => {
+            return Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0);
+        });
+        const totalCostsOptimized = ref(0);
+        const isOptimizing = ref(false);
+        const prikljucna_moc = usePrikljucnaMoc();
 
         onMounted(() => {
             // Get local storage data
@@ -82,10 +108,57 @@ export default {
             }
         });
 
+        const toggleInstructions = () => {
+            showInstructions.value = !showInstructions.value;
+        };
+
+        const onClickOptimizePowerSettings = () => {
+            isOptimizing.value = true;
+
+            setTimeout(() => {
+                // optimizing.value = true;
+                const savePrikljucnaMoc = [...usePrikljucnaMoc().value];
+
+                const optimizedPower = optimizePowerSettings();
+                optimizedPrikljucnaMoc.value = optimizedPower;
+                console.log(optimizedPower);
+
+                // Update the reactive state with the optimized power settings
+                for (let i = 0; i < prikljucna_moc.value.length; i++) {
+                    prikljucna_moc.value[i] = optimizedPower[i];
+                }
+                updateMonthlyExpenses(monthsData);
+
+                totalCostsOptimized.value = Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0) * 1.22;
+                console.log("Total costs optimized: ", totalCostsOptimized.value); //! Dev
+
+                for (let i = 0; i < prikljucna_moc.value.length; i++) {
+                    prikljucna_moc.value[i] = savePrikljucnaMoc[i];
+                }
+                updateMonthlyExpenses(monthsData);
+                isOptimizing.value = false;
+            }, 100);
+        };
+
+        const repeatcalculationWithOptimizedBloks = () => {
+            for (let i = 0; i < prikljucna_moc.value.length; i++) {
+                prikljucna_moc.value[i] = optimizedPrikljucnaMoc.value[i];
+            }
+            updateMonthlyExpenses(monthsData);
+            showDialog.value = false;
+        };
+
         return {
             is_table,
             showInstructions,
+            showDialog,
+            optimizedPrikljucnaMoc,
+            totalCostsOptimized,
+            totalCosts,
+            isOptimizing,
             toggleInstructions,
+            onClickOptimizePowerSettings,
+            repeatcalculationWithOptimizedBloks,
         };
     },
 };
@@ -93,6 +166,7 @@ export default {
 
 <style scoped>
 .racunalo-content {
+    margin-top: 20px;
 }
 
 .page-content {
@@ -104,7 +178,6 @@ export default {
 
     max-width: 2500px;
     margin: auto;
-
     position: relative;
 }
 .data-input-section {
@@ -171,35 +244,16 @@ export default {
     max-width: 1400px;
 }
 
-/*
-  Enter and leave animations can use different
-  durations and timing functions.
-*/
-.slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-    transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-    transform: translateX(20px);
-    opacity: 0;
-}
-
 .toggle-instructions-btn {
-    position: fixed;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+    position: absolute;
+    top: 10px;
+    right: 10px;
     z-index: 998;
     padding: 10px 20px;
-    background-color: var(--primary-color);
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 16px;
 }
 
 .instructions-panel {
@@ -208,39 +262,15 @@ export default {
     right: 0;
     width: 50%;
     height: 100%;
-    background-color: var(--surface-a);
+    background-color: var(--p-surface-900);
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     z-index: 999;
     overflow-y: auto;
     padding: 20px;
 }
 
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-    transition: all 0.3s ease;
-}
-
-.slide-fade-enter, .slide-fade-leave-to /* .slide-fade-leave-active in <2.1.8 */ {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
-.instructions-info-section {
-    padding: 20px;
-}
-
-.instructions-info-section h3 {
-    margin-top: 0;
-    color: var(--text-color);
-}
-
-.instructions-info-section p {
-    margin: 10px 0;
-    color: var(--text-color-secondary);
-}
-
 .instructions-info-section a {
-    color: var(--primary-color);
+    color: var(--p-primary-400);
     text-decoration: none;
 }
 

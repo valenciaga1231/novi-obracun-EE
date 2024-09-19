@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div style="height: 100vh">
+        <Header />
         <NuxtPage />
     </div>
 </template>
@@ -53,5 +54,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     margin: 0 0;
     padding: 0;
+
+    height: 100vh;
 }
 </style>

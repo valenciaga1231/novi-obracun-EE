@@ -21,7 +21,6 @@ export const useIsLightTheme = () => useState<boolean>("is_light_theme", () => f
 // Stores prispevki data (names, prices...)
 export const usePrispevki = () => useState<Prispevki>("prispevki", () => prispevki);
 
-export const useIsPrimerjavaModal = () => useState<boolean>("is_primerjava_modal", () => false);
 export const useIsTable = () => useState<boolean>("is_table", () => false);
 export const useHeaderTab = () => useState<number>("header_value", () => 0); // Used to define current tab in header
 

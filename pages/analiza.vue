@@ -1,6 +1,3 @@
 <template>
-    <div>
-        <Header />
-        Ni aktivno....
-    </div>
+    <div>Ni aktivno....</div>
 </template>
