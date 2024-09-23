@@ -1,10 +1,13 @@
 <template>
     <div class="racunalo-content">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- <Header /> -->
         <div class="page-content">
+            <!-- Data input section (Dogovorjena moc, EE tarifa, Data uploader, Prispevki) -->
             <section class="data-input-section">
                 <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
+                    <div style="text-align: center">
+                        <Select v-model="useSettings().value.user_group" :options="userGroupList" @change="updateUserGroup" placeholder="Izberi uporabniško skupino" class="w-full md:w-56" />
+                    </div>
                     <PrikljucnaMocForm />
                     <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
                         <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
@@ -17,8 +20,10 @@
                     </div>
                 </Fieldset>
             </section>
+
             <!-- Button to toggle instructions panel -->
             <button @click="toggleInstructions" class="toggle-instructions-btn">Navodila</button>
+
             <!-- Sliding instructions panel -->
             <Drawer name="slide-fade" v-model:visible="showInstructions" position="right" style="width: 50%">
                 <section class="instructions-info-section">
@@ -37,12 +42,15 @@
                 </section>
             </Drawer>
         </div>
+
+        <!-- Display data section -->
         <div class="data-display" v-if="useIsTable().value === true" style="padding: 20px">
             <div class="data-tables">
                 <Button @click="showDialog = true" class="optimize-btn">Optimizacija stroškov&nbsp;<b>(novo)</b></Button>
                 <DisplayMonthsData />
             </div>
         </div>
+
         <!-- Dialog for optimization results -->
         <Dialog header="Optimizacija Blokov" v-model:visible="showDialog" modal :style="{ width: '50vw' }">
             <p>V primeru na klik spodnjega gumba bo stekla optimizacija moči posameznega bloka glede na podane podatke. Optimizacija sloni na tem, da se poišče minimum stroškov glede na vnešeno obdobje.</p>
@@ -88,6 +96,8 @@ export default {
         const isOptimizing = ref(false);
         const prikljucna_moc = usePrikljucnaMoc();
 
+        const userGroupList = ref(["Uporabniška skupina 0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", "Uporabniška skupina 1: uporabniki priključeni na NN na zbiralnici NN v TP SN/NN", "Uporabniška skupina 2: uporabniki priključeni na SN izvod nazivne napetosti 35, 20 in 10kV", "Uporabniška skupina 3: uporabniki priključeni na SN na zbiralnici SN v RTP VN/SN", "Uporabniška skupina 4: uporabniki priključeni na VN izvod nazivne napetosti 400, 220 in 110 kV "]);
+
         onMounted(() => {
             // Get local storage data
             const data = localStorage.getItem("prikljucna_moc");
@@ -98,6 +108,8 @@ export default {
             if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET" | null;
             const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
             if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
+            const user_group = localStorage.getItem("user_group");
+            if (user_group) useSettings().value.user_group = user_group;
 
             // Set prices for prikljucna moc
             const tarife = getTarifeData();
@@ -148,6 +160,11 @@ export default {
             showDialog.value = false;
         };
 
+        const updateUserGroup = () => {
+            const _useSettings = useSettings().value;
+            if (_useSettings.user_group !== null) localStorage.setItem("user_group", _useSettings.user_group);
+        };
+
         return {
             is_table,
             showInstructions,
@@ -156,9 +173,11 @@ export default {
             totalCostsOptimized,
             totalCosts,
             isOptimizing,
+            userGroupList,
             toggleInstructions,
             onClickOptimizePowerSettings,
             repeatcalculationWithOptimizedBloks,
+            updateUserGroup,
         };
     },
 };
@@ -167,6 +186,7 @@ export default {
 <style scoped>
 .racunalo-content {
     margin-top: 20px;
+    /* scale: 0.5; */
 }
 
 .page-content {

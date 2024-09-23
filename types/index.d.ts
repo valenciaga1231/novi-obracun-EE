@@ -43,6 +43,7 @@ export type Prispevki = {
 };
 
 export type Settings = {
+    user_group: string | null;
     tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
     vrednosti_tarif: {
         VT: number;

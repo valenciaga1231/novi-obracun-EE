@@ -29,7 +29,7 @@ export default defineNuxtConfig({
             },
         },
         components: {
-            include: ["Calendar", "Button", "Drawer", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel", "InputSwitch", "InputNumber", "ProgressBar", "ProgressSpinner", "Dialog", "Tabs", "TabList", "Tab"],
+            include: ["Calendar", "Button", "Drawer", "InputNumber", "Card", "Dropdown", "Fieldset", "Checkbox", "FileUpload", "MultiSelect", "Panel", "InputSwitch", "InputNumber", "ProgressBar", "ProgressSpinner", "Dialog", "Tabs", "TabList", "Tab", "Select"],
         },
         autoImport: true,
     },
