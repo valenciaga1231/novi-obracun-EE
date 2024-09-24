@@ -48,7 +48,7 @@ export const initDefaultBlokData = () => {
 
 // Define default settings
 const default_settings: Settings = {
-    user_group: null,
+    user_group: { name: "User group", code: null },
     tip_starega_obracuna: null, // Default
     vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },
     date: {

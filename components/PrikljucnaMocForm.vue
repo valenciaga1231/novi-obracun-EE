@@ -6,7 +6,7 @@
                 <template #title class="custom-title"><span>Blok 1</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[0]" />
+                        <input id="1" type="text" class="input-field" v-model="prikljucna_moc[0]" disabled />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(1)">+</button>
                             <button @click="handleDownClick(1)">-</button>
@@ -22,7 +22,7 @@
                 <template #title class="custom-title"><span>Blok 2</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" />
+                        <input id="2" type="text" class="input-field" v-model="prikljucna_moc[1]" disabled />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(2)">+</button>
                             <button @click="handleDownClick(2)">-</button>
@@ -38,7 +38,7 @@
                 <template #title class="custom-title"><span>Blok 3</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" />
+                        <input id="3" type="text" class="input-field" v-model="prikljucna_moc[2]" disabled />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(3)">+</button>
                             <button @click="handleDownClick(3)">-</button>
@@ -54,7 +54,7 @@
                 <template #title class="custom-title"><span>Blok 4</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" />
+                        <input id="4" type="text" class="input-field" v-model="prikljucna_moc[3]" disabled />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(4)">+</button>
                             <button @click="handleDownClick(4)">-</button>
@@ -70,7 +70,7 @@
                 <template #title class="custom-title"><span>Blok 5</span></template>
                 <template #content>
                     <div class="dogovorjena-moc-row">
-                        <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" />
+                        <input id="5" type="text" class="input-field" v-model="prikljucna_moc[4]" disabled />
                         <div class="dogovorjena-moc-update">
                             <button @click="handleUpClick(5)">+</button>
                             <button @click="handleDownClick(5)">-</button>
@@ -106,7 +106,6 @@ export default {
         const prispevki = usePrispevki();
         const settings = useSettings();
         const timeout = ref<NodeJS.Timeout | null>(null);
-        const tarife_data = getTarifeData();
 
         const handleUpClick = (id: number) => {
             const input_field = document.getElementById(id.toString()) as HTMLInputElement;
@@ -214,7 +213,6 @@ export default {
             prikljucna_moc,
             prispevki,
             settings,
-            tarife_data,
         };
     },
 };
@@ -262,6 +260,12 @@ h2 {
     width: 60px;
     outline: none;
 }
+
+.input-field:disabled {
+    color: white;
+    cursor: not-allowed;
+}
+
 .dogovorjena-moc-update {
     margin-left: 2px;
     display: flex;

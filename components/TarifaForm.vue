@@ -3,7 +3,7 @@
         <div class="tarifa-content">
             <div class="p-float-label">
                 <label for="input-tariff">Izberi tarifo (brez DDV)</label>
-                <Select inputId="input-tariff" v-model="selected_tarif" :options="tarifs" optionLabel="name" class="w-full md:w-14rem" fluid />
+                <Select inputId="input-tariff" v-model="selected_tarif" :options="tarifs" :invalid="!selected_tarif" optionLabel="name" class="w-full md:w-14rem" fluid />
             </div>
             <div v-if="settings.tip_starega_obracuna !== null">
                 <div v-if="settings.tip_starega_obracuna === 'VT+MT'" style="display: flex; flex-direction: column">

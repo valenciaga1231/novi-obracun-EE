@@ -6,7 +6,7 @@ export const parseEnergyBlocks = () => {
     const excelData = useExcelData();
     if (!excelData.value) throw new Error("Excel data not initialized.");
 
-    const tarifeData = getTarifeData();
+    const tarifeData = getTarifeData(useSettings().value.user_group.code);
     const prispevki = usePrispevki().value;
 
     // First pass: Aggregate data per month and block
@@ -124,7 +124,7 @@ export const updatedPrikljucnaMoc = () => {
     const startTime = performance.now();
 
     // Update prices for PrikljucnaMocForm.vue
-    const tarife = getTarifeData();
+    const tarife = getTarifeData(useSettings().value.user_group.code);
     const blok_price_data = usePrikljucnaMocPrices().value;
     for (let i = 0; i < blok_price_data.length; i++) {
         const skupna_tarifna_moc = tarife[i + 1].prenos.tarifna_postavka_P + tarife[i + 1].distribucija.tarifna_postavka_P;
@@ -158,12 +158,14 @@ export const updatedPrikljucnaMoc = () => {
 export const izracunajOmrezninoMoci = (month?: number) => {
     const months = useMonthsArray();
     if (!months.value) throw new Error("Months data not initialized.");
+    const tarife = getTarifeData(useSettings().value.user_group.code);
+
     // Update month blok data
     //@ts-ignore
     for (const blok in months.value[month].blok_data) {
         const id = parseInt(blok) - 1; // Convert string to number and to index
         //@ts-ignore
-        months.value[month].blok_data[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P);
+        months.value[month].blok_data[blok].cena_omreznine_moci = usePrikljucnaMoc().value[id] * (tarife[blok].distribucija.tarifna_postavka_P + tarife[blok].prenos.tarifna_postavka_P);
     }
 };
 
@@ -270,8 +272,9 @@ export const izracunajPreseznoMoc = (month: number) => {
     const faktor_presezne_moci = 0.9; // TODO: Dodaj v nastavitve
 
     // Izracunamo ceno presezne moci
-    for (const [month_key, month_value] of Object.entries(months.value[month].blok_data)) {
-        month_value.cena_presezne_moci = month_value.presezna_moc * (getTarifeData()[month_key].distribucija.tarifna_postavka_P + getTarifeData()[month_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
+    const tarife = getTarifeData(useSettings().value.user_group.code);
+    for (const [blok_key, blok_value] of Object.entries(months.value[month].blok_data)) {
+        blok_value.cena_presezne_moci = blok_value.presezna_moc * (tarife[blok_key].distribucija.tarifna_postavka_P + tarife[blok_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
     }
 };
 
@@ -281,11 +284,12 @@ export const izracunajPreseznoMoc = (month: number) => {
  */
 export const dolociTarifeZaBlok = (month: number) => {
     const months = useMonthsArray();
+    const tarife = getTarifeData(useSettings().value.user_group.code);
 
     for (const blok in months.value[month].blok_data) {
         // doloci skupno_tarifo za moc za vsak blok
-        months.value[month].blok_data[blok].skupna_tarifa_moc = getTarifeData()[blok].distribucija.tarifna_postavka_P + getTarifeData()[blok].prenos.tarifna_postavka_P;
-        months.value[month].blok_data[blok].skupna_tarifa_energija = getTarifeData()[blok].distribucija.tarifna_postavka_W + getTarifeData()[blok].prenos.tarifna_postavka_W;
+        months.value[month].blok_data[blok].skupna_tarifa_moc = tarife[blok].distribucija.tarifna_postavka_P + tarife[blok].prenos.tarifna_postavka_P;
+        months.value[month].blok_data[blok].skupna_tarifa_energija = tarife[blok].distribucija.tarifna_postavka_W + tarife[blok].prenos.tarifna_postavka_W;
         months.value[month].blok_data[blok].skupna_tarifa_presezna_moc = usePrikljucnaMoc().value[parseInt(blok) - 1] * 0.9;
     }
 };

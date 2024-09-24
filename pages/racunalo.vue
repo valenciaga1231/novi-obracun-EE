@@ -6,7 +6,7 @@
             <section class="data-input-section">
                 <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
                     <div style="text-align: center">
-                        <Select v-model="useSettings().value.user_group" :options="userGroupList" @change="updateUserGroup" placeholder="Izberi uporabniško skupino" class="w-full md:w-56" />
+                        <Select v-model="useSettings().value.user_group" optionLabel="name" :options="userGroupList" @change="updateUserGroup" :invalid="useSettings().value.user_group.code === null" placeholder="Izberi uporabniško skupino" class="w-full md:w-56" />
                     </div>
                     <PrikljucnaMocForm />
                     <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
@@ -38,6 +38,8 @@
                         <h3>Informacije o računalu:</h3>
                         <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
                         <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
+                        <p>3. V primeru napake ali dodatnih vprašanj me kontaktirajte na <a href="mailto:merjcompany@gmail.com" target="_blank">e-mail</a>.</p>
+                        <p>4. Github repozitorij je dostopen na <a href="https://github.com/valenciaga1231/novi-obracun-EE" target="_blank">tukaj</a>.</p>
                     </div>
                 </section>
             </Drawer>
@@ -96,7 +98,13 @@ export default {
         const isOptimizing = ref(false);
         const prikljucna_moc = usePrikljucnaMoc();
 
-        const userGroupList = ref(["Uporabniška skupina 0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", "Uporabniška skupina 1: uporabniki priključeni na NN na zbiralnici NN v TP SN/NN", "Uporabniška skupina 2: uporabniki priključeni na SN izvod nazivne napetosti 35, 20 in 10kV", "Uporabniška skupina 3: uporabniki priključeni na SN na zbiralnici SN v RTP VN/SN", "Uporabniška skupina 4: uporabniki priključeni na VN izvod nazivne napetosti 400, 220 in 110 kV "]);
+        const userGroupList = ref([
+            { name: "Uporabniška skupina 0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", code: 0 },
+            { name: "Uporabniška skupina 1: uporabniki priključeni na NN na zbiralnici NN v TP SN/NN", code: 1 },
+            { name: "Uporabniška skupina 2: uporabniki priključeni na SN izvod nazivne napetosti 35, 20 in 10kV", code: 2 },
+            { name: "Uporabniška skupina 3: uporabniki priključeni na SN na zbiralnici SN v RTP VN/SN", code: 3 },
+            { name: "Uporabniška skupina 4: uporabniki priključeni na VN izvod nazivne napetosti 400, 220 in 110 kV", code: 4 },
+        ]);
 
         onMounted(() => {
             // Get local storage data
@@ -109,10 +117,10 @@ export default {
             const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
             if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
             const user_group = localStorage.getItem("user_group");
-            if (user_group) useSettings().value.user_group = user_group;
+            if (user_group) useSettings().value.user_group = JSON.parse(user_group);
 
             // Set prices for prikljucna moc
-            const tarife = getTarifeData();
+            const tarife = getTarifeData(0);
             const blok_price_data = usePrikljucnaMocPrices().value;
             for (let i = 0; i < blok_price_data.length; i++) {
                 const skupna_tarifna_moc = tarife[i + 1].prenos.tarifna_postavka_P + tarife[i + 1].distribucija.tarifna_postavka_P;
@@ -162,7 +170,9 @@ export default {
 
         const updateUserGroup = () => {
             const _useSettings = useSettings().value;
-            if (_useSettings.user_group !== null) localStorage.setItem("user_group", _useSettings.user_group);
+            if (_useSettings.user_group !== null) {
+                localStorage.setItem("user_group", JSON.stringify(_useSettings.user_group));
+            }
         };
 
         return {
