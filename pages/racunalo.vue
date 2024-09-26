@@ -35,10 +35,10 @@
                         </div>
                     </Fieldset>
                     <!-- Nastavitev nove dogovorjene moči in stare priključne moči -->
-                    <Fieldset class="mt-3" legend="Nastavi novo dogovorjeno obračunsko moč in staro priključno moč" :toggleable="true" :collapsed="isPrikljucnaCollapsed" v-on:toggle="isPrikljucnaCollapsed = !isPrikljucnaCollapsed">
-                        <div class="flex flex-col justify-evenly gap-5">
+                    <Fieldset class="mt-3" legend="Nastavi novo dogovorjeno obračunsko moč in staro obračunsko moč" :toggleable="true" :collapsed="isPrikljucnaCollapsed" v-on:toggle="isPrikljucnaCollapsed = !isPrikljucnaCollapsed">
+                        <div class="flex flex-wrap justify-evenly gap-5">
                             <PrikljucnaMocForm class="w-94 m-auto text-sm" />
-                            <StaraPrikljucna class="w-94 m-auto" />
+                            <StaraPrikljucna class="w-94 m-auto text-sm" />
                         </div>
                         <div class="text-center mt-3">
                             <Button @click="isPrikljucnaCollapsed = true" severity="info" size="small">Zapri </Button>
@@ -55,7 +55,10 @@
                     </Fieldset>
                     <!-- Nastavitev tarif za električno energijo -->
                     <Fieldset class="mt-3" legend="Tarifa energije pri ponudniku" :toggleable="true" :collapsed="isTarifaCollapsed" v-on:toggle="isTarifaCollapsed = !isTarifaCollapsed">
-                        <TarifaForm />
+                        <div class="flex flex flex-wrap justify-evenly">
+                            <TarifaFormOld />
+                            <TarifaForm />
+                        </div>
                         <div class="text-center mt-3">
                             <Button @click="isTarifaCollapsed = true" severity="info" size="small">Zapri </Button>
                             <Button
@@ -95,17 +98,28 @@
             <section class="instructions-info-section">
                 <div class="instructions">
                     <h3 style="margin-top: 0px">Navodila za uporabo:</h3>
-                    <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
-                    <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
-                    <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
-                    <p>4. Kliknemo <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
+                    <h3 class="text-xl font-bold mt-3">1. Izberi staro in novo vrsto odjema:</h3>
+                    <p>Uporabniško skupino po novem obračunu izberemo glede na to v katero skupino spadamo. Večina gospodinjstev je skupina 0 - uporabniki priključeni na NN izvod napetosti 420/230.</p>
+                    <p>Staro odjemno skupino izberemo glede na to v katero staro odjemno skupino spadamo, da bo primerjava med starim in novim računom pravilna. Večina navadnih gospodinjstev je pod Omrena priključitev: gospodinjstvo.</p>
+
+                    <h3 class="text-xl font-bold mt-3">2. Nastavi novo dogovorjeno obračunsko moč in staro obračunsko moč:</h3>
+                    <p>Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
+                    <p>Staro priključno moč lahko pogledamo na računu ali pa na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer izberemo merilno mesto in nato v meniju obračunski podatki ter na enem od obračunov preverimo obračunsko moč.</p>
+
+                    <h3 class="text-xl font-bold mt-3">3. Nastavi tarifo energije pri ponudniku:</h3>
+                    <p>Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+
+                    <h3 class="text-xl font-bold mt-3">4. Naloži podatke:</h3>
+                    <p>Podatkovno datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za celotno leto 2023.</p>
+                    <p>Kliknemo na <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
+                    <p>Po izračunu lahko pogledamo stare in nove račune s klikom na posamezen mesec.</p>
                 </div>
                 <div class="info">
-                    <h3>Informacije o računalu:</h3>
+                    <h3 class="text-xl font-bold mt-3">Informacije o računalu:</h3>
                     <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
                     <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
                     <p>3. V primeru napake ali dodatnih vprašanj me kontaktirajte na <a href="mailto:merjcompany@gmail.com" target="_blank">e-mail</a>.</p>
-                    <p>4. Github repozitorij je dostopen na <a href="https://github.com/valenciaga1231/novi-obracun-EE" target="_blank">tukaj</a>.</p>
+                    <p>4. Github repozitorij je dostopen <a href="https://github.com/valenciaga1231/novi-obracun-EE" target="_blank">tukaj</a>.</p>
                 </div>
             </section>
         </Drawer>
@@ -116,7 +130,7 @@
             <p>
                 Vaši trenutni stroški po novem obračunu za vnešeno obdobje so trenutno:
                 <b>{{ (totalCosts * 1.22).toFixed(2) }} €</b> <br />
-                V primeru, da bi rad izvedel na koliko lahko znizas stroške kliki spodnji gumb.
+                V primeru, da bi rad izvedel na koliko lahko znižas stroške kliki spodnji gumb.
             </p>
             <div class="card flex justify-center">
                 <Button type="button" label="Optimiziraj" :loading="isOptimizing" icon="pi pi-refresh" @click="onClickOptimizePowerSettings()" />
@@ -134,7 +148,7 @@
                     Skupni stroški po optimizaciji so: <b>{{ totalCostsOptimized.toFixed(2) }} €</b> Kar je prihranek v višini: <b>{{ (totalCosts * 1.22 - totalCostsOptimized).toFixed(2) }} €</b> <br />
                     Vnesi te vrednosti blokov in ponovi izračun z klikom na gumb za vpogled podatkov po mesecih: <Button @click="repeatcalculationWithOptimizedBloks" size="small">Ponovi izračun z optimiziranimi bloki</Button>
                 </p>
-                <p><b>POZOR:</b> Optimizacija je bila narejena na podlagi podatkov o preteklosti, kar ne nujno pomeni, da bi v primeru spremembe dogovorjene moči pri operaterju pomenilo nizje stroške!</p>
+                <p><b>POZOR:</b> Optimizacija je bila narejena na podlagi podatkov o preteklosti, kar ne nujno pomeni, da bi v primeru spremembe dogovorjene moči pri operaterju pomenilo nižje stroške!</p>
             </div>
         </Dialog>
     </div>
@@ -158,7 +172,7 @@ const prikljucna_moc = usePrikljucnaMoc();
 const isVrstaOdjemaCollapsed = ref(false);
 const isPrikljucnaCollapsed = ref(true);
 const isTarifaCollapsed = ref(true);
-const isUploadCollapsed = ref(true);
+const isUploadCollapsed = ref(false);
 
 const userGroupList = ref([
     { name: "0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", code: 0 },
@@ -176,6 +190,8 @@ onMounted(() => {
     if (vrednosti_tarif) useSettings().value.vrednosti_tarif = JSON.parse(vrednosti_tarif);
     const tip_starega_obracuna = localStorage.getItem("tip_starega_obracuna");
     if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET" | null;
+    const tip_novega_obracuna = localStorage.getItem("tip_novega_obracuna");
+    if (tip_novega_obracuna) useSettings().value.tip_novega_obracuna = tip_novega_obracuna as "VT+MT" | "ET" | null;
     const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
     if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
     const user_group = localStorage.getItem("user_group");

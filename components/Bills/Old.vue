@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div style="display: flex; justify-content: space-evenly">
+        <div class="h-20" style="display: flex; justify-content: space-evenly">
             <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 10px 20px">
                 <h3 style="font-size: 24px; font-weight: bold">Stari račun</h3>
             </div>
@@ -25,29 +25,29 @@
                     <td>ZNESEK EUR<br />BREZ DDV</td>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <!-- <Divider /> -->
             <tbody>
                 <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
                         <td>{{ month_data.vt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
-                        <td>{{ useSettings().value.vrednosti_tarif.VT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ useSettings().value.vrednosti_tarif_old.VT.toFixed(6) }}</td>
+                        <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif_old.VT).toFixed(5) }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: left">Električna energija MT</td>
                         <td>{{ month_data.mt_energy.toFixed(0) }}</td>
                         <td>kWh</td>
-                        <td>{{ useSettings().value.vrednosti_tarif.MT.toFixed(6) }}</td>
-                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT).toFixed(5) }}</td>
+                        <td>{{ useSettings().value.vrednosti_tarif_old.MT.toFixed(6) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_old.MT).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
                         <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_old.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif_old.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <tr>

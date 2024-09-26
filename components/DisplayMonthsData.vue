@@ -25,10 +25,10 @@
 
         <Fieldset legend="Povzetek">
             <p>
-                Celotni novi stroski z DDV po starem izracunu <b>{{ (total_old_cost * 1.22).toFixed(2) }} EUR</b>
+                Celotni novi stroški z DDV po starem izračunu <b>{{ (total_old_cost * 1.22).toFixed(2) }} EUR</b>
             </p>
             <p>
-                Celotni novi stroski z DDV po novem izracunu <b>{{ (total_new_cost * 1.22).toFixed(2) }} EUR</b>
+                Celotni novi stroški z DDV po novem izračunu <b>{{ (total_new_cost * 1.22).toFixed(2) }} EUR</b>
             </p>
             <br />
             Porast/upad cene po mesecih:

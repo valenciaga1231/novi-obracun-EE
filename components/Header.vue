@@ -3,7 +3,7 @@
         <h1>Primerjalnik cen EE 2024</h1>
         <div class="card">
             <Tabs :value="tabValue">
-                <TabList>
+                <TabList class="text-sm">
                     <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value" @click="router.push({ name: tab.route })" :disabled="tab.disabled">
                         <i :class="tab.icon" />
                         {{ tab.title }}
@@ -73,11 +73,16 @@ export default {
 }
 
 h1 {
-    color: white;
-    background-color: rgba(255, 255, 255, 0.5) !important;
-    padding: 15px 10px;
-    border-radius: 5px;
-    margin: 10px;
+    color: var(--p-primary-400);
+    background-color: var(--p-zinc-700) !important;
+    padding: 12px 18px;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    text-align: center;
+
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
 }
 
 a {

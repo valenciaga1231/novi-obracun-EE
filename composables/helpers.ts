@@ -274,6 +274,7 @@ export const izracunajPreseznoMoc = (month: number) => {
     // Izracunamo ceno presezne moci
     const tarife = getTarifeData(useSettings().value.user_group.code);
     for (const [blok_key, blok_value] of Object.entries(months.value[month].blok_data)) {
+        // blok_value.cena_presezne_moci = blok_value.presezna_moc * (tarife[blok_key].distribucija.tarifna_postavka_P + tarife[blok_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
         blok_value.cena_presezne_moci = blok_value.presezna_moc * (tarife[blok_key].distribucija.tarifna_postavka_P + tarife[blok_key].prenos.tarifna_postavka_P) * faktor_presezne_moci;
     }
 };
@@ -290,7 +291,7 @@ export const dolociTarifeZaBlok = (month: number) => {
         // doloci skupno_tarifo za moc za vsak blok
         months.value[month].blok_data[blok].skupna_tarifa_moc = tarife[blok].distribucija.tarifna_postavka_P + tarife[blok].prenos.tarifna_postavka_P;
         months.value[month].blok_data[blok].skupna_tarifa_energija = tarife[blok].distribucija.tarifna_postavka_W + tarife[blok].prenos.tarifna_postavka_W;
-        months.value[month].blok_data[blok].skupna_tarifa_presezna_moc = usePrikljucnaMoc().value[parseInt(blok) - 1] * 0.9;
+        months.value[month].blok_data[blok].skupna_tarifa_presezna_moc = months.value[month].blok_data[blok].skupna_tarifa_moc * 0.9;
     }
 };
 
@@ -331,7 +332,7 @@ export const sumMonthCosts = (month: number): number => {
     } else if (useSettings().value.tip_starega_obracuna === "ET") {
         energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
     } else {
-        throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
+        throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_novega_obracuna);
     }
 
     return omreznina + prispevki + energija;
@@ -351,10 +352,10 @@ export const sumMonthCostsOld = (month: number) => {
     let omreznina_energija = 0;
 
     if (useSettings().value.tip_starega_obracuna === "VT+MT") {
-        energija = months[month].vt_energy * useSettings().value.vrednosti_tarif.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif.MT;
+        energija = months[month].vt_energy * useSettings().value.vrednosti_tarif_old.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif_old.MT;
         omreznina_energija = months[month].vt_energy * tarifValues.VT + months[month].mt_energy * tarifValues.MT;
     } else if (useSettings().value.tip_starega_obracuna === "ET") {
-        energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
+        energija = months[month].total_energy * useSettings().value.vrednosti_tarif_old.ET;
         if (tarifValues.ET) omreznina_energija = months[month].total_energy * tarifValues.ET; //TODO: Pogledati je treba ceno omreznine energije za ET
     } else {
         throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);

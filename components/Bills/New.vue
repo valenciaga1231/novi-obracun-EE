@@ -1,9 +1,9 @@
 <template>
     <div class="novi-racun-component">
-        <div style="display: flex; justify-content: space-evenly">
+        <div class="h-20" style="display: flex; justify-content: space-evenly">
             <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 10px 20px">
                 <h3 style="font-size: 24px; font-weight: bold">Novi račun</h3>
-                <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem" style="font-size: 16px; width: 200px" />
+                <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem mt-3" style="font-size: 16px; width: 200px" />
             </div>
             <div>
                 <p v-if="month_data.date.start && month_data.date.end" style="text-align: center"><b>Datum: </b>{{ month_data.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ month_data.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>

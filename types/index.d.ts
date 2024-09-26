@@ -47,8 +47,16 @@ export type Settings = {
         name: string;
         code: number | null;
     };
-    tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
+
+    tip_novega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
     vrednosti_tarif: {
+        VT: number;
+        MT: number;
+        ET: number;
+    };
+
+    tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
+    vrednosti_tarif_old: {
         VT: number;
         MT: number;
         ET: number;
