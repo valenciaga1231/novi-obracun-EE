@@ -1,57 +1,114 @@
 <template>
     <div class="racunalo-content">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <div class="page-content">
+        <div class="flex flex-wrap">
             <!-- Data input section (Dogovorjena moc, EE tarifa, Data uploader, Prispevki) -->
-            <section class="data-input-section">
-                <Fieldset legend="Spremeni vhodne podatke" :toggleable="true">
-                    <div style="text-align: center">
-                        <Select v-model="useSettings().value.user_group" optionLabel="name" :options="userGroupList" @change="updateUserGroup" :invalid="useSettings().value.user_group.code === null" placeholder="Izberi uporabniško skupino" class="w-full md:w-56" />
+            <section class="data-input-section w-full">
+                <!-- Button to toggle instructions panel -->
+                <Fieldset legend="Nastavitve in podatki za izračun" :toggleable="false">
+                    <div class="flex justify-between mb-3">
+                        <p class="basis-1/2 text-sm text-justify">Začnite z vnosom podatkov za primerjavo med starim in novim obračunom. Najprej določite novo in staro vrsto odjema in nato še ostalo s klikom naprej. Za dodatne informacije kliknite gumb <a @click="toggleInstructions" class="cursor-pointer" target="_blank">navodila</a>.</p>
+                        <Button @click="toggleInstructions" class="self-start" size="small">Navodila</Button>
                     </div>
-                    <PrikljucnaMocForm />
-                    <div style="max-width: 1250px; display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap; gap: 20px">
-                        <Fieldset legend="Tarifa" :toggleable="true" style="flex: 33%">
-                            <TarifaForm />
-                        </Fieldset>
-                        <UploadData style="flex: 33%" />
-                        <Fieldset legend="Prispevki" :toggleable="true" style="flex: 33%">
-                            <PrispevkiForm />
-                        </Fieldset>
-                    </div>
+                    <Fieldset class="mt-3" legend="Izberi staro in novo vrsto odjema" :toggleable="true" :collapsed="isVrstaOdjemaCollapsed" v-on:toggle="isVrstaOdjemaCollapsed = !isVrstaOdjemaCollapsed">
+                        <div class="flex justify-evenly flex-wrap gap-6">
+                            <div class="">
+                                <p style="text-align: left; margin-bottom: 3px">Izberi uporabniško skupino po novem obračunu:</p>
+                                <Select class="text-sm" pt:root:class="max-w-full" v-model="settings.user_group" optionLabel="name" :options="userGroupList" @change="updateUserGroup" :invalid="settings.user_group.code === null" placeholder="Izberi uporabniško skupino" fluid />
+                            </div>
+                            <div>
+                                <p style="text-align: left; margin-bottom: 3px">Izberi staro odjemno skupino :</p>
+                                <SelectOldTarife class="text-sm" />
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <Button @click="isVrstaOdjemaCollapsed = true" severity="info" size="small">Zapri </Button>
+                            <Button
+                                class="ml-3"
+                                @click="
+                                    isVrstaOdjemaCollapsed = true;
+                                    isPrikljucnaCollapsed = false;
+                                "
+                                size="small"
+                                >Naprej
+                            </Button>
+                        </div>
+                    </Fieldset>
+                    <!-- Nastavitev nove dogovorjene moči in stare priključne moči -->
+                    <Fieldset class="mt-3" legend="Nastavi novo dogovorjeno obračunsko moč in staro priključno moč" :toggleable="true" :collapsed="isPrikljucnaCollapsed" v-on:toggle="isPrikljucnaCollapsed = !isPrikljucnaCollapsed">
+                        <div class="flex flex-col justify-evenly gap-5">
+                            <PrikljucnaMocForm class="w-94 m-auto text-sm" />
+                            <StaraPrikljucna class="w-94 m-auto" />
+                        </div>
+                        <div class="text-center mt-3">
+                            <Button @click="isPrikljucnaCollapsed = true" severity="info" size="small">Zapri </Button>
+                            <Button
+                                class="ml-3"
+                                @click="
+                                    isPrikljucnaCollapsed = true;
+                                    isTarifaCollapsed = false;
+                                "
+                                size="small"
+                                >Naprej
+                            </Button>
+                        </div>
+                    </Fieldset>
+                    <!-- Nastavitev tarif za električno energijo -->
+                    <Fieldset class="mt-3" legend="Tarifa energije pri ponudniku" :toggleable="true" :collapsed="isTarifaCollapsed" v-on:toggle="isTarifaCollapsed = !isTarifaCollapsed">
+                        <TarifaForm />
+                        <div class="text-center mt-3">
+                            <Button @click="isTarifaCollapsed = true" severity="info" size="small">Zapri </Button>
+                            <Button
+                                class="ml-3"
+                                @click="
+                                    isTarifaCollapsed = true;
+                                    isUploadCollapsed = false;
+                                "
+                                size="small"
+                                >Naprej
+                            </Button>
+                        </div>
+                    </Fieldset>
+                    <!-- Naloži podatke in vnos prispevkov -->
+                    <Fieldset class="mt-3" legend="Naloži podatke" :toggleable="true" :collapsed="isUploadCollapsed" v-on:toggle="isUploadCollapsed = !isUploadCollapsed">
+                        <UploadData />
+                        <div class="text-center mt-3">
+                            <Button @click="isUploadCollapsed = true" severity="info" size="small">Zapri </Button>
+                        </div>
+                    </Fieldset>
+                    <Fieldset class="mt-3" legend="Prispevki" :toggleable="true">
+                        <PrispevkiForm />
+                    </Fieldset>
                 </Fieldset>
+                <!-- Nastavitev vrste odjema po starem in novem obračunu -->
             </section>
-
-            <!-- Button to toggle instructions panel -->
-            <button @click="toggleInstructions" class="toggle-instructions-btn">Navodila</button>
-
-            <!-- Sliding instructions panel -->
-            <Drawer name="slide-fade" v-model:visible="showInstructions" position="right" style="width: 50%">
-                <section class="instructions-info-section">
-                    <div class="instructions">
-                        <h3 style="margin-top: 0px">Navodila za uporabo:</h3>
-                        <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
-                        <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
-                        <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
-                        <p>4. Kliknemo <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
-                    </div>
-                    <div class="info">
-                        <h3>Informacije o računalu:</h3>
-                        <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
-                        <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
-                        <p>3. V primeru napake ali dodatnih vprašanj me kontaktirajte na <a href="mailto:merjcompany@gmail.com" target="_blank">e-mail</a>.</p>
-                        <p>4. Github repozitorij je dostopen na <a href="https://github.com/valenciaga1231/novi-obracun-EE" target="_blank">tukaj</a>.</p>
-                    </div>
-                </section>
-            </Drawer>
+            <!-- Display data section -->
+            <section class="text-xs" v-if="is_table === true" style="padding: 20px">
+                <div class="data-tables">
+                    <Button @click="showDialog = true" class="optimize-btn">Optimizacija stroškov&nbsp;<b>(novo)</b></Button>
+                    <DisplayMonthsData />
+                </div>
+            </section>
         </div>
-
-        <!-- Display data section -->
-        <div class="data-display" v-if="useIsTable().value === true" style="padding: 20px">
-            <div class="data-tables">
-                <Button @click="showDialog = true" class="optimize-btn">Optimizacija stroškov&nbsp;<b>(novo)</b></Button>
-                <DisplayMonthsData />
-            </div>
-        </div>
+        <!-- Sliding instructions panel -->
+        <Drawer name="slide-fade" v-model:visible="showInstructions" position="right" style="width: 50%">
+            <section class="instructions-info-section">
+                <div class="instructions">
+                    <h3 style="margin-top: 0px">Navodila za uporabo:</h3>
+                    <p>1. Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
+                    <p>2. Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
+                    <p>3. Tudi podatke datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za leto 2023.</p>
+                    <p>4. Kliknemo <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
+                </div>
+                <div class="info">
+                    <h3>Informacije o računalu:</h3>
+                    <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
+                    <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>
+                    <p>3. V primeru napake ali dodatnih vprašanj me kontaktirajte na <a href="mailto:merjcompany@gmail.com" target="_blank">e-mail</a>.</p>
+                    <p>4. Github repozitorij je dostopen na <a href="https://github.com/valenciaga1231/novi-obracun-EE" target="_blank">tukaj</a>.</p>
+                </div>
+            </section>
+        </Drawer>
 
         <!-- Dialog for optimization results -->
         <Dialog header="Optimizacija Blokov" v-model:visible="showDialog" modal :style="{ width: '50vw' }">
@@ -83,156 +140,121 @@
     </div>
 </template>
 
-<script lang="ts">
-export default {
-    setup() {
-        const is_table = useIsTable();
-        const showInstructions = ref(false);
-        const showDialog = ref(false);
-        const optimizedPrikljucnaMoc = ref<number[]>([]);
-        const monthsData = useMonthsArray();
-        const totalCosts = computed(() => {
-            return Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0);
-        });
-        const totalCostsOptimized = ref(0);
-        const isOptimizing = ref(false);
-        const prikljucna_moc = usePrikljucnaMoc();
+<script setup lang="ts">
+const is_table = useIsTable();
+const settings = useSettings();
+const showInstructions = ref(false);
+const showDialog = ref(false);
+const optimizedPrikljucnaMoc = ref<number[]>([]);
+const monthsData = useMonthsArray();
+const totalCosts = computed(() => {
+    return Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0);
+});
+const totalCostsOptimized = ref(0);
+const isOptimizing = ref(false);
+const prikljucna_moc = usePrikljucnaMoc();
 
-        const userGroupList = ref([
-            { name: "Uporabniška skupina 0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", code: 0 },
-            { name: "Uporabniška skupina 1: uporabniki priključeni na NN na zbiralnici NN v TP SN/NN", code: 1 },
-            { name: "Uporabniška skupina 2: uporabniki priključeni na SN izvod nazivne napetosti 35, 20 in 10kV", code: 2 },
-            { name: "Uporabniška skupina 3: uporabniki priključeni na SN na zbiralnici SN v RTP VN/SN", code: 3 },
-            { name: "Uporabniška skupina 4: uporabniki priključeni na VN izvod nazivne napetosti 400, 220 in 110 kV", code: 4 },
-        ]);
+// Fieldsets collapsed
+const isVrstaOdjemaCollapsed = ref(false);
+const isPrikljucnaCollapsed = ref(true);
+const isTarifaCollapsed = ref(true);
+const isUploadCollapsed = ref(true);
 
-        onMounted(() => {
-            // Get local storage data
-            const data = localStorage.getItem("prikljucna_moc");
-            if (data) usePrikljucnaMoc().value = JSON.parse(data);
-            const vrednosti_tarif = localStorage.getItem("vrednosti_tarif");
-            if (vrednosti_tarif) useSettings().value.vrednosti_tarif = JSON.parse(vrednosti_tarif);
-            const tip_starega_obracuna = localStorage.getItem("tip_starega_obracuna");
-            if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET" | null;
-            const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
-            if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
-            const user_group = localStorage.getItem("user_group");
-            if (user_group) useSettings().value.user_group = JSON.parse(user_group);
+const userGroupList = ref([
+    { name: "0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", code: 0 },
+    { name: "1: uporabniki priključeni na NN na zbiralnici NN v TP SN/NN", code: 1 },
+    { name: "2: uporabniki priključeni na SN izvod nazivne napetosti 35, 20 in 10kV", code: 2 },
+    { name: "3: uporabniki priključeni na SN na zbiralnici SN v RTP VN/SN", code: 3 },
+    { name: "4: uporabniki priključeni na VN izvod nazivne napetosti 400, 220 in 110 kV", code: 4 },
+]);
 
-            // Set prices for prikljucna moc
-            const tarife = getTarifeData(0);
-            const blok_price_data = usePrikljucnaMocPrices().value;
-            for (let i = 0; i < blok_price_data.length; i++) {
-                const skupna_tarifna_moc = tarife[i + 1].prenos.tarifna_postavka_P + tarife[i + 1].distribucija.tarifna_postavka_P;
-                blok_price_data[i] = skupna_tarifna_moc * usePrikljucnaMoc().value[i];
-            }
-        });
+onMounted(() => {
+    // Get local storage data
+    const data = localStorage.getItem("prikljucna_moc");
+    if (data) usePrikljucnaMoc().value = JSON.parse(data);
+    const vrednosti_tarif = localStorage.getItem("vrednosti_tarif");
+    if (vrednosti_tarif) useSettings().value.vrednosti_tarif = JSON.parse(vrednosti_tarif);
+    const tip_starega_obracuna = localStorage.getItem("tip_starega_obracuna");
+    if (tip_starega_obracuna) useSettings().value.tip_starega_obracuna = tip_starega_obracuna as "VT+MT" | "ET" | null;
+    const stara_prikljucna_moc = localStorage.getItem("stara_prikljucna_moc");
+    if (stara_prikljucna_moc) usePrikljucnaMocStara().value = JSON.parse(stara_prikljucna_moc);
+    const user_group = localStorage.getItem("user_group");
+    if (user_group) useSettings().value.user_group = JSON.parse(user_group);
+    const user_group_old = localStorage.getItem("user_group_old");
+    if (user_group_old) useSettings().value.vrednosti_tarif_omreznine = JSON.parse(user_group_old);
 
-        const toggleInstructions = () => {
-            showInstructions.value = !showInstructions.value;
-        };
+    // Set prices for prikljucna moc
+    const tarife = getTarifeData(0);
+    const blok_price_data = usePrikljucnaMocPrices().value;
+    for (let i = 0; i < blok_price_data.length; i++) {
+        const skupna_tarifna_moc = tarife[i + 1].prenos.tarifna_postavka_P + tarife[i + 1].distribucija.tarifna_postavka_P;
+        blok_price_data[i] = skupna_tarifna_moc * usePrikljucnaMoc().value[i];
+    }
+});
 
-        const onClickOptimizePowerSettings = () => {
-            isOptimizing.value = true;
+const toggleInstructions = () => {
+    showInstructions.value = !showInstructions.value;
+};
 
-            setTimeout(() => {
-                // optimizing.value = true;
-                const savePrikljucnaMoc = [...usePrikljucnaMoc().value];
+const onClickOptimizePowerSettings = () => {
+    isOptimizing.value = true;
 
-                const optimizedPower = optimizePowerSettings();
-                optimizedPrikljucnaMoc.value = optimizedPower;
-                console.log(optimizedPower);
+    setTimeout(() => {
+        // optimizing.value = true;
+        const savePrikljucnaMoc = [...usePrikljucnaMoc().value];
 
-                // Update the reactive state with the optimized power settings
-                for (let i = 0; i < prikljucna_moc.value.length; i++) {
-                    prikljucna_moc.value[i] = optimizedPower[i];
-                }
-                updateMonthlyExpenses(monthsData);
+        const optimizedPower = optimizePowerSettings();
+        optimizedPrikljucnaMoc.value = optimizedPower;
+        console.log(optimizedPower);
 
-                totalCostsOptimized.value = Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0) * 1.22;
-                console.log("Total costs optimized: ", totalCostsOptimized.value); //! Dev
+        // Update the reactive state with the optimized power settings
+        for (let i = 0; i < prikljucna_moc.value.length; i++) {
+            prikljucna_moc.value[i] = optimizedPower[i];
+        }
+        updateMonthlyExpenses(monthsData);
 
-                for (let i = 0; i < prikljucna_moc.value.length; i++) {
-                    prikljucna_moc.value[i] = savePrikljucnaMoc[i];
-                }
-                updateMonthlyExpenses(monthsData);
-                isOptimizing.value = false;
-            }, 100);
-        };
+        totalCostsOptimized.value = Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0) * 1.22;
+        console.log("Total costs optimized: ", totalCostsOptimized.value); //! Dev
 
-        const repeatcalculationWithOptimizedBloks = () => {
-            for (let i = 0; i < prikljucna_moc.value.length; i++) {
-                prikljucna_moc.value[i] = optimizedPrikljucnaMoc.value[i];
-            }
-            updateMonthlyExpenses(monthsData);
-            showDialog.value = false;
-        };
+        for (let i = 0; i < prikljucna_moc.value.length; i++) {
+            prikljucna_moc.value[i] = savePrikljucnaMoc[i];
+        }
+        updateMonthlyExpenses(monthsData);
+        isOptimizing.value = false;
+    }, 100);
+};
 
-        const updateUserGroup = () => {
-            const _useSettings = useSettings().value;
-            if (_useSettings.user_group !== null) {
-                localStorage.setItem("user_group", JSON.stringify(_useSettings.user_group));
-            }
-        };
+const repeatcalculationWithOptimizedBloks = () => {
+    for (let i = 0; i < prikljucna_moc.value.length; i++) {
+        prikljucna_moc.value[i] = optimizedPrikljucnaMoc.value[i];
+    }
+    updateMonthlyExpenses(monthsData);
+    showDialog.value = false;
+};
 
-        return {
-            is_table,
-            showInstructions,
-            showDialog,
-            optimizedPrikljucnaMoc,
-            totalCostsOptimized,
-            totalCosts,
-            isOptimizing,
-            userGroupList,
-            toggleInstructions,
-            onClickOptimizePowerSettings,
-            repeatcalculationWithOptimizedBloks,
-            updateUserGroup,
-        };
-    },
+const updateUserGroup = () => {
+    const _useSettings = useSettings().value;
+    if (_useSettings.user_group !== null) {
+        localStorage.setItem("user_group", JSON.stringify(_useSettings.user_group));
+    }
 };
 </script>
 
 <style scoped>
 .racunalo-content {
-    margin-top: 20px;
-    /* scale: 0.5; */
+    margin: 10px;
 }
 
 .page-content {
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     align-items: flex-start;
 
     flex-wrap: wrap;
 
     max-width: 2500px;
-    margin: auto;
-    position: relative;
-}
-.data-input-section {
-    flex: 45%;
-
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-
-    margin: auto;
-    margin-bottom: 50px;
-    margin-top: 0px;
-
-    max-width: 1400px;
-}
-
-.new-bill-section {
-    flex: 55%;
-    vertical-align: top;
-
-    padding: 0px 25px;
-
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+    margin: auto; */
+    /* position: relative; */
 }
 
 .instructions-info-section {
@@ -261,31 +283,6 @@ export default {
     text-justify: inter-word;
 }
 
-.data-display {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 20px;
-
-    margin: auto;
-    margin-bottom: 50px;
-    margin-top: 0px;
-
-    max-width: 1400px;
-}
-
-.toggle-instructions-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 998;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
 .instructions-panel {
     position: fixed;
     top: 0;
@@ -299,7 +296,7 @@ export default {
     padding: 20px;
 }
 
-.instructions-info-section a {
+a {
     color: var(--p-primary-400);
     text-decoration: none;
 }

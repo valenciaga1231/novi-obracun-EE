@@ -151,63 +151,57 @@
     </div>
 </template>
 
-<script lang="ts">
-export default {
-    setup() {
-        const months = useMonthsArray();
-        const total_new_cost = ref(0);
-        const total_old_cost = ref(0);
-        const display_months = ref<HTMLElement | null>(null);
-        const month_bill = ref(0);
-        const showPrimerjava = ref(false);
+<script setup lang="ts">
+const months = useMonthsArray();
+const total_new_cost = ref(0);
+const total_old_cost = ref(0);
+const display_months = ref<HTMLElement | null>(null);
+const month_bill = ref(0);
+const showPrimerjava = ref(false);
 
-        onMounted(() => {
-            if (display_months.value) display_months.value.scrollIntoView({ behavior: "smooth", block: "start" }); // Scroll on data
+onMounted(() => {
+    if (display_months.value) display_months.value.scrollIntoView({ behavior: "smooth", block: "start" }); // Scroll on data
 
-            for (const month in months.value) {
-                total_new_cost.value += sumMonthCosts(months.value[month].month);
-                total_old_cost.value += sumMonthCostsOld(months.value[month].month);
-            }
-        });
+    for (const month in months.value) {
+        total_new_cost.value += sumMonthCosts(months.value[month].month);
+        total_old_cost.value += sumMonthCostsOld(months.value[month].month);
+    }
+});
 
-        // Update total costs when usePrikljucnaMoc is updated
-        watch(
-            () => usePrikljucnaMoc().value,
-            () => {
-                total_new_cost.value = 0;
-                total_old_cost.value = 0;
+// Update total costs when usePrikljucnaMoc is updated
+watch(
+    () => usePrikljucnaMoc().value,
+    () => {
+        total_new_cost.value = 0;
+        total_old_cost.value = 0;
 
-                for (const month in months.value) {
-                    total_new_cost.value += sumMonthCosts(months.value[month].month);
-                    total_old_cost.value += sumMonthCostsOld(months.value[month].month);
-                }
-            },
-            { deep: true }
-        );
-
-        // Odpre prikaz racuna, primerjavo med novim in starim racunom
-        const openBill = (month: number) => {
-            month_bill.value = month;
-            showPrimerjava.value = true;
-        };
-
-        const change_style_object = {
-            title: {
-                style: `font-size: 15px; text-align: center; padding: 0px;`,
-            },
-            body: {
-                style: `font-size: 12px; text-align: center; padding: 10px 5px;`,
-            },
-        };
-
-        const calculateBackgroundColor = (is_active: boolean, presezna_moc: number) => {
-            if (!is_active) return "gray";
-            if (presezna_moc > 0) return "#cd5c5c";
-            return "";
-        };
-
-        return { months, total_new_cost, showPrimerjava, total_old_cost, change_style_object, month_bill, display_months, calculateBackgroundColor, openBill };
+        for (const month in months.value) {
+            total_new_cost.value += sumMonthCosts(months.value[month].month);
+            total_old_cost.value += sumMonthCostsOld(months.value[month].month);
+        }
     },
+    { deep: true }
+);
+
+// Odpre prikaz racuna, primerjavo med novim in starim racunom
+const openBill = (month: number) => {
+    month_bill.value = month;
+    showPrimerjava.value = true;
+};
+
+const change_style_object = {
+    title: {
+        style: `font-size: 15px; text-align: center; padding: 0px;`,
+    },
+    body: {
+        style: `font-size: 12px; text-align: center; padding: 10px 5px;`,
+    },
+};
+
+const calculateBackgroundColor = (is_active: boolean, presezna_moc: number) => {
+    if (!is_active) return "gray";
+    if (presezna_moc > 0) return "#cd5c5c";
+    return "";
 };
 </script>
 
@@ -231,15 +225,15 @@ table {
 
 .table-header th {
     padding: 10px 15px;
-    font-size: 20px;
+    font-size: 16px;
 
     border-bottom: 1.75px solid white;
 }
 
 p {
     margin: 0;
-    font-size: 18px;
-    padding: 5px 10px;
+    font-size: 15px;
+    padding: 3px 5px;
 }
 
 .cards-content {

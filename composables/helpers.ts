@@ -342,8 +342,9 @@ export const sumMonthCosts = (month: number): number => {
  */
 export const sumMonthCostsOld = (month: number) => {
     const months = useMonthsArray().value;
+    const tarifValues = useSettings().value.vrednosti_tarif_omreznine;
 
-    const omreznina_moc = usePrikljucnaMocStara().value * 0.77417; // Calculate network fee for old billing
+    const omreznina_moc = usePrikljucnaMocStara().value * tarifValues.power; // Calculate network fee for old billing
     const prispevki = sestejVsePrispevke(month);
 
     let energija = 0;
@@ -351,10 +352,10 @@ export const sumMonthCostsOld = (month: number) => {
 
     if (useSettings().value.tip_starega_obracuna === "VT+MT") {
         energija = months[month].vt_energy * useSettings().value.vrednosti_tarif.VT + months[month].mt_energy * useSettings().value.vrednosti_tarif.MT;
-        omreznina_energija = months[month].vt_energy * 0.04182 + months[month].mt_energy * 0.03215;
+        omreznina_energija = months[month].vt_energy * tarifValues.VT + months[month].mt_energy * tarifValues.MT;
     } else if (useSettings().value.tip_starega_obracuna === "ET") {
         energija = months[month].total_energy * useSettings().value.vrednosti_tarif.ET;
-        omreznina_energija = months[month].total_energy * 0.03215; //TODO: Pogledati je treba ceno omreznine energije za ET
+        if (tarifValues.ET) omreznina_energija = months[month].total_energy * tarifValues.ET; //TODO: Pogledati je treba ceno omreznine energije za ET
     } else {
         throw new Error("Neveljaven tip starega obracuna: " + useSettings().value.tip_starega_obracuna);
     }

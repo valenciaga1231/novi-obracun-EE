@@ -7,12 +7,12 @@
             </div>
             <div v-if="settings.tip_starega_obracuna !== null">
                 <div v-if="settings.tip_starega_obracuna === 'VT+MT'" style="display: flex; flex-direction: column">
-                    <span class="flex-auto" style="margin-bottom: 30px">
-                        <label for="number-input-vt" class="font-bold block mb-2">VT</label>
+                    <span class="flex-auto" style="margin-bottom: 10px">
+                        <label for="number-input-vt" class="font-bold mb-2">VT</label>
                         <InputNumber inputId="number-input-vt" v-model="settings.vrednosti_tarif.VT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" fluid />
                     </span>
                     <span class="flex-auto">
-                        <label for="number-input-mt">MT</label>
+                        <label for="number-input-mt" class="font-bold mb-2">MT</label>
                         <InputNumber inputId="number-input-mt" v-model="settings.vrednosti_tarif.MT" :minFractionDigits="6" locale="de-DE" suffix="                      EUR/kWh" fluid />
                     </span>
                 </div>
@@ -81,7 +81,7 @@ export default {
 h2 {
     margin-bottom: 10px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 3010pxpx;
 }
 
 .tarifa-content {
@@ -90,6 +90,6 @@ h2 {
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 35px;
+    gap: 10px;
 }
 </style>

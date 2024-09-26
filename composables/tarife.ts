@@ -71,8 +71,8 @@ const tarifeUserGroup1 = `{
             "tarifna_postavka_W": 0.00671
         },
         "distribucija": {
-            "tarifna_postavka_P": 5.33444,
-            "tarifna_postavka_W": 0.01454
+            "tarifna_postavka_P": 4.67504,
+            "tarifna_postavka_W": 0.00783
         }
     },
     "2": {
@@ -81,8 +81,8 @@ const tarifeUserGroup1 = `{
             "tarifna_postavka_W": 0.00650
         },
         "distribucija": {
-            "tarifna_postavka_P": 1.08944,
-            "tarifna_postavka_W": 0.01389
+            "tarifna_postavka_P": 0.96277,
+            "tarifna_postavka_W": 0.00739
         }
     },
     "3": {
@@ -91,8 +91,8 @@ const tarifeUserGroup1 = `{
             "tarifna_postavka_W": 0.00612
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.14257,
-            "tarifna_postavka_W": 0.01369
+            "tarifna_postavka_P": 0.12399,
+            "tarifna_postavka_W": 0.00757
         }
     },
     "4": {
@@ -101,8 +101,8 @@ const tarifeUserGroup1 = `{
             "tarifna_postavka_W": 0.00597
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.00368,
-            "tarifna_postavka_W": 0.01330
+            "tarifna_postavka_P": 0.00286,
+            "tarifna_postavka_W": 0.00733
         }
     },
     "5": {
@@ -112,7 +112,7 @@ const tarifeUserGroup1 = `{
         },
         "distribucija": {
             "tarifna_postavka_P": 0.0,
-            "tarifna_postavka_W": 0.01329
+            "tarifna_postavka_W": 0.00739
         }
     }
 }`;
@@ -124,8 +124,8 @@ const tarifeUserGroup2 = `{
             "tarifna_postavka_W": 0.00683
         },
         "distribucija": {
-            "tarifna_postavka_P": 4.18586,
-            "tarifna_postavka_W": 0.01263
+            "tarifna_postavka_P": 3.46560,
+            "tarifna_postavka_W": 0.00580
         }
     },
     "2": {
@@ -134,8 +134,8 @@ const tarifeUserGroup2 = `{
             "tarifna_postavka_W": 0.00663
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.88405,
-            "tarifna_postavka_W": 0.01204
+            "tarifna_postavka_P": 0.73704,
+            "tarifna_postavka_W": 0.00541
         }
     },
     "3": {
@@ -144,8 +144,8 @@ const tarifeUserGroup2 = `{
             "tarifna_postavka_W": 0.00626
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.11318,
-            "tarifna_postavka_W": 0.1181
+            "tarifna_postavka_P": 0.08953,
+            "tarifna_postavka_W": 0.00555
         }
     },
     "4": {
@@ -154,8 +154,8 @@ const tarifeUserGroup2 = `{
             "tarifna_postavka_W": 0.00610
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.00107,
-            "tarifna_postavka_W": 0.01140
+            "tarifna_postavka_P": 0.0,
+            "tarifna_postavka_W": 0.00530
         }
     },
     "5": {
@@ -165,7 +165,7 @@ const tarifeUserGroup2 = `{
         },
         "distribucija": {
             "tarifna_postavka_P": 0.0,
-            "tarifna_postavka_W": 0.01139
+            "tarifna_postavka_W": 0.00536
         }
     }
 }`;
@@ -177,8 +177,8 @@ const tarifeUserGroup3 = `{
             "tarifna_postavka_W": 0.00679
         },
         "distribucija": {
-            "tarifna_postavka_P": 1.95873,
-            "tarifna_postavka_W": 0.00810
+            "tarifna_postavka_P": 1.30327,
+            "tarifna_postavka_W": 0.00131
         }
     },
     "2": {
@@ -187,8 +187,8 @@ const tarifeUserGroup3 = `{
             "tarifna_postavka_W": 0.00668
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.44459,
-            "tarifna_postavka_W": 0.00797
+            "tarifna_postavka_P": 0.28939,
+            "tarifna_postavka_W": 0.00129
         }
     },
     "3": {
@@ -197,8 +197,8 @@ const tarifeUserGroup3 = `{
             "tarifna_postavka_W": 0.00634
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.07189,
-            "tarifna_postavka_W": 0.00762
+            "tarifna_postavka_P": 0.03807,
+            "tarifna_postavka_W": 0.00128
         }
     },
     "4": {
@@ -207,8 +207,8 @@ const tarifeUserGroup3 = `{
             "tarifna_postavka_W": 0.00616
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.00140,
-            "tarifna_postavka_W": 0.00742
+            "tarifna_postavka_P": 0.0,
+            "tarifna_postavka_W": 0.00126
         }
     },
     "5": {
@@ -218,7 +218,7 @@ const tarifeUserGroup3 = `{
         },
         "distribucija": {
             "tarifna_postavka_P": 0.0,
-            "tarifna_postavka_W": 0.00736
+            "tarifna_postavka_W": 0.00125
         }
     }
 }`;
@@ -230,8 +230,8 @@ const tarifeUserGroup4 = `{
             "tarifna_postavka_W": 0.00794
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.56683,
-            "tarifna_postavka_W": 0.00829
+            "tarifna_postavka_P": 0.26093,
+            "tarifna_postavka_W": 0.00035
         }
     },
     "2": {
@@ -240,8 +240,8 @@ const tarifeUserGroup4 = `{
             "tarifna_postavka_W": 0.00778
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.25891,
-            "tarifna_postavka_W": 0.00813
+            "tarifna_postavka_P": 0.07313,
+            "tarifna_postavka_W": 0.00035
         }
     },
     "3": {
@@ -250,8 +250,8 @@ const tarifeUserGroup4 = `{
             "tarifna_postavka_W": 0.00741
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.05109,
-            "tarifna_postavka_W": 0.00776
+            "tarifna_postavka_P": 0.00951,
+            "tarifna_postavka_W": 0.00035
         }
     },
     "4": {
@@ -260,8 +260,8 @@ const tarifeUserGroup4 = `{
             "tarifna_postavka_W": 0.00718
         },
         "distribucija": {
-            "tarifna_postavka_P": 0.00186,
-            "tarifna_postavka_W": 0.00753
+            "tarifna_postavka_P": 0.0,
+            "tarifna_postavka_W": 0.00035
         }
     },
     "5": {
@@ -271,7 +271,7 @@ const tarifeUserGroup4 = `{
         },
         "distribucija": {
             "tarifna_postavka_P": 0.0,
-            "tarifna_postavka_W": 0.00748
+            "tarifna_postavka_W": 0.00035
         }
     }
 }`;

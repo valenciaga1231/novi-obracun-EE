@@ -53,6 +53,13 @@ export type Settings = {
         MT: number;
         ET: number;
     };
+    vrednosti_tarif_omreznine: {
+        label: string;
+        power: number;
+        VT: number;
+        MT: number;
+        ET: number | null;
+    };
     date: {
         start: Date | null;
         end: Date | null;

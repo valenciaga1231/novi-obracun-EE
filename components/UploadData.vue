@@ -67,7 +67,7 @@ export default {
 
         // Computed property to determine if the button should be disabled
         const isButtonDisabled = computed(() => {
-            return !data_file.value || !settings.value.tip_starega_obracuna || on_going_calculation.value;
+            return !data_file.value || !settings.value.tip_starega_obracuna || on_going_calculation.value || settings.value.vrednosti_tarif_omreznine.label === "Not defined";
         });
 
         const clearFile = () => (data_file.value = null);
