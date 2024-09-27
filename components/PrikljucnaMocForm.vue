@@ -23,7 +23,7 @@
                     Blok 5
                     <InputNumber class="ml-1" v-model="prikljucna_moc[4]" showButtons buttonLayout="horizontal" mode="decimal" suffix=" kW" :min="0" :max="100" :step="0.1" inputClass="enabled:pointer-events-none" @input="inputUpdated" fluid />
                 </div>
-                <p class="text-xs">Namig: Drzi gumb za hitrejšo spremembo.</p>
+                <p class="text-xs">Namig: Drži gumb za hitrejšo spremembo.</p>
             </div>
         </div>
     </div>

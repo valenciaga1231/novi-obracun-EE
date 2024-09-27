@@ -44,10 +44,26 @@
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
-                        <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
+                        <td>{{ month_data.total_energy.toFixed(0) }}</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                         <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_old.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif_old.VT).toFixed(5) }}</td>
+                    </tr>
+                </template>
+                <template v-if="settings.tip_starega_obracuna === 'ET'">
+                    <tr class="energija-ET">
+                        <td style="text-align: left">Električna energija ET</td>
+                        <td>{{ Math.round(month_data.total_energy).toFixed(0) }}</td>
+                        <td>kWh</td>
+                        <td>{{ useSettings().value.vrednosti_tarif_old.ET.toFixed(6) }}</td>
+                        <td>{{ (Math.round(month_data.total_energy) * settings.vrednosti_tarif_old.ET).toFixed(5) }}</td>
+                    </tr>
+                    <tr class="bold-row">
+                        <td style="text-align: left">Skupaj el. energija</td>
+                        <td>{{ month_data.total_energy.toFixed(0) }}</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>{{ (Math.round(month_data.total_energy) * settings.vrednosti_tarif_old.ET).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <tr>
@@ -57,27 +73,45 @@
                     <td>{{ "0.774170" }}</td>
                     <td>{{ (prikljucna_moc_stara * settings.vrednosti_tarif_omreznine.power).toFixed(5) }}</td>
                 </tr>
-                <tr>
-                    <td style="text-align: left">Omrežnina VT</td>
-                    <td>{{ month_data.vt_energy.toFixed(0) }}</td>
-                    <td>kW</td>
-                    <td>{{ "0.041820" }}</td>
-                    <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif_omreznine.VT).toFixed(5) }}</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left">Omrežnina MT</td>
-                    <td>{{ month_data.mt_energy.toFixed(0) }}</td>
-                    <td>kW</td>
-                    <td>{{ settings.vrednosti_tarif_omreznine.MT.toFixed(6) }}</td>
-                    <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_omreznine.MT).toFixed(5) }}</td>
-                </tr>
-                <tr class="bold-row">
-                    <td style="text-align: left">Skupaj omrežnina</td>
-                    <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
-                    <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_omreznine.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif_omreznine.VT + Math.round(prikljucna_moc_stara) * settings.vrednosti_tarif_omreznine.power).toFixed(5) }}</td>
-                </tr>
+                <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                    <tr>
+                        <td style="text-align: left">Omrežnina VT</td>
+                        <td>{{ month_data.vt_energy.toFixed(0) }}</td>
+                        <td>kW</td>
+                        <td>{{ "0.041820" }}</td>
+                        <td>{{ (Math.round(month_data.vt_energy) * settings.vrednosti_tarif_omreznine.VT).toFixed(5) }}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">Omrežnina MT</td>
+                        <td>{{ month_data.mt_energy.toFixed(0) }}</td>
+                        <td>kW</td>
+                        <td>{{ settings.vrednosti_tarif_omreznine.MT.toFixed(6) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_omreznine.MT).toFixed(5) }}</td>
+                    </tr>
+                    <tr class="bold-row">
+                        <td style="text-align: left">Skupaj omrežnina</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif_omreznine.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif_omreznine.VT + Math.round(prikljucna_moc_stara) * settings.vrednosti_tarif_omreznine.power).toFixed(5) }}</td>
+                    </tr>
+                </template>
+                <template v-if="settings.tip_starega_obracuna === 'ET'">
+                    <tr>
+                        <td style="text-align: left">Omrežnina ET</td>
+                        <td>{{ Math.round(month_data.total_energy).toFixed(0) }}</td>
+                        <td>kW</td>
+                        <td>{{ settings.vrednosti_tarif_omreznine.ET?.toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.total_energy) * (settings.vrednosti_tarif_omreznine.ET ?? 0)).toFixed(5) }}</td>
+                    </tr>
+                    <tr class="bold-row">
+                        <td style="text-align: left">Skupaj omrežnina</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>{{ (Math.round(month_data.total_energy) * (settings.vrednosti_tarif_omreznine.ET ?? 0) + prikljucna_moc_stara * settings.vrednosti_tarif_omreznine.power).toFixed(5) }}</td>
+                    </tr>
+                </template>
                 <tr v-for="(prispevek, id) in month_data.prispevki" :key="id">
                     <td style="text-align: left">{{ prispevek.name }}</td>
                     <td>{{ id == "spte_ove" ? prikljucna_moc_stara.toFixed(0) : month_data.total_energy.toFixed(0) }}</td>

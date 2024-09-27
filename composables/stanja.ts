@@ -39,7 +39,7 @@ export const initDefaultBlokData = () => {
             skupna_tarifa_moc: 0,
             skupna_tarifa_energija: 0,
             skupna_tarifa_presezna_moc: 0,
-            is_active: true,
+            is_active: false,
         };
     }
 

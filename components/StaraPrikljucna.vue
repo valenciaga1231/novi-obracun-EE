@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p style="text-align: center; margin: 0px">Trenutna priključna moč:</p>
+        <p style="text-align: center; margin: 0px">Stara obračunska moč:</p>
         <InputNumber v-model="stara_prikljucna_moc" :min="0" :max="1000" showButtons buttonLayout="horizontal" suffix="  kW" decrementButtonClassName="pi pi-plus" incrementButtonClassName="pi pi-minus" :pt="change_style_object">
             <template>
                 <span class="pi pi-plus" />

@@ -56,8 +56,12 @@
                     <!-- Nastavitev tarif za električno energijo -->
                     <Fieldset class="mt-3" legend="Tarifa energije pri ponudniku" :toggleable="true" :collapsed="isTarifaCollapsed" v-on:toggle="isTarifaCollapsed = !isTarifaCollapsed">
                         <div class="flex flex flex-wrap justify-evenly">
-                            <TarifaFormOld />
-                            <TarifaForm />
+                            <div class="w-1/3">
+                                <p class="text-justify">V primeru, da želite primerjati le cene po starem in novem obračunu (sprememba načina omrežnine), vnesite enako tarifo za stari in novi obračun.</p>
+                                <p>V primeru, da želite za novi račun, ko se regulacija 90% cene konča, vnesite višje tarife v polja za novi obračun</p>
+                            </div>
+                            <TarifaFormOld class="w-1/3" />
+                            <TarifaForm class="w-1/3" />
                         </div>
                         <div class="text-center mt-3">
                             <Button @click="isTarifaCollapsed = true" severity="info" size="small">Zapri </Button>
@@ -79,8 +83,9 @@
                             <Button @click="isUploadCollapsed = true" severity="info" size="small">Zapri </Button>
                         </div>
                     </Fieldset>
-                    <Fieldset class="mt-3" legend="Prispevki" :toggleable="true">
-                        <PrispevkiForm />
+                    <Fieldset class="mt-3" legend="Prispevki" :toggleable="true" :collapsed="isPrispevkiCollapsed" v-on:toggle="isPrispevkiCollapsed = !isPrispevkiCollapsed">
+                        <p class="text-sm">Označi kateri prispevki želiš, da se upoštevajo na računih.</p>
+                        <PrispevkiForm class="mt-3" />
                     </Fieldset>
                 </Fieldset>
                 <!-- Nastavitev vrste odjema po starem in novem obračunu -->
@@ -173,6 +178,7 @@ const isVrstaOdjemaCollapsed = ref(false);
 const isPrikljucnaCollapsed = ref(true);
 const isTarifaCollapsed = ref(true);
 const isUploadCollapsed = ref(false);
+const isPrispevkiCollapsed = ref(true);
 
 const userGroupList = ref([
     { name: "0: uporabniki priključeni na NN izvod nazivne napetosti 420/230", code: 0 },
@@ -261,18 +267,6 @@ const updateUserGroup = () => {
     margin: 10px;
 }
 
-.page-content {
-    /* display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-
-    flex-wrap: wrap;
-
-    max-width: 2500px;
-    margin: auto; */
-    /* position: relative; */
-}
-
 .instructions-info-section {
     flex: 25%;
 
@@ -297,19 +291,6 @@ const updateUserGroup = () => {
 
     text-align: justify;
     text-justify: inter-word;
-}
-
-.instructions-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    background-color: var(--p-surface-900);
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    overflow-y: auto;
-    padding: 20px;
 }
 
 a {

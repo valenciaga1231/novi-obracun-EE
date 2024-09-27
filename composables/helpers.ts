@@ -54,7 +54,7 @@ export const parseEnergyBlocks = () => {
         // Update block data
         const blockData = monthData.blok_data[block];
         blockData.energija += row.W;
-        blockData.is_active = true;
+        blockData.is_active = true; // Mark block as active if data row with this block exists
 
         // Mark block as active
         monthData.active_blocks[block - 1] = 1;
