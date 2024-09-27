@@ -1,9 +1,12 @@
 # Primerjalnik cen Elektricne energije
 
-Trenutna verzija primerja cene elektricne energije za gospodinjstva po starem in novem obracunu. Podatke najboljse da se vnese na letni(npr. za leto 2023) ali mesecni ravni.
+Trenutna verzija primerja končne cene računov električne energije po starem in novem obračunu. Podatke najboljše da se vnese na letni(npr. za leto 2023) ali mesečni ravni, kajti tudi tarife za stari izračun so trenutno vnešene za leto 2023.
 
-Za samooskrbna gospodinjstva trenutno ni moznosti izracuna. Po novem bodo placevali ceno omreznine za moc oz obracunsko moc na mesecni ravni. Energija se jim bo obracunavala
-na letni ravni in bo strosek 0, ce bodo proizvedli vec kot porabili (net metering).
+Nastavi se lahko tudi tarifa energije posebaj za stari in novi obračun, da se lahko tudi ugotovi koliko dodatno višji bodo računi, če se ukine 90% regulirane cene EE.
+
+Za samooskrbna gospodinjstva trenutno ni možnosti izračuna. Po novem bodo plačevali ceno omrežnine za moč oz obračunsko moč na mesečni ravni. Energija in omrežnina za energijo se jim bo obračunavala na letni ravni in bo strošek 0, če bodo proizvedli več kot porabili (net metering).
+
+Krajša navodila za uporabo računala najdete na strani z računalom.
 
 # Nuxt 3 Minimal Starter
 

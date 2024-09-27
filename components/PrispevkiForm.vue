@@ -1,39 +1,29 @@
 <template>
     <div>
-        <div v-if="prispevki">
+        <div v-if="prispevki" class="flex flex-col text-base">
             <h3>Upoštevaj prispevke za:</h3>
-            <Checkbox v-model="prispevki.operater_trga.is_active" :binary="true" />
-            <label for="checkbox1"> Operaterja trga</label>
-            <br />
-            <br />
-            <Checkbox v-model="prispevki.energetsko_ucinkovitost.is_active" :binary="true" />
-            <label for="checkbox2"> Energetsko učinkovitost</label>
-            <br />
-            <br />
-            <Checkbox v-model="prispevki.spte_ove.is_active" :binary="true" />
-            <label for="checkbox3"> SPTE in OVE</label>
-            <br />
-            <br />
-            <Checkbox v-model="prispevki.trosarina.is_active" :binary="true" />
-            <label for="checkbox4"> Trošarino</label>
+            <div class="mt-2">
+                <Checkbox v-model="prispevki.operater_trga.is_active" :binary="true" />
+                <label for="checkbox1"> Operaterja trga</label>
+            </div>
+            <div class="mt-2">
+                <Checkbox v-model="prispevki.energetsko_ucinkovitost.is_active" :binary="true" />
+                <label for="checkbox2"> Energetsko učinkovitost</label>
+            </div>
+            <div class="mt-2">
+                <Checkbox v-model="prispevki.spte_ove.is_active" :binary="true" />
+                <label for="checkbox3"> SPTE in OVE</label>
+            </div>
+            <div class="mt-2">
+                <Checkbox v-model="prispevki.trosarina.is_active" :binary="true" />
+                <label for="checkbox4"> Trošarino</label>
+            </div>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-export default {
-    setup() {
-        const prispevki = usePrispevki();
-
-        return {
-            prispevki,
-        };
-    },
-};
+<script setup lang="ts">
+const prispevki = usePrispevki();
 </script>
 
-<style scoped>
-h3 {
-    margin-top: 0;
-}
-</style>
+<style scoped></style>

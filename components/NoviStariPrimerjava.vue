@@ -1,7 +1,7 @@
 <template>
-    <div class="popup-content">
-        <BillsNew :month="props.month" style="width: 100%; flex: 45%" />
-        <BillsOld :month="props.month" style="width: 100%; flex: 45%" />
+    <div class="popup-content text-sm w-full flex flex-wrap justify-evenly">
+        <BillsNew :month="props.month" />
+        <BillsOld :month="props.month" />
     </div>
 </template>
 

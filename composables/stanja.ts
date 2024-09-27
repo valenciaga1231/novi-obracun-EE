@@ -39,7 +39,7 @@ export const initDefaultBlokData = () => {
             skupna_tarifa_moc: 0,
             skupna_tarifa_energija: 0,
             skupna_tarifa_presezna_moc: 0,
-            is_active: true,
+            is_active: false,
         };
     }
 
@@ -48,11 +48,24 @@ export const initDefaultBlokData = () => {
 
 // Define default settings
 const default_settings: Settings = {
+    user_group: { name: "User group", code: null },
+
     tip_starega_obracuna: null, // Default
-    vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },
+    vrednosti_tarif_old: { VT: 0.118, MT: 0.082, ET: 0.105 },
+    tip_novega_obracuna: null, // Default
+    vrednosti_tarif: { VT: 0.16999, MT: 0.14799, ET: 0.15899 },
+
     date: {
         start: null,
         end: null,
+    },
+
+    vrednosti_tarif_omreznine: {
+        label: "Not defined",
+        power: 0,
+        VT: 0,
+        MT: 0,
+        ET: null,
     },
 };
 
@@ -83,6 +96,42 @@ const prispevki: Prispevki = {
         price: 0,
     },
 };
+
+export const useConnectionsTypeList = () =>
+    useState<any>("connection_type_list", () => [
+        {
+            label: "Napetostni nivo VN",
+            code: "VN",
+            items: [
+                { label: "Omrežna priključitev: T >= 6000 ur", value: "Zbiralke VN", power: 0.93077, VT: 0.00154, MT: 0.0012 },
+                { label: "Omrežna priključitev: 6000 > T >= 2500 ur", value: "Zbiralke VN", power: 0.99541, VT: 0.00141, MT: 0.00108 },
+                { label: "Omrežna priključitev: T < 2500 ur", value: "Zbiralke VN", power: 1.0703, VT: 0.00149, MT: 0.00115 },
+            ],
+        },
+        {
+            label: "Napetostni nivo SN",
+            code: "SN",
+            items: [
+                { label: "Zbiralčna priključitev: T >= 2500 ur", value: "Zbiralke SN", power: 3.00735, VT: 0.00072, MT: 0.00055 },
+                { label: "Zbiralčna priključitev: T < 2500 ur", value: "Zbiralke SN", power: 2.97166, VT: 0.00095, MT: 0.00073 },
+                { label: "Omrežna priključitev: T >= 2500 ur", value: "Zbiralke VN", power: 3.1308, VT: 0.00767, MT: 0.00591 },
+                { label: "Omrežna priključitev: T < 2500 ur", value: "Zbiralke VN", power: 2.40595, VT: 0.01217, MT: 0.00937 },
+            ],
+        },
+        {
+            label: "Napetostni nivo NN",
+            code: "NN",
+            items: [
+                { label: "Zbiralčna priključitev: T >= 2500 ur", value: "Zbiralke SN", power: 4.20754, VT: 0.00743, MT: 0.00575 },
+                { label: "Zbiralčna priključitev: T < 2500 ur", value: "Zbiralke SN", power: 3.50514, VT: 0.01183, MT: 0.00909 },
+                { label: "Omrežna priključitev: T >= 2500 ur", value: "Zbiralke VN", power: 5.54684, VT: 0.01639, MT: 0.01261 },
+                { label: "Omrežna priključitev: T < 2500 ur", value: "Zbiralke VN", power: 4.61098, VT: 0.02223, MT: 0.01708 },
+                { label: "Omrežna priključitev: polnjenje EV", value: "Zbiralke VN", power: 2.30549, VT: 0.01111, MT: 0.00856 },
+                { label: "Omrežna priključitev: brez merjenja moči", value: "Zbiralke VN", power: 0.77417, VT: 0.04182, MT: 0.03215, ET: 0.03858 },
+                { label: "Omrežna priključitev: gospodinjstvo", value: "Zbiralke VN", power: 0.77417, VT: 0.04182, MT: 0.03215, ET: 0.03858 },
+            ],
+        },
+    ]);
 
 /**
  * Functions resets all data. If you want to reset your data

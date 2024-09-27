@@ -43,11 +43,30 @@ export type Prispevki = {
 };
 
 export type Settings = {
-    tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
+    user_group: {
+        name: string;
+        code: number | null;
+    };
+
+    tip_novega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
     vrednosti_tarif: {
         VT: number;
         MT: number;
         ET: number;
+    };
+
+    tip_starega_obracuna: "VT+MT" | "ET" | null; // VT+MT | ET
+    vrednosti_tarif_old: {
+        VT: number;
+        MT: number;
+        ET: number;
+    };
+    vrednosti_tarif_omreznine: {
+        label: string;
+        power: number;
+        VT: number;
+        MT: number;
+        ET: number | null;
     };
     date: {
         start: Date | null;

@@ -1,9 +1,9 @@
 <template>
     <div class="novi-racun-component">
-        <div style="display: flex; justify-content: space-evenly">
+        <div class="h-20" style="display: flex; justify-content: space-evenly">
             <div style="display: flex; flex-direction: column; justify-content: space-between; margin: 10px 20px">
                 <h3 style="font-size: 24px; font-weight: bold">Novi račun</h3>
-                <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem" style="font-size: 16px; width: 200px" />
+                <MultiSelect v-model="selected_settings" :options="racun_settings" optionLabel="name" placeholder="Nastavitve" :maxSelectedLabels="2" class="w-full md:w-20rem mt-3" style="font-size: 16px; width: 200px" />
             </div>
             <div>
                 <p v-if="month_data.date.start && month_data.date.end" style="text-align: center"><b>Datum: </b>{{ month_data.date.start.toLocaleDateString("en-GB").replace(/\//g, ".") }} do {{ month_data.date.end.toLocaleDateString("en-GB").replace(/\//g, ".") }}</p>
@@ -27,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                <template v-if="settings.tip_starega_obracuna === 'VT+MT'">
+                <template v-if="settings.tip_novega_obracuna === 'VT+MT'">
                     <tr class="energija-VT">
                         <td style="text-align: left">Električna energija VT</td>
                         <td>{{ month_data.vt_energy.toFixed(0) }}</td>
@@ -50,19 +50,20 @@
                         <td>{{ (Math.round(month_data.mt_energy) * settings.vrednosti_tarif.MT + Math.round(month_data.vt_energy) * settings.vrednosti_tarif.VT).toFixed(5) }}</td>
                     </tr>
                 </template>
-                <template v-if="settings.tip_starega_obracuna === 'ET'">
+                <template v-if="settings.tip_novega_obracuna === 'ET'">
                     <tr class="energija-ET">
                         <td style="text-align: left">Električna energija ET</td>
-                        <td>{{ useTotalEnergy().value.toFixed(4) }}</td>
+                        <td>{{ Math.round(month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
                         <td>kWh</td>
                         <td>{{ useSettings().value.vrednosti_tarif.ET.toFixed(6) }}</td>
-                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
+                        <td>{{ (Math.round(month_data.mt_energy + month_data.vt_energy) * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
                     <tr class="bold-row">
                         <td style="text-align: left">Skupaj el. energija</td>
                         <td>{{ (month_data.mt_energy + month_data.vt_energy).toFixed(0) }}</td>
-                        <td colspan="2"></td>
-                        <td>{{ (useTotalEnergy().value * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
+                        <td>{{ (Math.round(month_data.mt_energy + month_data.vt_energy) * settings.vrednosti_tarif.ET).toFixed(5) }}</td>
                     </tr>
                 </template>
                 <template v-for="(data, blok) in month_data.blok_data" :key="blok">
