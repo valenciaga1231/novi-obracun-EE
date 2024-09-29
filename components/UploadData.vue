@@ -5,7 +5,7 @@
             <FileUpload mode="basic" accept=".xlsx, .xls" :auto="true" chooseLabel="Datoteka" :maxFileSize="10000000" @select="handleFileUpload($event)" class="customized-upload" style="font-size: 13px" />
             <Button @click="processData()" severity="warn" style="max-width: 120px; text-align: center; margin: auto; font-size: 13px" :disabled="isButtonDisabled">Izračunaj</Button>
         </div>
-        <p v-if="isButtonDisabled" class="text-xs text-center">Pred klikom na izračun morajo biti vnečeni podatki na poljih, ki so obarvana z rdečo in vnešena XLSX datoteka.</p>
+        <p v-if="isButtonDisabled" class="text-xs text-center">Pred klikom na izračun morajo biti vnešeni podatki na poljih, ki so obarvana z rdečo in vnešena XLSX datoteka.</p>
         <div v-if="data_file" class="mt-3 text-center">
             <p>Datoteka:</p>
             <div @click="clearFile" class="file-data text-xs" style="cursor: pointer">
