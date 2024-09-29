@@ -53,7 +53,7 @@ const default_settings: Settings = {
     tip_starega_obracuna: null, // Default
     vrednosti_tarif_old: { VT: 0.118, MT: 0.082, ET: 0.105 },
     tip_novega_obracuna: null, // Default
-    vrednosti_tarif: { VT: 0.16999, MT: 0.14799, ET: 0.15899 },
+    vrednosti_tarif: { VT: 0.118, MT: 0.082, ET: 0.105 },
 
     date: {
         start: null,
