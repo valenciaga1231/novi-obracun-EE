@@ -7,7 +7,7 @@
                 </div>
             </template>
         </Select>
-        <p class="text-xs mt-1">Trenutne tarife omreznine so vnešene za leto 2023!</p>
+        <p class="text-xs mt-1">Trenutne tarife omrežnine so vnešene za leto 2023!</p>
         <div v-if="settings.vrednosti_tarif_omreznine.label !== 'Not defined'" class="mt-2 text-xs">
             <p>Moč: {{ settings.vrednosti_tarif_omreznine.power }} EUR/kW/mesec</p>
             <p>VT: {{ settings.vrednosti_tarif_omreznine.VT }} EUR/kWh</p>

@@ -105,7 +105,7 @@ export const useConnectionsTypeList = () =>
             items: [
                 { label: "Omrežna priključitev: T >= 6000 ur", value: "Zbiralke VN", power: 0.93077, VT: 0.00154, MT: 0.0012 },
                 { label: "Omrežna priključitev: 6000 > T >= 2500 ur", value: "Zbiralke VN", power: 0.99541, VT: 0.00141, MT: 0.00108 },
-                { label: "Omrežna priključitev: T < 2500 ur", value: "Zbiralke VN", power: 1.0703, VT: 0.00149, MT: 0.00115 },
+                { label: "Omrežna priključitev: T < 2500 ur", value: "Zbiralke VN", power: 1.07303, VT: 0.00149, MT: 0.00115 },
             ],
         },
         {

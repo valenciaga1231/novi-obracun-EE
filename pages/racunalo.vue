@@ -1,7 +1,7 @@
 <template>
     <div class="racunalo-content">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <div class="flex flex-wrap">
+        <div class="flex flex-wrap" style="margin: 2%">
             <!-- Data input section (Dogovorjena moc, EE tarifa, Data uploader, Prispevki) -->
             <section class="data-input-section w-full">
                 <!-- Button to toggle instructions panel -->
@@ -20,6 +20,9 @@
                                 <p style="text-align: left; margin-bottom: 3px">Izberi staro odjemno skupino :</p>
                                 <SelectOldTarife class="text-sm" />
                             </div>
+                        </div>
+                        <div v-if="settings.user_group.code !== null && settings.vrednosti_tarif_omreznine.label !== 'Not defined'">
+                            <CompareOmrezninaTarife />
                         </div>
                         <div class="text-center mt-3">
                             <Button @click="isVrstaOdjemaCollapsed = true" severity="info" size="small">Zapri </Button>
@@ -276,7 +279,8 @@ const updateUserGroup = () => {
 
 <style scoped>
 .racunalo-content {
-    margin: 10px;
+    max-width: 1400px;
+    margin: auto;
 }
 
 .instructions-info-section {
