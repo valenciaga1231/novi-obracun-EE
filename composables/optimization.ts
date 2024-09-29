@@ -13,6 +13,14 @@ export const optimizePowerSettings = () => {
     const monthsData = useMonthsArray(); // Reactive object containing monthly data
     const tempPrikljucnaMoc: number[] = [...prikljucna_moc]; // Copy of the connected power settings
 
+    // Determine which bloks to optimize based on active blocks in the monthly data
+    let activeBloks = [0, 0, 0, 0, 0];
+    Object.values(monthsData.value).forEach((monthData: MonthData) => {
+        monthData.active_blocks.forEach((block, index) => {
+            if (block === 1) activeBloks[index] = 1;
+        });
+    });
+
     /**
      * Optimizes the connected power for a specific index using the Golden Section Search method.
      * Ensures that the optimized power does not decrease below the previous block's power.
@@ -55,18 +63,21 @@ export const optimizePowerSettings = () => {
 
         // Determine the previous power to enforce non-decreasing power settings
         const previousPower = index > 0 ? prikljucna_moc[index - 1] : minPower;
+        const previousPowerActive = index > 0 ? activeBloks[index - 1] === 1 : true;
 
-        // Ensure the optimized power does not decrease below the previous block's power
-        prikljucna_moc[index] = minPower < previousPower ? previousPower : Math.round(minPower * 10) / 10;
+        if (previousPowerActive) {
+            prikljucna_moc[index] = minPower < previousPower ? previousPower : Math.round(minPower * 10) / 10;
+        } else {
+            prikljucna_moc[index] = Math.round(minPower * 10) / 10;
+        }
 
         console.log(`Optimized Power for index ${index}: ${prikljucna_moc[index]} kW`);
     };
 
     // Iterate over each connected power setting and optimize, excluding the last index where tariff is 0
     prikljucna_moc.forEach((_, index) => {
-        if (index !== prikljucna_moc.length - 1) {
-            optimizePowerForIndex(index);
-        }
+        // We dont optimize the last blok since all tarif are zero (blok with index 4)!
+        if (activeBloks[index] === 1 && index !== 4) optimizePowerForIndex(index);
     });
     const optimizedPrikljucnaMoc = [...prikljucna_moc];
 

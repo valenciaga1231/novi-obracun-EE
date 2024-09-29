@@ -145,8 +145,10 @@
                 <p>Nove optimizirane vrednosti blokov so:</p>
                 <div style="display: flex; flex-direction: row; justify-content: space-evenly">
                     <div v-for="(moc, id) in optimizedPrikljucnaMoc">
-                        <div>Blok {{ id + 1 }}</div>
-                        <div style="margin-left: 5px">{{ moc }}</div>
+                        <div v-if="activeBloks[id]">
+                            <div>Blok {{ id + 1 }}</div>
+                            <div style="margin-left: 5px">{{ moc }}</div>
+                        </div>
                     </div>
                 </div>
                 <p>
@@ -160,18 +162,22 @@
 </template>
 
 <script setup lang="ts">
+import type { MonthData } from "@/types"; // Adjust the path according to your project structure
+
 const is_table = useIsTable();
 const settings = useSettings();
 const showInstructions = ref(false);
 const showDialog = ref(false);
 const optimizedPrikljucnaMoc = ref<number[]>([]);
 const monthsData = useMonthsArray();
+
 const totalCosts = computed(() => {
-    return Object.values(monthsData.value).reduce((acc, monthData) => acc + sumMonthCosts(monthData.month), 0);
+    return Object.values(monthsData.value).reduce((acc, monthData: MonthData) => acc + sumMonthCosts(monthData.month), 0);
 });
 const totalCostsOptimized = ref(0);
 const isOptimizing = ref(false);
 const prikljucna_moc = usePrikljucnaMoc();
+const activeBloks = ref([0, 0, 0, 0, 0]);
 
 // Fieldsets collapsed
 const isVrstaOdjemaCollapsed = ref(false);
@@ -221,8 +227,14 @@ const toggleInstructions = () => {
 const onClickOptimizePowerSettings = () => {
     isOptimizing.value = true;
 
+    // Get active blocks
+    Object.values(monthsData.value).forEach((monthData: MonthData) => {
+        monthData.active_blocks.forEach((block, index) => {
+            if (block === 1) activeBloks.value[index] = 1;
+        });
+    });
+
     setTimeout(() => {
-        // optimizing.value = true;
         const savePrikljucnaMoc = [...usePrikljucnaMoc().value];
 
         const optimizedPower = optimizePowerSettings();
