@@ -126,10 +126,15 @@
                     <td>.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.&nbsp;&nbsp;.</td>
                     <td>{{ sestejVsePrispevke(props.month).toFixed(5) }}</td>
                 </tr>
-                <tr class="bold-row" style="border-top: 1.75px solid black; padding-top: 20px; height: 50px">
+                <tr class="bold-row" style="border-top: 1.75px solid black; padding-top: 20px; height: 35px">
                     <td style="text-align: left">Skupaj (brez DDV)</td>
                     <td colspan="3"></td>
-                    <td>{{ sumMonthCostsOld(props.month).toFixed(5) }}</td>
+                    <td>{{ sumMonthCostsOld(props.month).toFixed(2) }}</td>
+                </tr>
+                <tr class="bold-row" style="border-top: 1.75px solid black; padding-top: 20px; height: 35px">
+                    <td style="text-align: left">Skupaj (z DDV)</td>
+                    <td colspan="3"></td>
+                    <td>{{ month_data.total_sum_old_DDV.toFixed(2) }}</td>
                 </tr>
             </tbody>
         </table>
