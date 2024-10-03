@@ -82,7 +82,14 @@
                     </Fieldset>
                     <!-- Naloži podatke in vnos prispevkov -->
                     <Fieldset class="mt-3" legend="Naloži podatke" :toggleable="true" :collapsed="isUploadCollapsed" v-on:toggle="isUploadCollapsed = !isUploadCollapsed">
-                        <UploadData />
+                        <div class="flex flex-wrap text-sm">
+                            <UploadData class="basis-1/2 p-3" />
+                            <div class="basis-1/2 p-3">
+                                <p class="font-bold">Namig za vnos podatkov:</p>
+                                <p class="text-xs text-justify">- Najboljše da vnesete 15-min podatke iz portala MojElektro za celotno leto 2023, če imate le te na voljo. Kajti trenutni prazniki so v kalkulatorju vnešeni za leto 2023 in bi lahko ob vnosu za leto 2024 podalo malenkost napačne rezultate, vendar večjih odstopanj ni, takoda se lahko vnese tudi za 2024.</p>
+                                <p class="text-xs text-justify">- Prav tako so stare omrežnine vnešene trenunto zgolj za leto 2023, vendar prav v primeru vnosa podatkov za 2024 ni večjih odstopanj.</p>
+                            </div>
+                        </div>
                         <div class="text-center mt-3">
                             <Button @click="isUploadCollapsed = true" severity="info" size="small">Zapri </Button>
                         </div>
@@ -105,25 +112,25 @@
         <!-- Sliding instructions panel -->
         <Drawer name="slide-fade" v-model:visible="showInstructions" position="right" style="width: 50%">
             <section class="instructions-info-section">
-                <div class="instructions">
+                <div class="instructions text-sm">
                     <h3 style="margin-top: 0px">Navodila za uporabo:</h3>
-                    <h3 class="text-xl font-bold mt-3">1. Izberi staro in novo vrsto odjema:</h3>
+                    <h3 class="text-base font-bold mt-3">1. Izberi staro in novo vrsto odjema:</h3>
                     <p>Uporabniško skupino po novem obračunu izberemo glede na to v katero skupino spadamo. Večina gospodinjstev je skupina 0 - uporabniki priključeni na NN izvod napetosti 420/230.</p>
                     <p>Staro odjemno skupino izberemo glede na to v katero staro odjemno skupino spadamo, da bo primerjava med starim in novim računom pravilna. Večina navadnih gospodinjstev je pod Omrena priključitev: gospodinjstvo.</p>
 
-                    <h3 class="text-xl font-bold mt-3">2. Nastavi novo dogovorjeno obračunsko moč in staro obračunsko moč:</h3>
+                    <h3 class="text-base font-bold mt-3">2. Nastavi novo dogovorjeno obračunsko moč in staro obračunsko moč:</h3>
                     <p>Podatke o <b>dogovorjeni moči</b> najdete na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer se prijavite. V meniju nato kliknemo Merilna mesta / merilne točke, kjer izberemo merilno mesto. Nato v meniju merilnega mesta izberemo Dogovorjena/obračunska moč, kjer bo izpisana moč za vsak blok. Slednje pravilno vnesemo v računalo.</p>
                     <p>Staro priključno moč lahko pogledamo na računu ali pa na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> kjer izberemo merilno mesto in nato v meniju obračunski podatki ter na enem od obračunov preverimo obračunsko moč.</p>
 
-                    <h3 class="text-xl font-bold mt-3">3. Nastavi tarifo energije pri ponudniku:</h3>
+                    <h3 class="text-base font-bold mt-3">3. Nastavi tarifo energije pri ponudniku:</h3>
                     <p>Velika in mala tarifa sta podani na položnici za elektriko. Oz. če nas zanima tarifa za naseldnje leto kliknemo <a href="https://www.elektro-energija.si/za-dom/dokumenti-in-ceniki" target="_blank">tu</a>. Vnesemo vrednosti brez DDV.</p>
 
-                    <h3 class="text-xl font-bold mt-3">4. Naloži podatke:</h3>
+                    <h3 class="text-base font-bold mt-3">4. Naloži podatke:</h3>
                     <p>Podatkovno datoteko z <b>15 minutnimi meritvami</b> najedemo na portalu <a href="https://mojelektro.si/login" target="_blank">MojElektro</a> na izbranem merilnem mestu pod 15 minutni podatki. Izvozimo <b>Excel datoteko</b> za poljubni MESEC ali LETO oz. poljubno obdobje. Za dober pregled nad primerjavo letnih stroškov EE je najlažje vnesti datoteko z podatki za celotno leto 2023.</p>
                     <p>Kliknemo na <b>Izračunaj</b> in izpisali se bodo podatki po mesecih. V prvem oknu lahko vidimo cene glede na stari in novi obračun. Za izpis računa za vsak mesec posebaj lahko kliknemo na posamezen mesec(kvadratek), kjer bo primerjava med starim in novim računom.</p>
                     <p>Po izračunu lahko pogledamo stare in nove račune s klikom na posamezen mesec.</p>
                 </div>
-                <div class="info">
+                <div class="info text-sm">
                     <h3 class="text-xl font-bold mt-3">Informacije o računalu:</h3>
                     <p>1. Vnešeni podatki se ne pošljejo nikamor, ker se vsi računi izvedejo v brskalniku pri uporabniku.</p>
                     <p>2. Za samooskrbne uporabnike bo izračun dodan kmalu.</p>

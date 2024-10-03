@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Select v-model="settings.vrednosti_tarif_omreznine" @change="updateOlduserGroup" :options="useConnectionsTypeList().value" :invalid="settings.vrednosti_tarif_omreznine.label === 'Not defined'" optionLabel="label" optionGroupLabel="label" optionGroupChildren="items" placeholder="Izberi tarifo po starem obračunu">
+        <Select pt:listContainer:class="text-sm" v-model="settings.vrednosti_tarif_omreznine" @change="updateOlduserGroup" :options="useConnectionsTypeList().value" :invalid="settings.vrednosti_tarif_omreznine.label === 'Not defined'" optionLabel="label" optionGroupLabel="label" optionGroupChildren="items" placeholder="Izberi tarifo po starem obračunu">
             <template #optiongroup="slotProps">
                 <div class="flex items-center">
                     <div>{{ slotProps.option.label }}</div>

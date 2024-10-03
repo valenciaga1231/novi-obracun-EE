@@ -2,7 +2,7 @@
     <div class="months-data-content">
         <div ref="display_months">
             <h3 style="text-align: center">Vnešeni meseci</h3>
-            <p style="text-align: center">(klikni na mesec za vpogled racunov)</p>
+            <p class="font-bold" style="text-align: center">(klikni na mesec za vpogled racunov)</p>
             <div class="cards-content">
                 <div v-for="(data, month, id) in months" :key="id">
                     <Card class="custom-card" @click="openBill(data.month)" :pt="change_style_object">
