@@ -62,7 +62,7 @@
                             <div class="w-1/3">
                                 <p class="text-justify">V primeru, da želite primerjati le cene po starem in novem obračunu (sprememba načina omrežnine), vnesite enako tarifo za stari in novi obračun.</p>
                                 <p class="text-justify">V primeru, da želite za novi račun, ko se regulacija 90% cene konča, vnesite višje tarife v polja za novi obračun. Lahko s klikom na spodnji gumb ali pa poglejte na spletni strani vašega ponudnika.</p>
-                                <Button @click="settings.vrednosti_tarif = { VT: 0.16999, MT: 0.14799, ET: 0.15899 }" class="mt-3" severity="secondary" size="small" raised>Vnesi višje tarife</Button>
+                                <Button @click="updateTariffsToNew()" class="mt-3" severity="secondary" size="small" raised>Vnesi višje tarife</Button>
                             </div>
                             <TarifaFormOld class="w-1/3" />
                             <TarifaForm class="w-1/3" />
@@ -275,6 +275,11 @@ const repeatcalculationWithOptimizedBloks = () => {
     }
     updateMonthlyExpenses(monthsData);
     showDialog.value = false;
+};
+
+const updateTariffsToNew = () => {
+    settings.value.tip_novega_obracuna = "VT+MT";
+    settings.value.vrednosti_tarif = { VT: 0.16999, MT: 0.14799, ET: 0.15899 };
 };
 
 const updateUserGroup = () => {
