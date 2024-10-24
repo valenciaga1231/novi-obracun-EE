@@ -1,9 +1,9 @@
 <template>
     <div class="header-content">
-        <h1>Primerjalnik cen EE 2024</h1>
+        <h1 class="text-base md:text-2xl">Primerjalnik cen EE 2024</h1>
         <div class="card">
-            <Tabs :value="tabValue">
-                <TabList class="text-sm">
+            <Tabs :value="tabValue" pt:root:class="text-xs md:text-base">
+                <TabList>
                     <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value" @click="router.push({ name: tab.route })" :disabled="tab.disabled">
                         <i :class="tab.icon" />
                         {{ tab.title }}
@@ -73,8 +73,7 @@ export default {
 }
 
 h1 {
-    color: var(--p-primary-400);
-    background-color: var(--p-zinc-700) !important;
+    background-color: var(--p-surface-500);
     padding: 12px 18px;
     border-radius: 0.5rem;
     margin: 1rem 0;
@@ -82,7 +81,6 @@ h1 {
 
     font-weight: bold;
     letter-spacing: 2px;
-    font-size: 1.5rem;
 }
 
 a {

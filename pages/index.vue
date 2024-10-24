@@ -1,30 +1,18 @@
 <template>
     <div class="index-component" :class="{ 'custom-light-theme': is_light_theme }">
-        <div class="index-content">
-            <InfoSection style="width: 50%" />
+        <div class="w-5/6 m-auto index-content text-base md:text-xl">
+            <InfoSection />
         </div>
     </div>
 </template>
 
-<script lang="ts">
-export default {
-    setup() {
-        const is_light_theme = useIsLightTheme();
-        const router = useRouter();
-
-        return {
-            is_light_theme,
-        };
-    },
-};
+<script setup lang="ts">
+const is_light_theme = useIsLightTheme();
 </script>
 
 <style scoped>
 .index-component {
-    width: 100%;
-
     /* These two heights always make 100% or at least 100vh background */
-    height: 100%;
     min-height: 100vh;
 
     position: relative;
@@ -42,10 +30,5 @@ export default {
 
 .custom-light-theme::before {
     background-color: rgba(0, 0, 0, 0.2); /* Adjust the alpha value to control dimness */
-}
-
-.index-content {
-    position: relative; /* Position must be set so overlay work properly */
-    z-index: 1;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="racunalo-content">
+    <div class="racunalo-content text-sm md:text-base">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <div class="flex flex-wrap" style="margin: 2%">
             <!-- Data input section (Dogovorjena moc, EE tarifa, Data uploader, Prispevki) -->
@@ -7,7 +7,7 @@
                 <!-- Button to toggle instructions panel -->
                 <Fieldset legend="Nastavitve in podatki za izračun" :toggleable="false">
                     <div class="flex justify-between mb-3">
-                        <p class="basis-1/2 text-sm text-justify">Začnite z vnosom podatkov za primerjavo med starim in novim obračunom. Najprej določite novo in staro vrsto odjema in nato še ostalo s klikom naprej. Za dodatne informacije kliknite gumb <a @click="toggleInstructions" class="cursor-pointer" target="_blank">navodila</a>.</p>
+                        <p class="basis-1/2 text-sm md:text-base text-justify">Začnite z vnosom podatkov za primerjavo med starim in novim obračunom. Najprej določite novo in staro vrsto odjema in nato še ostalo s klikom naprej. Za dodatne informacije kliknite gumb <a @click="toggleInstructions" class="cursor-pointer" target="_blank">navodila</a>.</p>
                         <Button @click="toggleInstructions" class="self-start" size="small">Navodila</Button>
                     </div>
                     <Fieldset class="mt-3" legend="Izberi staro in novo vrsto odjema" :toggleable="true" :collapsed="isVrstaOdjemaCollapsed" v-on:toggle="isVrstaOdjemaCollapsed = !isVrstaOdjemaCollapsed">
@@ -40,8 +40,8 @@
                     <!-- Nastavitev nove dogovorjene moči in stare priključne moči -->
                     <Fieldset class="mt-3" legend="Nastavi novo dogovorjeno obračunsko moč in staro obračunsko moč" :toggleable="true" :collapsed="isPrikljucnaCollapsed" v-on:toggle="isPrikljucnaCollapsed = !isPrikljucnaCollapsed">
                         <div class="flex flex-wrap justify-evenly gap-5">
-                            <PrikljucnaMocForm class="w-94 m-auto text-sm" />
-                            <StaraPrikljucna class="w-94 m-auto text-sm" />
+                            <PrikljucnaMocForm class="w-94 m-auto" />
+                            <StaraPrikljucna class="w-94 m-auto" />
                         </div>
                         <div class="text-center mt-3">
                             <Button @click="isPrikljucnaCollapsed = true" severity="info" size="small">Zapri </Button>
@@ -58,7 +58,7 @@
                     </Fieldset>
                     <!-- Nastavitev tarif za električno energijo -->
                     <Fieldset class="mt-3" legend="Tarifa energije pri ponudniku" :toggleable="true" :collapsed="isTarifaCollapsed" v-on:toggle="isTarifaCollapsed = !isTarifaCollapsed">
-                        <div class="flex flex flex-wrap justify-evenly">
+                        <div class="flex flex justify-evenly gap-2">
                             <div class="w-1/3">
                                 <p class="text-justify">V primeru, da želite primerjati le cene po starem in novem obračunu (sprememba načina omrežnine), vnesite enako tarifo za stari in novi obračun.</p>
                                 <p class="text-justify">V primeru, da želite za novi račun, ko se regulacija 90% cene konča, vnesite višje tarife v polja za novi obračun. Lahko s klikom na spodnji gumb ali pa poglejte na spletni strani vašega ponudnika.</p>
@@ -82,12 +82,12 @@
                     </Fieldset>
                     <!-- Naloži podatke in vnos prispevkov -->
                     <Fieldset class="mt-3" legend="Naloži podatke" :toggleable="true" :collapsed="isUploadCollapsed" v-on:toggle="isUploadCollapsed = !isUploadCollapsed">
-                        <div class="flex flex-wrap text-sm">
+                        <div class="flex flex-wrap">
                             <UploadData class="basis-1/2 p-3" />
                             <div class="basis-1/2 p-3">
                                 <p class="font-bold">Namig za vnos podatkov:</p>
-                                <p class="text-xs text-justify">- Najboljše da vnesete 15-min podatke iz portala MojElektro za celotno leto 2023, če imate le te na voljo. Kajti trenutni prazniki so v kalkulatorju vnešeni za leto 2023 in bi lahko ob vnosu za leto 2024 podalo malenkost napačne rezultate, vendar večjih odstopanj ni, takoda se lahko vnese tudi za 2024.</p>
-                                <p class="text-xs text-justify">- Prav tako so stare omrežnine vnešene trenunto zgolj za leto 2023, vendar prav v primeru vnosa podatkov za 2024 ni večjih odstopanj.</p>
+                                <p class="text-justify">- Najboljše da vnesete 15-min podatke iz portala MojElektro za celotno leto 2023, če imate le te na voljo. Kajti trenutni prazniki so v kalkulatorju vnešeni za leto 2023 in bi lahko ob vnosu za leto 2024 podalo malenkost napačne rezultate, vendar večjih odstopanj ni, takoda se lahko vnese tudi za 2024.</p>
+                                <p class="text-justify">- Prav tako so stare omrežnine vnešene trenunto zgolj za leto 2023, vendar prav v primeru vnosa podatkov za 2024 ni večjih odstopanj.</p>
                             </div>
                         </div>
                         <div class="text-center mt-3">
@@ -102,8 +102,8 @@
                 <!-- Nastavitev vrste odjema po starem in novem obračunu -->
             </section>
             <!-- Display data section -->
-            <section class="text-xs" v-if="is_table === true" style="padding: 20px">
-                <div class="data-tables">
+            <section v-if="is_table === true" style="padding: 20px">
+                <div>
                     <Button @click="showDialog = true" class="optimize-btn">Optimizacija stroškov&nbsp;<b>(novo)</b></Button>
                     <DisplayMonthsData />
                 </div>

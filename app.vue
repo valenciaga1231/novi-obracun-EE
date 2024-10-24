@@ -40,6 +40,7 @@ onMounted(() => {
 <style>
 html {
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 body {

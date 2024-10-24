@@ -1,12 +1,13 @@
 <template>
     <div class="months-data-content">
+        <h1 class="text-2xl text-center font-bold" style="color: var(--p-primary-500)">Rezultati izračuna</h1>
         <div ref="display_months">
             <h3 style="text-align: center">Vnešeni meseci</h3>
             <p class="font-bold" style="text-align: center">(klikni na mesec za vpogled racunov)</p>
             <div class="cards-content">
                 <div v-for="(data, month, id) in months" :key="id">
                     <Card class="custom-card" @click="openBill(data.month)" :pt="change_style_object">
-                        <template #title class="custom-title">{{ getMonthAbbreviation(data.month) }}</template>
+                        <template #title>{{ getMonthAbbreviation(data.month) }}</template>
                         <template #content>
                             <div>
                                 Poraba kWh: <b>{{ data.total_energy.toFixed(0) }}</b>
@@ -56,7 +57,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div style="font-size: 14px">Vse cene v zgornji tabeli so z DDV.</div>
+            <div>Vse cene v zgornji tabeli so z DDV.</div>
         </Fieldset>
         <Fieldset legend="Poraba energije" :toggleable="true">
             <table>
@@ -191,10 +192,10 @@ const openBill = (month: number) => {
 
 const change_style_object = {
     title: {
-        style: `font-size: 15px; text-align: center; padding: 0px;`,
+        style: `text-align: center; padding: 0px;`,
     },
     body: {
-        style: `font-size: 12px; text-align: center; padding: 10px 5px;`,
+        style: ` text-align: center; padding: 10px 5px;`,
     },
 };
 
@@ -218,21 +219,19 @@ td {
 
 table {
     border-collapse: collapse;
-    border: 1px solid white;
+    border: 1px solid;
 
     width: 100%;
 }
 
 .table-header th {
-    padding: 10px 15px;
-    font-size: 16px;
+    padding: 6px 8px;
 
-    border-bottom: 1.75px solid white;
+    border-bottom: 1.75px solid;
 }
 
 p {
     margin: 0;
-    font-size: 15px;
     padding: 3px 5px;
 }
 
@@ -249,12 +248,6 @@ p {
 
 .custom-card {
     cursor: pointer;
-}
-
-.custom-card-body {
-    font-size: 15px;
-    text-align: center;
-    padding: 10px 5px;
 }
 
 .custom-card:hover {

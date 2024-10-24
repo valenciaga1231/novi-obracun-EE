@@ -1,12 +1,12 @@
 <template>
     <div>
-        <p class="font-bold" style="color: var(--p-primary-400)">Primerjava novih tarif s starimi</p>
-        <p class="text-sm mb-3 text-justify">Po novem boste plačevali toliko več v posameznem bloku kot kaže sprememba spodaj v tabelah za energijo in moč. Tabeli podajata zgolj informativne podatke o spremembah tarif za omrežnino energije in moči. Pri tabeli energije lahko hitro vidimo povečanje ali zmanjšanje stroškov omrežnine medtem, ko pri tabeli moči ni nujno takoj razvidna sprememba zaradi precejšnjih razlik v moči po blokih.</p>
+        <p class="font-bold text-base md:text-xl" style="color: var(--p-primary-400)">Primerjava novih tarif s starimi</p>
+        <p class="mb-3 text-justify">Po novem boste plačevali toliko več v posameznem bloku kot kaže sprememba spodaj v tabelah za energijo in moč. Tabeli podajata zgolj informativne podatke o spremembah tarif za omrežnino energije in moči. Pri tabeli energije lahko hitro vidimo povečanje ali zmanjšanje stroškov omrežnine medtem, ko pri tabeli moči ni nujno takoj razvidna sprememba zaradi precejšnjih razlik v moči po blokih.</p>
         <div class="flex flex-wrap justify-between">
             <div class="m-auto">
                 <p class="text-center" style="color: var(--p-primary-400)">Tabela za energijo</p>
-                <p class="text-sm">Sprememba napram stari tarifi VT: {{ oldTariffs.VT }} EUR/kWh in stari tarifi MT: {{ oldTariffs.MT }} EUR/kWh.</p>
-                <table class="text-sm">
+                <p>Sprememba napram stari tarifi VT: {{ oldTariffs.VT }} EUR/kWh in stari tarifi MT: {{ oldTariffs.MT }} EUR/kWh.</p>
+                <table>
                     <thead>
                         <tr>
                             <th class="p-1">Blok</th>
@@ -20,11 +20,11 @@
                         <tr v-for="(newEnergy, index) in newTariffsEnergy" :key="index">
                             <td class="p-1">{{ index + 1 }}</td>
                             <td class="p-1">{{ newEnergy.toFixed(5) }}</td>
-                            <td class="p-1" :style="{ backgroundColor: getBackgroundColor(((newEnergy - oldTariffs.VT) / oldTariffs.VT) * 100) }">{{ (((newEnergy - oldTariffs.VT) / oldTariffs.VT) * 100).toFixed(2) }}</td>
-                            <td class="p-1" :style="{ backgroundColor: getBackgroundColor(((newEnergy - oldTariffs.MT) / oldTariffs.MT) * 100) }">
+                            <td class="p-1">{{ (((newEnergy - oldTariffs.VT) / oldTariffs.VT) * 100).toFixed(2) }}</td>
+                            <td class="p-1">
                                 {{ (((newEnergy - oldTariffs.MT) / oldTariffs.MT) * 100).toFixed(2) }}
                             </td>
-                            <td v-if="oldTariffs.ET" class="p-1" :style="{ backgroundColor: getBackgroundColor(((newEnergy - oldTariffs.ET) / oldTariffs.ET) * 100) }">
+                            <td v-if="oldTariffs.ET" class="p-1">
                                 {{ (((newEnergy - oldTariffs.ET) / oldTariffs.ET) * 100).toFixed(2) }}
                             </td>
                         </tr>
@@ -33,8 +33,8 @@
             </div>
             <div class="m-auto">
                 <p class="text-center" style="color: var(--p-primary-400)">Tabela za moč</p>
-                <p class="text-sm">Sprememba napram stari tarifi moči: {{ oldTariffs.power }} EUR/kW/mesec</p>
-                <table class="text-sm">
+                <p>Sprememba napram stari tarifi moči: {{ oldTariffs.power }} EUR/kW/mesec</p>
+                <table>
                     <thead>
                         <tr>
                             <th class="p-1">Blok</th>
